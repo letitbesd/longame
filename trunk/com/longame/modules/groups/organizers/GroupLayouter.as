@@ -24,7 +24,7 @@ package com.longame.modules.groups.organizers
 	{
 		//需要重新排序的对象
 		protected var invalidtatedChildren:Vector.<IDisplayEntity>;
-		protected var cellsVisited:Dictionary;
+		protected var cellVisited:Dictionary;
 		
 		private var map:GroupMap;
 		private var bounds:TileBounds;
@@ -53,13 +53,13 @@ package com.longame.modules.groups.organizers
 			while(invalidtatedChildren.length){
 				child=invalidtatedChildren[0];
 				//每个物品放置前，先将这个临时数据清空
-				cellsVisited=new Dictionary();
+				cellVisited=new Dictionary();
 				this.place(child);
 				childVisited[child]=true;
 				invalidtatedChildren.splice(0,1);
 			}
 			childVisited =null;
-			cellsVisited=null;
+			cellVisited=null;
 			invalidtatedChildren=null;
 			map=null;
 			bounds=null;
@@ -143,7 +143,7 @@ package com.longame.modules.groups.organizers
 				return null;
 			}
 			var cell:EntityTile=map.getTile(x,y) as EntityTile;
-			cellsVisited[x+"_"+y]=true;
+			cellVisited[x+"_"+y]=true;
 			var result:IDisplayEntity=this.findUpperChildInCell(cell,target);
 			//在x，y中找到了就返回，不再继续搜索
 			if(result) return result;
@@ -156,7 +156,7 @@ package com.longame.modules.groups.organizers
 				nx=x+Direction.dx[direct];
 				ny=y+Direction.dy[direct];
 				nextCell=map.getTile(nx,ny) as EntityTile;
-				if(cellsVisited[nx+"_"+ny]===true) continue;
+				if(cellVisited[nx+"_"+ny]===true) continue;
 				result1=this.searchToFront(target,nx,ny);
 				if(result==null) result=result1;
 				else if((result1!=null)&&(result1.depth<result.depth)) result=result1;

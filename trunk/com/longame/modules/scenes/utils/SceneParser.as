@@ -80,6 +80,10 @@ package com.longame.modules.scenes.utils
 						break;
 				}
 				group.add(child,childXml.@state||"");
+				//debug
+				if(group.id=="upground"){
+					child.add(new DepthDebugger());
+				}
 				//可能的bug点
 				if(childXml.hasOwnProperty("@depth")) group.setChildIndex(child,parseInt(childXml.@depth));
 				childItemSpec=null;
