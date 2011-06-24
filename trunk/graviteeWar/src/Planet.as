@@ -50,7 +50,7 @@ package
 			maskLayer.x=100;
 			maskLayer.y=100;
 			
-//			holeLayer.mask=maskLayer;
+			holeLayer.mask=maskLayer;
 			
 			
 			this.radius=60+Math.round(20*Math.random());
@@ -113,7 +113,7 @@ package
 			var mar:Matrix=new Matrix();
 			mar.tx=this.width/2;
 			mar.ty=this.height/2;
-//			mar.scale(backLayer.scaleX,backLayer.scaleY);
+			mar.scale(backLayer.scaleX,backLayer.scaleY);
 			maskBd.draw(this,mar);
 		}
 	}

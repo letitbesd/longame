@@ -6,7 +6,9 @@ package
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	
 	import heros.Hero;
+	
 	import time.EnterFrame;
 	
 	public class Scene extends Sprite implements IFrameObject
@@ -17,7 +19,8 @@ package
 		
 		public static var pathCanvas:Shape=new Shape();
 		
-		private var hero:Hero;
+		private  var hero:Hero;
+		private var enemy:Hero;
 		
 		public function Scene()
 		{
@@ -46,11 +49,17 @@ package
 				this.addPlanet(p);
 			}
 			this.addHero();
+			this.addEnemies();
 			this.addChild(pathCanvas);
 			EnterFrame.addObject(this);
 //			this.stage.addEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
 		}
-        private function addHero():void
+		
+		private function addEnemies():void
+		{
+			// TODO Auto Generated method stub
+		}
+		private function addHero():void
 		{
 			hero=new Hero("red");
 			this.addChild(hero);

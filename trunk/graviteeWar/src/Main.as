@@ -89,7 +89,5 @@ package
 //			trace("还剩下： "+event.secondLeft);
 			_counter.text="还剩下： "+event.secondLeft;
 		}
-		
-		
 	}
 }

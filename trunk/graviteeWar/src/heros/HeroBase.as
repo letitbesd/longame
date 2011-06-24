@@ -34,7 +34,7 @@ package heros
 			super();
 			_content=Main.getMovieClip("hero");
 			this.addChild(_content);
-			this.team=team;
+			this._team=team;
 			this.doAction(defaultAction);
 			_content.scaleX=_content.scaleY=1.5;
 			var i:int=Math.floor(Math.random()*Scene.planets.length);
