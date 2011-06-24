@@ -3,28 +3,29 @@ package heros
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.geom.Point;
+	import flash.ui.KeyLocation;
+	import flash.ui.Keyboard;
 	
 	import time.EnterFrame;
 	
 	public class HeroBase extends Sprite implements IFrameObject
 	{
 		public static const speed:Number=2;
-		public static const teams:Array=["white","red","blue","green","yellow"];
+		public static const teams:Array=["white","red","blue","green","yellow"]; 	
 		public static const defaultAction:String="bob";
+		
 		/**
 		 * 玩家的射击精确度，实际就是显示子弹运行路径的长短
 		 * */
-		public var accurate:int=1000;
-		
+		public var accurate:int=100;
 		protected var _team:String;
 		protected var _content:MovieClip;
-		
 		protected var shootAngle:Number;
 		/**
 		 * 
 		 * */
 		protected var _planet:Planet;
-		
+		protected var atRight:Boolean=false;
 		protected var _angle:Number;
 		/**
 		 * 人物旋转之后，炮筒的角度计算不对。。。。
@@ -34,12 +35,11 @@ package heros
 			super();
 			_content=Main.getMovieClip("hero");
 			this.addChild(_content);
-			this._team=team;
+			this.team=team;
 			this.doAction(defaultAction);
-			_content.scaleX=_content.scaleY=1.5;
+//			_content.scaleX=_content.scaleY=1.5;
 			var i:int=Math.floor(Math.random()*Scene.planets.length);
 			_planet=Scene.planets[i];
-			
 			var angle:Number=Math.random()*360;
 			this.angle=270;//angle;
 		}
@@ -62,11 +62,13 @@ package heros
 		public function aimAt(angle:uint):void
 		{
 			this.doAction("aiming7");
-			trace(angle);
+//			trace(angle);
 			//todo
 //			angle-=this.angle;
 //			trace(angle-this.angle,360+angle-this.angle);
 			if(angle==0) angle=1;
+			if(angle>180&&angle<300) angle=180;
+			if(angle>300) angle=0;
 			this._content.graphic.gotoAndStop(angle);
 		}
 		public function onFrame():void
@@ -116,11 +118,13 @@ package heros
 		{
 			if(this.scaleX==1) return;
 			this.scaleX=1;
+			atRight=false;
 		}
 		protected function turnRight():void
 		{
 			if(this.scaleX==-1) return;
 			this.scaleX=-1;
+			atRight=true;
 		}
 		protected function isLeft():Boolean
 		{
@@ -148,31 +152,34 @@ package heros
 		protected function simulatePath(shootX:Number,shootY:Number):void
 		{
 			var inLeft:Boolean=pointIsLeft(shootX,shootY);
+//			trace(inLeft);
 			//todo,以炮管注册点为中心
 //			var heroPos:Point=this.parent.localToGlobal(new Point(this.x,this.y));
 			//以炮管注册点为中心，炮管的发射方向
 //			this.shootAngle=Math.atan2(shootY-heroPos.y,shootX-heroPos.x);
 			var p:Point=new Point(shootX,shootY);
 			p=this.globalToLocal(p);
+//			var numberX:Number=-p.x;
+//			if((atRight==true&&inLeft==true)||(atRight==false&&inLeft==false)) p.x=numberX;
 			this.shootAngle=Math.atan2(p.y,p.x);
-			
 			var angleInDegree:int=Math.round(shootAngle*180/Math.PI);
 //			if(angleInDegree<0) angleInDegree+=360;
-			
 //			angleInDegree-=this.angle;
 //			angleInDegree=angleInDegree%360;
 //			if(angleInDegree<0) angleInDegree+=360;
-			
 			//目标发射方向在炮筒的右边，人向右转
 			if(!inLeft) {
-				var an:int=90-angleInDegree;
+				var an:int=angleInDegree-90;
+			
 				
+//				var an:int=angleInDegree-90;
 				if(an<0) an+=360;
 				this.aimAt(an);
 				this.turnRight();
 			//目标发射方向在炮筒的左边，人向左转
 			}else{
 				an=angleInDegree-90;
+//				var an:int=angleInDegree-90;
 				if(an<0) an+=360;
 				this.aimAt(an);
 				this.turnLeft();
@@ -190,17 +197,13 @@ package heros
 		{
 			var p:Point=new Point(_planet.x,_planet.y);
 			p=_planet.parent.localToGlobal(p);
-			p=this.globalToLocal(p);
-			
+			p=this.globalToLocal(p);	
+			if(p.x<0) p.x=0;
 			var p1:Point=new Point(x,y);
 			p1=this.globalToLocal(p1);
-			
-			return (p.y/p.x)*p1.x-p1.y<=0
-			
-//			var p:Point=this._planet.globalToLocal(new Point(x,y));
-//			var heroAngle:Number= Math.PI*this.angle/180;
-//			var d:Number=Math.tan(heroAngle)*p.x-p.y;
-//			return d<=0;
+			var numberX:Number=p1.x;
+			if(atRight==true) p1.x=-numberX;
+			return (p.y/p.x)*p1.x-p1.y<=0;
 		}
 		protected var currentPath:Vector.<PathNode>;
 		/**
