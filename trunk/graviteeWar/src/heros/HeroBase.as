@@ -62,7 +62,7 @@ package heros
 		public function aimAt(angle:uint):void
 		{
 			this.doAction("aiming7");
-//			trace(angle);
+			trace(angle);
 			//todo
 //			angle-=this.angle;
 //			trace(angle-this.angle,360+angle-this.angle);
