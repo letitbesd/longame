@@ -6,31 +6,27 @@ package
 
 	public class PathSimulator
 	{
-		private static const basicSpeed:Number=5;
+		private static const basicSpeed:Number=15;
 		
 		private var startAngle:Number;
 		private var startSpeed:Number;
-		
 		private var vx:Number;
 		private var vy:Number;
-		
 		private var x:Number;
 		private var y:Number;
 		private var rotation:Number;
-		
 		private var _planet:Planet;
-		
 		private var _path:Vector.<PathNode>=new Vector.<PathNode>();
-		
-		public function PathSimulator(strength:Number,angle:Number,startPos:Point)
+		public function PathSimulator(angle:Number,startPos:Point)
 		{
-			strength=Math.max(1,strength);
-			startSpeed=basicSpeed*strength;
+			startSpeed=basicSpeed;
 			startAngle=angle;
 			this.x=startPos.x;
 			this.y=startPos.y;
 			vx=startSpeed*Math.cos(this.startAngle);
 			vy=startSpeed*Math.sin(this.startAngle);
+			var x:Number=vx;
+			var y:Number=vy;
 		}
 		public function simulate(steps:int,canvas:Graphics):Vector.<PathNode>
 		{ 
@@ -112,24 +108,20 @@ package
 			var g:Point=Scene.calG(this.x,this.y);
 			vx+=g.x;
 			vy+=g.y;
+		
 			this.x+=vx;
 			this.y+=vy;
-			
 			if(this.checkCollision()){
 				return false;
 			}
-			
 			this.rotation=Math.atan(vy/vx)*180/Math.PI;
 			if(vx<0) this.rotation=180+this.rotation;
-			
 			var node:PathNode=new PathNode();
 			node.x=this.x;
 			node.y=this.y;
 			node.rotation=this.rotation;
-			
 			_path.push(node);
 			return true;
 		}
-		
 	}
 }

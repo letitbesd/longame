@@ -6,22 +6,15 @@ package
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
-	
 	import heros.Hero;
-	
 	import time.EnterFrame;
-	
 	public class Scene extends Sprite implements IFrameObject
 	{
-		public static const planetPositions:Array=[new Point(550,178)];//[new Point(330,388),new Point(155,158),new Point(550,178)];
-		
+		public static const planetPositions:Array=[new Point(330,388),new Point(155,158),new Point(550,178)];
 		public static var planets:Array=[];
-		
 		public static var pathCanvas:Shape=new Shape();
-		
 		private  var hero:Hero;
 		private var enemy:Hero;
-		
 		public function Scene()
 		{
 			super();
@@ -42,7 +35,6 @@ package
 			}
 			return g;
 		}
-		
 		protected function onAdded(event:Event):void
 		{
 			for each(var p:Point in planetPositions){
@@ -54,7 +46,6 @@ package
 			EnterFrame.addObject(this);
 //			this.stage.addEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
 		}
-		
 		private function addEnemies():void
 		{
 			// TODO Auto Generated method stub
@@ -67,7 +58,6 @@ package
 //			hero.y=305;
 			hero.active();
 		}
-		
 		private function addPlanet(p:Point):void
 		{
 			var _planet:Planet=new Planet();
@@ -76,7 +66,6 @@ package
 			_planet.x=p.x;
 			_planet.y=p.y
 		}
-		
 		protected function onMouseMove(event:MouseEvent):void
 		{
 			calG(event.localX,event.localY);

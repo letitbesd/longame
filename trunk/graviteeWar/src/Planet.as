@@ -14,7 +14,7 @@ package
 		
 		public static const basicRadius:Number=50;
 		
-		public static const basicG:Number=0.2;
+		public static const basicG:Number=0.5;
 		
 		private var G:Number=basicG;
 		
@@ -28,10 +28,7 @@ package
 		public function Planet()
 		{
 			super();
-			
 			this.blendMode=BlendMode.LAYER;
-			
-			
 //			var i:int=1+Math.floor(Math.random()*7);
 			var i:int=8;
 			//加背景

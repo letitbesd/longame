@@ -27,6 +27,7 @@ package heros
 		protected var _planet:Planet;
 		protected var atRight:Boolean=false;
 		protected var _angle:Number;
+		protected var heroRotation:Number=0;
 		/**
 		 * 人物旋转之后，炮筒的角度计算不对。。。。
 		 * */
@@ -62,7 +63,6 @@ package heros
 		public function aimAt(angle:uint):void
 		{
 			this.doAction("aiming7");
-			trace(angle);
 			//todo
 //			angle-=this.angle;
 //			trace(angle-this.angle,360+angle-this.angle);
@@ -107,12 +107,22 @@ package heros
 			this.turnLeft();
 			this.doAction("walk");
 			this.angle-=speed;
+//			heroRotation=0
+			if(this._angle<-360) this._angle+=360;
+			heroRotation=this._angle-270;
+			if(heroRotation<-360) heroRotation+=360;
+			
+			
 		}
 		public function moveRight():void
 		{
 			this.turnRight();
 			this.doAction("walk");
 			this.angle+=speed;
+			if(this._angle>360) this._angle-=360;
+//			heroRotation=0
+			heroRotation=this._angle-270;
+			if(heroRotation>360) heroRotation-=360;
 		}
 		protected function turnLeft():void
 		{
@@ -125,6 +135,7 @@ package heros
 			if(this.scaleX==-1) return;
 			this.scaleX=-1;
 			atRight=true;
+			
 		}
 		protected function isLeft():Boolean
 		{
@@ -152,41 +163,30 @@ package heros
 		protected function simulatePath(shootX:Number,shootY:Number):void
 		{
 			var inLeft:Boolean=pointIsLeft(shootX,shootY);
-//			trace(inLeft);
 			//todo,以炮管注册点为中心
-//			var heroPos:Point=this.parent.localToGlobal(new Point(this.x,this.y));
 			//以炮管注册点为中心，炮管的发射方向
-//			this.shootAngle=Math.atan2(shootY-heroPos.y,shootX-heroPos.x);
 			var p:Point=new Point(shootX,shootY);
 			p=this.globalToLocal(p);
-//			var numberX:Number=-p.x;
-//			if((atRight==true&&inLeft==true)||(atRight==false&&inLeft==false)) p.x=numberX;
 			this.shootAngle=Math.atan2(p.y,p.x);
 			var angleInDegree:int=Math.round(shootAngle*180/Math.PI);
-//			if(angleInDegree<0) angleInDegree+=360;
-//			angleInDegree-=this.angle;
-//			angleInDegree=angleInDegree%360;
-//			if(angleInDegree<0) angleInDegree+=360;
 			//目标发射方向在炮筒的右边，人向右转
 			if(!inLeft) {
 				var an:int=angleInDegree-90;
-			
-				
-//				var an:int=angleInDegree-90;
 				if(an<0) an+=360;
 				this.aimAt(an);
 				this.turnRight();
+				this.shootAngle=Math.PI-this.shootAngle;
+				
 			//目标发射方向在炮筒的左边，人向左转
 			}else{
 				an=angleInDegree-90;
-//				var an:int=angleInDegree-90;
 				if(an<0) an+=360;
 				this.aimAt(an);
 				this.turnLeft();
 			}
 			var param:Object=this.calMissileSate(p.x,p.y);
 			if(param==null) return;
-			simulator=new PathSimulator(param.strength,param.angle,param.startPos);
+			simulator=new PathSimulator(param.angle,param.startPos);
 			currentPath=simulator.simulate(accurate,Scene.pathCanvas.graphics);
 		}
 		/**
@@ -212,13 +212,12 @@ package heros
 		protected function calMissileSate(shootX:Number,shootY:Number):Object
 		{
 			var wep:MovieClip=this._content.graphic.wep;
-//			if(wep==null) return null;
 			var startPos:Point=wep.localToGlobal(new Point(wep.start.x,wep.start.y));
 			var dx:Number=shootX-startPos.x;
 			var dy:Number=shootY-startPos.y;
 			var dist:Number=Math.sqrt(dx*dx+dy*dy);
-//			return {strength:dist/50,angle:isLeft()?(Math.PI+shootAngle):shootAngle,startPos:startPos};
-			return {strength:dist/50,angle:shootAngle,startPos:startPos};
+			var ag:Number=heroRotation*Math.PI/180;
+			return {angle:shootAngle+ag,startPos:startPos};
 		}
 	}
 }
