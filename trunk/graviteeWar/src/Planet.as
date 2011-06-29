@@ -13,9 +13,9 @@ package
 //		public static const radius:Number=75;
 		
 		public static const basicRadius:Number=50;
-		
 		public static const basicG:Number=0.5;
-		
+		private var mass:Number;
+		private var _density:Number = 1;
 		private var G:Number=basicG;
 		
 //		private var content:MovieClip;
@@ -44,13 +44,14 @@ package
 //			maskLayer.bitmapData=maskBd;
 			this.updateMask();
 			
-			maskLayer.x=100;
-			maskLayer.y=100;
+//			maskLayer.x=100;
+//			maskLayer.y=100;
 			
 			holeLayer.mask=maskLayer;
 			
 			
 			this.radius=60+Math.round(20*Math.random());
+			this.mass = radius*this._density;
 		}
 		private var _radius:Number;
 		public function get radius():Number
@@ -67,6 +68,11 @@ package
 			G=basicG*scale*scale*scale;
 			
 			this.updateMask();
+		}
+		
+		public function getmass():Number
+		{
+			return mass;
 		}
 		public function getG(x:Number,y:Number):Point
 		{
@@ -105,12 +111,12 @@ package
 		
 		private function updateMask():void
 		{
-			maskBd=new BitmapData(this.width,this.height,true,0xffffff);
+			maskBd=new BitmapData(700,500,true,0xffffff);
 			maskLayer.bitmapData=maskBd;
 			var mar:Matrix=new Matrix();
-			mar.tx=this.width/2;
-			mar.ty=this.height/2;
-			mar.scale(backLayer.scaleX,backLayer.scaleY);
+//			mar.tx=this.width/2;
+//			mar.ty=this.height/2;
+//			mar.scale(backLayer.scaleX,backLayer.scaleY);
 			maskBd.draw(this,mar);
 		}
 	}

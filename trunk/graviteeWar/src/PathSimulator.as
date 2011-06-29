@@ -1,5 +1,7 @@
 package
 {
+	import AMath.AVector;
+	
 	import flash.display.Graphics;
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
@@ -17,16 +19,16 @@ package
 		private var rotation:Number;
 		private var _planet:Planet;
 		private var _path:Vector.<PathNode>=new Vector.<PathNode>();
-		public function PathSimulator(angle:Number,startPos:Point)
+		public function PathSimulator(strength:Number,angle:Number,startPos:Point)
 		{
-			startSpeed=basicSpeed;
+			strength=Math.max(1,strength);
+			trace(strength+"********************")
+			startSpeed=basicSpeed*strength;
 			startAngle=angle;
 			this.x=startPos.x;
 			this.y=startPos.y;
 			vx=startSpeed*Math.cos(this.startAngle);
 			vy=startSpeed*Math.sin(this.startAngle);
-			var x:Number=vx;
-			var y:Number=vy;
 		}
 		public function simulate(steps:int,canvas:Graphics):Vector.<PathNode>
 		{ 
@@ -105,12 +107,12 @@ package
 		}
 		private function step():Boolean
 		{
-			var g:Point=Scene.calG(this.x,this.y);
+			var g:AVector=Scene.getAccelerationForBending(this.x,this.y);
 			vx+=g.x;
 			vy+=g.y;
 		
-			this.x+=vx;
-			this.y+=vy;
+			this.x+=vx*0.0285;
+			this.y+=vy*0.0285;
 			if(this.checkCollision()){
 				return false;
 			}

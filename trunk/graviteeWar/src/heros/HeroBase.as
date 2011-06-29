@@ -17,7 +17,7 @@ package heros
 		/**
 		 * 玩家的射击精确度，实际就是显示子弹运行路径的长短
 		 * */
-		public var accurate:int=100;
+		public var accurate:int=200;
 		protected var _team:String;
 		protected var _content:MovieClip;
 		protected var shootAngle:Number;
@@ -186,7 +186,7 @@ package heros
 			}
 			var param:Object=this.calMissileSate(p.x,p.y);
 			if(param==null) return;
-			simulator=new PathSimulator(param.angle,param.startPos);
+			simulator=new PathSimulator(param.strength,param.angle,param.startPos);
 			currentPath=simulator.simulate(accurate,Scene.pathCanvas.graphics);
 		}
 		/**
@@ -217,7 +217,7 @@ package heros
 			var dy:Number=shootY-startPos.y;
 			var dist:Number=Math.sqrt(dx*dx+dy*dy);
 			var ag:Number=heroRotation*Math.PI/180;
-			return {angle:shootAngle+ag,startPos:startPos};
+			return {strength:dist/30,angle:shootAngle+ag,startPos:startPos};
 		}
 	}
 }
