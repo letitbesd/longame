@@ -19,7 +19,12 @@ package heros
 		}
 		override public function onFrame():void
 		{
-			
+//			var cd:CollisionData=CDK.check(this,c1);
+//			if(cd){
+//				var an:Number=cd.angleInRadian;
+//				this.x-=cd.overlapping.length*Math.cos(an)*springParam;
+//				this.y-=cd.overlapping.length*Math.sin(an)*springParam;
+//			}
 		}
 		override public function active():void
 		{

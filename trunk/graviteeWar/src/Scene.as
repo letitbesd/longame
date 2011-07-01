@@ -31,17 +31,17 @@ package
 		{
 			
 		}
-        public static function calG(x:Number,y:Number):Point
-		{
-			var g:Point=new Point();
-			var g0:Point;
-			for each(var p:Planet in  planets){
-				g0=p.getG(x,y);
-				g.x+=g0.x;
-				g.y+=g0.y;
-			}
-			return g;
-		}
+//        public static function calG(x:Number,y:Number):Point
+//		{
+//			var g:Point=new Point();
+//			var g0:Point;
+//			for each(var p:Planet in  planets){
+//				g0=p.getG(x,y);
+//				g.x+=g0.x;
+//				g.y+=g0.y;
+//			}
+//			return g;
+//		}
 		
 		public static function getAccelerationForBending(x:Number,y:Number) :AVector
 		{
@@ -52,7 +52,7 @@ package
 			{
 					_loc_3 = new AVector(p.x - _loc_6.x, p.y - _loc_6.y);
 					_loc_3.multiplyScalar(1 / Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y));
-					_loc_3.multiplyScalar(_G * 120 * p.getmass() / (Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y) * Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y)));
+					_loc_3.multiplyScalar(_G * 120 * p.mass / (Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y) * Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y)));
 					_loc_1.add(_loc_3);
 			}
 			return _loc_1;
@@ -64,21 +64,15 @@ package
 				this.addPlanet(p);
 			}
 			this.addHero();
-			this.addEnemies();
 			this.addChild(pathCanvas);
 			EnterFrame.addObject(this);
 //			this.stage.addEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
 		}
-		private function addEnemies():void
-		{
-			// TODO Auto Generated method stub
-		}
+
 		private function addHero():void
 		{
 			hero=new Hero("red");
 			this.addChild(hero);
-//			hero.x=334;
-//			hero.y=305;
 			hero.active();
 		}
 		private function addPlanet(p:Point):void
@@ -89,10 +83,10 @@ package
 			_planet.x=p.x;
 			_planet.y=p.y
 		}
-		protected function onMouseMove(event:MouseEvent):void
-		{
-			calG(event.localX,event.localY);
-		}
+//		protected function onMouseMove(event:MouseEvent):void
+//		{
+//			calG(event.localX,event.localY);
+//		}
 		
 	}
 }

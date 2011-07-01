@@ -5,53 +5,55 @@ package
 	import flash.display.BlendMode;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
+	import flash.filters.GlowFilter;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	
 	public class Planet extends Sprite
 	{
-//		public static const radius:Number=75;
-		
+//		public static const radius:Number=75;		
 		public static const basicRadius:Number=50;
 		public static const basicG:Number=0.5;
-		private var mass:Number;
 		private var _density:Number = 1;
 		private var G:Number=basicG;
 		
-//		private var content:MovieClip;
 		private var maskBd:BitmapData;
 		private var maskLayer:Bitmap;
 		private var holeLayer:Sprite;
 		private var backLayer:MovieClip;
-		
+//		private var back:Bitmap;
+//		private var backBD:BitmapData;
 		
 		public function Planet()
 		{
 			super();
 			this.blendMode=BlendMode.LAYER;
-//			var i:int=1+Math.floor(Math.random()*7);
-			var i:int=8;
+			
+			var i:int=1+Math.floor(Math.random()*7);
+//			var i:int=8;
 			//加背景
 			backLayer=Main.getMovieClip("planet"+i);
 			this.addChild(backLayer);
+//			backBD = new BitmapData(this._radius*2,this._radius*2,true,0x00000000);
+//			var mar:Matrix = new Matrix();
+//			mar.translate(this._radius,this._radius);
+//			backBD.draw(backLayer,mar);
+//			back = new Bitmap(backBD);
+//			this.addChild(back);
+//			back.x -= this._radius;
+//			back.y -= this._radius;
 			//加hole层
 			holeLayer=new Sprite();
 			this.addChild(holeLayer);
 			//加遮罩
-			maskLayer=new Bitmap();
-			Main.scene.addChild(maskLayer);
-//			maskBd=new BitmapData(100,100,true,0xffffff);
-//			maskLayer.bitmapData=maskBd;
-			this.updateMask();
-			
-//			maskLayer.x=100;
-//			maskLayer.y=100;
-			
-			holeLayer.mask=maskLayer;
-			
-			
+//			maskLayer=new Bitmap();
+//			Main.scene.addChild(maskLayer);
+//			this.updateMask();			
+//			holeLayer.mask=maskLayer;
+
 			this.radius=60+Math.round(20*Math.random());
 			this.mass = radius*this._density;
+			this.filters =[new GlowFilter(0,0.5, 8, 8, 5, 1, true)];
 		}
 		private var _radius:Number;
 		public function get radius():Number
@@ -65,15 +67,21 @@ package
 			var scale:Number=_radius/basicRadius;
 			backLayer.scaleX=backLayer.scaleY=scale;
 //			maskLayer.scaleX=maskLayer.scaleY=scale;
-			G=basicG*scale*scale*scale;
+//			G=basicG*scale*scale*scale;
 			
-			this.updateMask();
+//			this.updateMask();
+		}
+		private var _mass:Number;
+		public function get mass():Number
+		{
+			return _mass;
 		}
 		
-		public function getmass():Number
-		{
-			return mass;
+		public function set mass(value:Number):void{
+			if(_mass==value) return;
+			_mass=value;
 		}
+		
 		public function getG(x:Number,y:Number):Point
 		{
 			var g:Point=new Point();
@@ -106,18 +114,19 @@ package
 			hole.x=p.x;
 			hole.y=p.y;
 			
-			this.updateMask();
+//			var mar:Matrix = new Matrix();
+//			mar.translate(p.x,p.y);
+//			backBD.draw(hole,mar,null,BlendMode.ERASE);
+//			this.updateMask();
 		}
 		
-		private function updateMask():void
-		{
-			maskBd=new BitmapData(700,500,true,0xffffff);
-			maskLayer.bitmapData=maskBd;
-			var mar:Matrix=new Matrix();
-//			mar.tx=this.width/2;
-//			mar.ty=this.height/2;
-//			mar.scale(backLayer.scaleX,backLayer.scaleY);
-			maskBd.draw(this,mar);
-		}
+//		private function updateMask():void
+//		{
+//			maskBd=new BitmapData(this.width,this.height,true,0x000000);
+//			maskLayer.bitmapData=maskBd;
+//			var mar:Matrix=new Matrix();
+//			mar.translate(this._radius,this._radius);
+//			maskBd.draw(this,mar,null,BlendMode.ERASE);
+//		}
 	}
 }

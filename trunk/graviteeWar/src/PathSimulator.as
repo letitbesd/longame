@@ -2,9 +2,15 @@ package
 {
 	import AMath.AVector;
 	
+	import collision.CDK;
+	import collision.CollisionData;
+	
+	import flash.display.DisplayObject;
 	import flash.display.Graphics;
+	import flash.display.Shape;
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
+	import flash.globalization.CollatorMode;
 
 	public class PathSimulator
 	{
@@ -19,10 +25,10 @@ package
 		private var rotation:Number;
 		private var _planet:Planet;
 		private var _path:Vector.<PathNode>=new Vector.<PathNode>();
+		private var _steps:int;
 		public function PathSimulator(strength:Number,angle:Number,startPos:Point)
 		{
 			strength=Math.max(1,strength);
-			trace(strength+"********************")
 			startSpeed=basicSpeed*strength;
 			startAngle=angle;
 			this.x=startPos.x;
@@ -35,6 +41,7 @@ package
 			_planet=null;
 			_path.length=0;
 			
+			_steps = steps
 			while(steps--){
 				if(!step()) break;
 			}
@@ -48,7 +55,7 @@ package
 		private function draw(canvas:Graphics):void
 		{
 			canvas.clear();
-			canvas.lineStyle(1.5,0xff0000,0.8);
+			canvas.lineStyle(1.5,0x66ccff,0.8);
 //            this.drawSolideLine(canvas);
 			this.drawDotLine(canvas);
 		}
@@ -68,11 +75,24 @@ package
 		 * 判断子弹和一个圆形物体circle的碰撞情况，这种判断是假设circle的注册点在圆心,子弹和circle在一个坐标系下
 		 * */
 		private function checkCollisionWithCircle(planet:Planet):Boolean
-		{
-			var dx:Number=planet.x-this.x;
-			var dy:Number=planet.y-this.y;
-			var dist:Number=Math.sqrt(dx*dx+dy*dy);
-			return dist<=planet.radius;
+		{		
+			var checkPart:Shape = new Shape();
+			checkPart.graphics.clear();
+			checkPart.graphics.beginFill(0x66ccff,0.1);
+			checkPart.graphics.drawCircle(this.x,this.y,1);
+			checkPart.graphics.endFill();
+			
+			var cd:CollisionData=CDK.check(checkPart,planet);
+			if(cd){
+//				var an:Number=cd.angleInRadian;
+//				var springParam:Number=0.1;
+//				this.x-=cd.overlapping.length*Math.cos(an)*springParam;
+//				this.y-=cd.overlapping.length*Math.sin(an)*springParam;
+				return true;
+			}else
+			{
+				return false;
+			}
 		}
 		/**
 		 * 用虚线画路径
@@ -108,8 +128,8 @@ package
 		private function step():Boolean
 		{
 			var g:AVector=Scene.getAccelerationForBending(this.x,this.y);
-			vx+=g.x;
-			vy+=g.y;
+			vx+=g.x*0.997;
+			vy+=g.y*0.997;
 		
 			this.x+=vx*0.0285;
 			this.y+=vy*0.0285;

@@ -17,7 +17,7 @@ package heros
 		/**
 		 * 玩家的射击精确度，实际就是显示子弹运行路径的长短
 		 * */
-		public var accurate:int=200;
+		public var accurate:int=50;
 		protected var _team:String;
 		protected var _content:MovieClip;
 		protected var shootAngle:Number;
