@@ -1,5 +1,8 @@
 package heros
 {
+	import collision.CollisionData;
+	import collision.CDK;
+	
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.geom.Point;
@@ -107,12 +110,10 @@ package heros
 			this.turnLeft();
 			this.doAction("walk");
 			this.angle-=speed;
-//			heroRotation=0
+			heroRotation=0
 			if(this._angle<-360) this._angle+=360;
 			heroRotation=this._angle-270;
 			if(heroRotation<-360) heroRotation+=360;
-			
-			
 		}
 		public function moveRight():void
 		{
@@ -120,7 +121,7 @@ package heros
 			this.doAction("walk");
 			this.angle+=speed;
 			if(this._angle>360) this._angle-=360;
-//			heroRotation=0
+			heroRotation=0
 			heroRotation=this._angle-270;
 			if(heroRotation>360) heroRotation-=360;
 		}
@@ -218,6 +219,20 @@ package heros
 			var dist:Number=Math.sqrt(dx*dx+dy*dy);
 			var ag:Number=heroRotation*Math.PI/180;
 			return {strength:dist/30,angle:shootAngle+ag,startPos:startPos};
+		}
+		
+		protected function checkCollisionWithPlanet():void{
+			var cd:CollisionData=CDK.check(this._content.hitarea, _planet);
+			var springParam:Number = 0.1;
+			if(cd){
+				trace("collisioned.......................");
+				//				var an:Number=cd.angleInRadian;
+				//				this.x-=cd.overlapping.length*Math.cos(an)*springParam;
+				//				this.y-=cd.overlapping.length*Math.sin(an)*springParam;
+			}else
+			{
+				//				cd.
+			}
 		}
 	}
 }

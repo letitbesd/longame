@@ -1,5 +1,8 @@
 package heros
 {
+	import collision.CDK;
+	import collision.CollisionData;
+	
 	import flash.display.MovieClip;
 	import flash.display.Shape;
 	import flash.display.Sprite;
@@ -13,19 +16,28 @@ package heros
 	
 	public class Hero extends HeroBase
 	{
+		private var leftArrow:Boolean = false;
+		private var rightArrow:Boolean = false;
+		
 		public function Hero(team:String)
 		{
 			super(team);
 		}
 		override public function onFrame():void
 		{
-//			var cd:CollisionData=CDK.check(this,c1);
-//			if(cd){
-//				var an:Number=cd.angleInRadian;
-//				this.x-=cd.overlapping.length*Math.cos(an)*springParam;
-//				this.y-=cd.overlapping.length*Math.sin(an)*springParam;
-//			}
+			roleMove();
 		}
+		
+		private function roleMove():void
+		{
+			if(leftArrow){
+				this.moveLeft();
+			}
+			if(rightArrow){
+				this.moveRight();	
+			}
+		}
+		
 		override public function active():void
 		{
 			super.active();
@@ -45,17 +57,20 @@ package heros
 		
 		private function onKeyUp(event:KeyboardEvent):void
 		{
-			if((event.keyCode==Keyboard.A)||(event.keyCode==Keyboard.D)){
-				this.doAction(defaultAction);
+			if(event.keyCode==Keyboard.A){
+				this.leftArrow = false;
+			}else if(event.keyCode==Keyboard.D){
+				this.rightArrow = false;
 			}
+			this.doAction(defaultAction);
 		}
 		
 		protected function onKeydown(event:KeyboardEvent):void
 		{
 			if(event.keyCode==Keyboard.A){
-				this.moveLeft();
+				this.leftArrow = true;
 			}else if(event.keyCode==Keyboard.D){
-				this.moveRight();
+				this.rightArrow = true;
 			}
 		}
 

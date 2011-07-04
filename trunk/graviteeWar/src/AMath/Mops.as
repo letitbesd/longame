@@ -9,7 +9,7 @@ package  AMath
             return;
         }// end function
 
-        public static function inRange(param1, param2, param3) : Boolean
+        public static function inRange(param1:Number, param2:Number, param3:Number) : Boolean
         {
             var _loc_5:*;
             var _loc_4:Boolean;
@@ -19,7 +19,7 @@ package  AMath
                 param2 = param3;
                 param3 = param2;
                 _loc_5 = null;
-            }// end if
+            }
             if (param1 <= param3 && param1 >= param2)
             {
                 _loc_4 = true;
@@ -27,12 +27,12 @@ package  AMath
             return _loc_4;
         }// end function
 
-        public static function angleToX(param1, param2, param3, param4) : Number
+        public static function angleToX(param1:Number, param2:Number, param3:Number, param4:Number) : Number
         {
             return Math.atan((param4 - param2) / (param3 - param1));
         }// end function
 
-        public static function distance(param1, param2, param3, param4) : Number
+        public static function distance(param1:Number, param2:Number, param3:Number, param4:Number) : Number
         {
             return Math.sqrt((param1 - param3) * (param1 - param3) + (param2 - param4) * (param2 - param4));
         }// end function
