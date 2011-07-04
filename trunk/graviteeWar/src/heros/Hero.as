@@ -13,19 +13,27 @@ package heros
 	import flash.geom.Vector3D;
 	import flash.ui.Keyboard;
 	
+	import signals.FightSignals;
+	
 	
 	public class Hero extends HeroBase
 	{
 		private var leftArrow:Boolean = false;
 		private var rightArrow:Boolean = false;
-		
+		private var isHit:Boolean=false;
+		private var _hitAngle:Number;
 		public function Hero(team:String)
 		{
 			super(team);
+			
+			FightSignals.onHeroHitted.add(onHitted);
+			
 		}
 		override public function onFrame():void
 		{
 			roleMove();
+//			if(this.team=="blue")  trace(this.team,this.isHit);
+//			trace(isHit);
 		}
 		
 		private function roleMove():void
@@ -37,7 +45,14 @@ package heros
 				this.moveRight();	
 			}
 		}
-		
+		private function onHitted(index:int,angle:Number):void
+		{
+				if(this.index==index){
+					this._hitAngle=angle+90;
+					trace(this._hitAngle);
+				this.addEventListener(Event.ENTER_FRAME,onFrame1);
+				}
+		}
 		override public function active():void
 		{
 			super.active();
@@ -54,7 +69,6 @@ package heros
 			this.stage.removeEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
 			this.stage.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp);
 		}
-		
 		private function onKeyUp(event:KeyboardEvent):void
 		{
 			if(event.keyCode==Keyboard.A){
@@ -83,7 +97,21 @@ package heros
 //			p=this.globalToLocal(p);
 			this.simulatePath(p.x,p.y);
 		}
-		
+		private function onFrame1(event:Event):void
+		{
+			var vx:Number=5*Math.cos(this._hitAngle);
+			var vy:Number=5*Math.sin(this._hitAngle);
+			trace(vx);
+			trace(vy);
+			this.x+=vx;
+			this.y+=vy;
+			if(this.x>700||this.x<0||this.y>500||this.y<0){
+				this.x=550;
+				this.y=178+80;
+				this.removeEventListener(Event.ENTER_FRAME,onFrame1);
+				return;
+			}
+		}
 		protected function onMouseUp(event:MouseEvent):void
 		{
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);

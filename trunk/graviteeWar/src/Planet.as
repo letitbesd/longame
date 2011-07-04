@@ -1,5 +1,7 @@
 package
 {
+	import AMath.*;
+	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.BlendMode;
@@ -21,6 +23,7 @@ package
 		private var maskLayer:Bitmap;
 		private var holeLayer:Sprite;
 		private var backLayer:MovieClip;
+		private var _attractive_coeff:int=400;
 //		private var back:Bitmap;
 //		private var backBD:BitmapData;
 		
@@ -128,5 +131,17 @@ package
 //			mar.translate(this._radius,this._radius);
 //			maskBd.draw(this,mar,null,BlendMode.ERASE);
 //		}
+		public function getForceAttract (m1:Number, m2:Number, vec2Center:Vector2D):Vector2D
+		{
+			var numerator:Number = this._attractive_coeff * m1 * m2;
+			var denominator:Number = vec2Center.getMagnitude() * vec2Center.getMagnitude();
+			var forceMagnitude:Number = numerator / denominator;
+			var forceDirection:Number = vec2Center.getAngle();
+			if (forceMagnitude > 0) forceMagnitude = Math.min(forceMagnitude, 5);
+			var forceX:Number = forceMagnitude * Math.cos(forceDirection);
+			var forceY:Number = forceMagnitude * Math.sin(forceDirection);
+			var force:Vector2D = new Vector2D(forceX, forceY);
+			return force;
+		}
 	}
 }

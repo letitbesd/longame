@@ -11,11 +11,12 @@ package
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
 	import flash.globalization.CollatorMode;
+	
+	import heros.Hero;
 
-	public class PathSimulator
+	public class PathSimulator  
 	{
 		private static const basicSpeed:Number=15;
-		
 		private var startAngle:Number;
 		private var startSpeed:Number;
 		private var vx:Number;
@@ -26,6 +27,9 @@ package
 		private var _planet:Planet;
 		private var _path:Vector.<PathNode>=new Vector.<PathNode>();
 		private var _steps:int;
+		public static var hitHeroAngle:Number;
+		public static var hitHero:Boolean=false;
+		public static var heroIndex:int;
 		public function PathSimulator(strength:Number,angle:Number,startPos:Point)
 		{
 			strength=Math.max(1,strength);
@@ -69,6 +73,11 @@ package
 				}
 			}
 			//todo，和人产生碰撞
+			for each(var h:Hero in Scene.sceneHeros){
+				if(this.checkCollisionWithHero(h)){
+					return true;
+				}
+			}
 			return false;
 		}
 		/**
@@ -91,6 +100,25 @@ package
 				return true;
 			}else
 			{
+				return false;
+			}
+		} 
+		private function checkCollisionWithHero(hero:Hero):Boolean
+		{
+			var checkPart:Shape = new Shape();
+			checkPart.graphics.clear();
+			checkPart.graphics.beginFill(0x66ccff,0.1);
+			checkPart.graphics.drawCircle(this.x,this.y,5);
+			checkPart.graphics.endFill();
+			var cdk:CollisionData=CDK.check(checkPart,hero);
+			if(cdk){
+				hitHeroAngle=this.rotation;
+				hitHero=true;
+				heroIndex=Scene.sceneHeros.indexOf(hero);
+				 return true;
+				 
+			}else{
+				hitHero=false;
 				return false;
 			}
 		}

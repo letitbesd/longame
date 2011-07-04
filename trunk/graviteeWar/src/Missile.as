@@ -5,6 +5,9 @@ package
 	import flash.events.Event;
 	import flash.geom.Point;
 	
+	import signals.FightSignals;
+	
+	import time.CountdownEvent;
 	import time.EnterFrame;
 	
 	public class Missile extends Sprite implements IFrameObject
@@ -43,6 +46,12 @@ package
 			EnterFrame.removeObject(this);
 			PlayOnceObject.play("explodeEffect",this.x,this.y);
 			this.fire.destroy();
+			if(PathSimulator.hitHero==true){
+//				var index:int=PathSimulator.heroIndex;
+//				Scene.sceneHeros[index].hitByMissile(PathSimulator.hitHeroAngle);
+				FightSignals.onHeroHitted.dispatch(PathSimulator.heroIndex,PathSimulator.hitHeroAngle);
+				
+			}
 		}
 		private var fire:MissileFire;
 		protected function onAdded(event:Event):void

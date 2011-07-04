@@ -1,7 +1,10 @@
 package heros
 {
-	import collision.CollisionData;
+	import AMath.AVector;
+	import AMath.Vector2D;
+	
 	import collision.CDK;
+	import collision.CollisionData;
 	
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
@@ -31,6 +34,7 @@ package heros
 		protected var atRight:Boolean=false;
 		protected var _angle:Number;
 		protected var heroRotation:Number=0;
+		protected var _index:int;
 		/**
 		 * 人物旋转之后，炮筒的角度计算不对。。。。
 		 * */
@@ -220,7 +224,6 @@ package heros
 			var ag:Number=heroRotation*Math.PI/180;
 			return {strength:dist/30,angle:shootAngle+ag,startPos:startPos};
 		}
-		
 		protected function checkCollisionWithPlanet():void{
 			var cd:CollisionData=CDK.check(this._content.hitarea, _planet);
 			var springParam:Number = 0.1;
@@ -234,5 +237,16 @@ package heros
 				//				cd.
 			}
 		}
+
+		public function get index():int
+		{
+			return _index;
+		}
+
+		public function set index(value:int):void
+		{
+			_index = value;
+		}
+
 	}
 }
