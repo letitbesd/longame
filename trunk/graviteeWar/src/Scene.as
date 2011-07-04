@@ -21,7 +21,7 @@ package
 		public static var planets:Array=[];
 		public static var pathCanvas:Shape=new Shape();
 		private  var hero:Hero;
-		private var enemy:Hero;
+		public var _cam:Cam;
 		public function Scene()
 		{
 			super();

@@ -96,7 +96,6 @@ package heros
 			var p:Point=new Point(mouseX,mouseY);
 //			p=this.globalToLocal(p);
 			this.simulatePath(p.x,p.y);
-
 		}
 	}
 }
