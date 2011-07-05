@@ -60,8 +60,8 @@ package
 		{
 			canvas.clear();
 			canvas.lineStyle(1.5,0x66ccff,0.8);
-	        this.drawSolideLine(canvas);
-			//this.drawDotLine(canvas);
+//	        this.drawSolideLine(canvas);
+			this.drawDotLine(canvas);
 		}
 		private function checkCollision():Boolean
 		{

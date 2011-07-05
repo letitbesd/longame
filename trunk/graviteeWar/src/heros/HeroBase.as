@@ -1,13 +1,10 @@
 package heros
 {
-<<<<<<< .mine
 	import collision.CDK;
-=======
 	import AMath.AVector;
 	import AMath.Vector2D;
 	
 	import collision.CDK;
->>>>>>> .r26
 	import collision.CollisionData;
 	
 	import flash.display.MovieClip;
@@ -34,12 +31,8 @@ package heros
 		protected var atRight:Boolean=false;
 		//protected var _angle:Number;
 		protected var heroRotation:Number=0;
-<<<<<<< .mine
 		protected var cdCheck:Boolean = false;
-		
-=======
 		protected var _index:int;
->>>>>>> .r26
 		/**
 		 * 人物旋转之后，炮筒的角度计算不对。。。。
 		 * */
