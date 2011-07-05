@@ -30,7 +30,7 @@ package heros
 			
 		}
 		override public function onFrame():void
-		{
+		{			
 			roleMove();
 //			if(this.team=="blue")  trace(this.team,this.isHit);
 //			trace(isHit);

@@ -1,12 +1,17 @@
 package heros
 {
+<<<<<<< .mine
+	import collision.CDK;
+=======
 	import AMath.AVector;
 	import AMath.Vector2D;
 	
 	import collision.CDK;
+>>>>>>> .r26
 	import collision.CollisionData;
 	
 	import flash.display.MovieClip;
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.geom.Point;
 	import flash.ui.KeyLocation;
@@ -16,32 +21,32 @@ package heros
 	
 	public class HeroBase extends Sprite implements IFrameObject
 	{
-		public static const speed:Number=2;
+		public static const speed:Number=1.5;
 		public static const teams:Array=["white","red","blue","green","yellow"]; 	
 		public static const defaultAction:String="bob";
-		
-		/**
-		 * 玩家的射击精确度，实际就是显示子弹运行路径的长短
-		 * */
-		public var accurate:int=50;
+		private static const collideRadius:Number = 5;
+
+		public var accurate:int=50;				//玩家的射击精确度，实际就是显示子弹运行路径的长短
 		protected var _team:String;
 		protected var _content:MovieClip;
 		protected var shootAngle:Number;
-		/**
-		 * 
-		 * */
 		protected var _planet:Planet;
 		protected var atRight:Boolean=false;
-		protected var _angle:Number;
+		//protected var _angle:Number;
 		protected var heroRotation:Number=0;
+<<<<<<< .mine
+		protected var cdCheck:Boolean = false;
+		
+=======
 		protected var _index:int;
+>>>>>>> .r26
 		/**
 		 * 人物旋转之后，炮筒的角度计算不对。。。。
 		 * */
 		public function HeroBase(team:String)
 		{
 			super();
-			_content=Main.getMovieClip("hero");
+			_content=Main.getMovieClip("hero");			
 			this.addChild(_content);
 			this.team=team;
 			this.doAction(defaultAction);
@@ -49,7 +54,11 @@ package heros
 			var i:int=Math.floor(Math.random()*Scene.planets.length);
 			_planet=Scene.planets[i];
 			var angle:Number=Math.random()*360;
-			this.angle=270;//angle;
+			
+			var radiusAngle:Number=Math.PI*270/180;
+			this.x=_planet.radius*Math.cos(radiusAngle)+_planet.x;
+			this.y=_planet.radius*Math.sin(radiusAngle)+_planet.y;
+			this.rotation=0;	
 		}
 		public function active():void
 		{
@@ -70,17 +79,13 @@ package heros
 		public function aimAt(angle:uint):void
 		{
 			this.doAction("aiming7");
-			//todo
-//			angle-=this.angle;
-//			trace(angle-this.angle,360+angle-this.angle);
 			if(angle==0) angle=1;
 			if(angle>180&&angle<300) angle=180;
 			if(angle>300) angle=0;
 			this._content.graphic.gotoAndStop(angle);
 		}
 		public function onFrame():void
-		{
-			
+		{			
 		}
 		public function set team(value:String):void
 		{
@@ -92,49 +97,97 @@ package heros
 		{
 			return _team;
 		}
-		/**
-		 * 人物基于球中心的角度，也就决定了人物的位置
-		 * 和flash坐标系中的角度一致
-		 * */
-		public function get angle():Number
-		{
-			return _angle;
-		}
-		public function set angle(value:Number):void
-		{
-			if(_angle==value) return;
-			_angle=value;
-			var radiusAngle:Number=Math.PI*value/180;
-			this.x=_planet.radius*Math.cos(radiusAngle)+_planet.x;
-			this.y=_planet.radius*Math.sin(radiusAngle)+_planet.y;
-			this.rotation=value+90;
-		}
+				
 		public function moveLeft():void
 		{
 			this.turnLeft();
 			this.doAction("walk");
-			this.angle-=speed;
-			heroRotation=0
-			if(this._angle<-360) this._angle+=360;
-			heroRotation=this._angle-270;
-			if(heroRotation<-360) heroRotation+=360;
+			var an:Number;
+			if(this.rotation > 180)
+				an = this.rotation - 180;
+			else
+				an = this.rotation + 180;
+			var moveDirection:Number = an*Math.PI/180;  //移动方向垂直于rotation 实际方向会相差90度 原因不明
+			var moveOnce:Point = new Point();   //移动一步位移量
+			moveOnce.x = Math.cos(moveDirection)*speed;
+			moveOnce.y = Math.sin(moveDirection)*speed;
+			
+			collideCheck(new Point(this.x + moveOnce.x,this.y + moveOnce.y));
 		}
+		
 		public function moveRight():void
 		{
 			this.turnRight();
 			this.doAction("walk");
-			this.angle+=speed;
-			if(this._angle>360) this._angle-=360;
-			heroRotation=0
-			heroRotation=this._angle-270;
-			if(heroRotation>360) heroRotation-=360;
+			var moveDirection:Number = this.rotation*Math.PI/180;  //移动方向垂直于rotation 实际方向会相差90度 原因不明
+			var moveOnce:Point = new Point();   //移动一步位移量
+			moveOnce.x = Math.cos(moveDirection)*speed;
+			moveOnce.y = Math.sin(moveDirection)*speed;
+			
+			/*调试代码 误删
+			var checkCell:Shape = new Shape();
+			checkCell.graphics.clear();
+			checkCell.graphics.beginFill(0xFFFFFF,0.4);
+			checkCell.graphics.drawCircle(this.x + moveOnce.x,this.y + moveOnce.y,collideRadius);
+			checkCell.graphics.endFill();
+			_planet.parent.addChild(checkCell);*/
+			
+			collideCheck(new Point(this.x + moveOnce.x,this.y + moveOnce.y));
 		}
+		
+		private function collideCheck(point:Point):void  //参数碰撞测试点  和 移动方向(移动一步的X Y方向增量)
+		{						
+			var checkCell:Shape = new Shape();	
+			var moveDirection:Number;
+			var moveOnce:Point;
+			cdCheck = true;		
+			
+			while(cdCheck)
+			{					
+				checkCell.graphics.clear();
+				checkCell.graphics.beginFill(0xFFFFFF,1);
+				checkCell.graphics.drawCircle(point.x,point.y,collideRadius);
+				checkCell.graphics.endFill();
+				
+				var cd:CollisionData=CDK.check(checkCell,_planet);
+				if(cd)		//有碰撞这时point与星球球面有接触了  设置小人位置和方向
+				{
+					if(cd.overlapping.length>collideRadius*10)			//测试点进入星球太多了 需要调整 使overlapping.length维持在一个值以下
+					{
+						 moveDirection = (this.rotation - 90)*Math.PI/180; 		 //移动方向与rotation相同 实际方向会相差90度 原因不明
+						 moveOnce = new Point();   								//移动一步位移量
+						moveOnce.x = Math.cos(moveDirection)*speed;
+						moveOnce.y = Math.sin(moveDirection)*speed;
+						point.x += moveOnce.x;
+						point.y += moveOnce.y;
+					}
+					else
+					{
+						this.x = point.x;
+						this.y = point.y;
+						this.rotation = cd.angleInDegree-90;  						 //用测试点与星球的碰撞角度给小人的rotation赋值					
+						cdCheck = false;
+					}					
+				}				
+				else		//没有碰撞  移动point再检测
+				{
+					moveDirection = (this.rotation + 90)*Math.PI/180;  //移动方向与rotation相反 实际方向会相差90度 原因不明
+					moveOnce = new Point();   								//移动一步位移量
+					moveOnce.x = Math.cos(moveDirection)*speed;
+					moveOnce.y = Math.sin(moveDirection)*speed;
+					point.x += moveOnce.x;
+					point.y += moveOnce.y;
+				}
+			}
+		}
+				
 		protected function turnLeft():void
 		{
 			if(this.scaleX==1) return;
 			this.scaleX=1;
 			atRight=false;
 		}
+		
 		protected function turnRight():void
 		{
 			if(this.scaleX==-1) return;
@@ -142,10 +195,12 @@ package heros
 			atRight=true;
 			
 		}
+		
 		protected function isLeft():Boolean
 		{
 			return this.scaleX==1;
 		}
+		
 		private function updateColor():void
 		{
 			var frame:uint=teams.indexOf(_team)+1;
@@ -156,6 +211,7 @@ package heros
 			_content.graphic.leftfoot.col.gotoAndStop(frame);
 			_content.graphic.rightfoot.col.gotoAndStop(frame);
 		}
+		
 		protected function shoot():void
 		{
 			if((currentPath==null)||(currentPath.length==0)) return;
@@ -164,7 +220,9 @@ package heros
 			Main.scene.addChild(missile);
 			this.doAction("notaiming7");
 		}
+		
 		private var simulator:PathSimulator;
+		
 		protected function simulatePath(shootX:Number,shootY:Number):void
 		{
 			var inLeft:Boolean=pointIsLeft(shootX,shootY);
@@ -210,10 +268,12 @@ package heros
 			if(atRight==true) p1.x=-numberX;
 			return (p.y/p.x)*p1.x-p1.y<=0;
 		}
+		
 		protected var currentPath:Vector.<PathNode>;
 		/**
 		 * 计算子弹发射的初始参数，包括力度，角度和初始位置
 		 * */
+		
 		protected function calMissileSate(shootX:Number,shootY:Number):Object
 		{
 			var wep:MovieClip=this._content.graphic.wep;
@@ -224,15 +284,18 @@ package heros
 			var ag:Number=heroRotation*Math.PI/180;
 			return {strength:dist/30,angle:shootAngle+ag,startPos:startPos};
 		}
-		protected function checkCollisionWithPlanet():void{
+		protected function checkCollisionWithPlanet():void
+		{
 			var cd:CollisionData=CDK.check(this._content.hitarea, _planet);
 			var springParam:Number = 0.1;
-			if(cd){
+			if(cd)
+			{
 				trace("collisioned.......................");
 				//				var an:Number=cd.angleInRadian;
 				//				this.x-=cd.overlapping.length*Math.cos(an)*springParam;
 				//				this.y-=cd.overlapping.length*Math.sin(an)*springParam;
-			}else
+			}
+			else
 			{
 				//				cd.
 			}
