@@ -9,6 +9,7 @@ package   AMath
 		private var _x:Number;
 		private var _y:Number;
 		
+		
 		public function Vector2D(valueX:Number, valueY:Number) 
 		{
 			this._x = valueX;

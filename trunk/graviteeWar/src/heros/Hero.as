@@ -87,6 +87,7 @@ package heros
 			}else if(event.keyCode==Keyboard.D){
 				this.rightArrow = true;
 			}
+			
 		}
 
 		protected function onMouseDown(event:MouseEvent):void

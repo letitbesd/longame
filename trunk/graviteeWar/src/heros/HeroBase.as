@@ -257,6 +257,7 @@ package heros
 			if(p.x<0) p.x=0;
 			var p1:Point=new Point(x,y);
 			p1=this.globalToLocal(p1);
+			
 			var numberX:Number=p1.x;
 			if(atRight==true) p1.x=-numberX;
 			return (p.y/p.x)*p1.x-p1.y<=0;

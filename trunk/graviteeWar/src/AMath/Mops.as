@@ -6,6 +6,7 @@ package  AMath
 
         public function Mops()
         {
+			
             return;
         }// end function
 

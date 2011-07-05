@@ -65,6 +65,7 @@ package
 		{
 			for each(var p:Point in planetPositions){
 				this.addPlanet(p);
+				
 			}
 			this.addHero();
 			this.addChild(pathCanvas);

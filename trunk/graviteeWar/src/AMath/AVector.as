@@ -15,6 +15,7 @@ package  AMath
 
         public function isNull() : Boolean
         {
+			
             if (this.x == 0)
             {
             }// end if

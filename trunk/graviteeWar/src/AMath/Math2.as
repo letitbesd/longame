@@ -10,6 +10,7 @@ package   AMath
 		public function Math2() 
 		{
 			
+			
 		}
 		
 		public static function randomiseBetween(range_min:int, range_max:int):int

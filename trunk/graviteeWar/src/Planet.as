@@ -73,6 +73,7 @@ package
 //			G=basicG*scale*scale*scale;
 			
 //			this.updateMask();
+			
 		}
 		private var _mass:Number;
 		public function get mass():Number

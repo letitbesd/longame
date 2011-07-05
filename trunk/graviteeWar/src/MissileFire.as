@@ -7,6 +7,7 @@ package
 	import flash.geom.Point;
 	import flash.utils.getTimer;
 	
+	
 	import time.EnterFrame;
 	/**
 	 * 尾巴拖太长，todo

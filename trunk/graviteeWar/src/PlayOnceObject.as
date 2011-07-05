@@ -11,6 +11,7 @@ package
 		public function PlayOnceObject(clsName:String)
 		{
 			super();
+			
 			mc=Main.getMovieClip(clsName);
 			addChild(mc);
 			mc.addEventListener(Event.ENTER_FRAME,onFrame);
