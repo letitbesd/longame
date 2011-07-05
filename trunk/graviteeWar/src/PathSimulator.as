@@ -5,15 +5,15 @@ package
 	import collision.CDK;
 	import collision.CollisionData;
 	
+	import com.longame.modules.components.AbstractComp;
+	
 	import flash.display.DisplayObject;
 	import flash.display.Graphics;
 	import flash.display.Shape;
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
 	import flash.globalization.CollatorMode;
-	
 	import heros.Hero;
-
 	public class PathSimulator  
 	{
 		private static const basicSpeed:Number=15;
@@ -27,9 +27,9 @@ package
 		private var _planet:Planet;
 		private var _path:Vector.<PathNode>=new Vector.<PathNode>();
 		private var _steps:int;
-		public static var hitHeroAngle:Number;
 		public static var hitHero:Boolean=false;
 		public static var heroIndex:int;
+		public static var hitPoint:Point=new Point();
 		public function PathSimulator(strength:Number,angle:Number,startPos:Point)
 		{
 			strength=Math.max(1,strength);
@@ -72,7 +72,6 @@ package
 					return true;
 				}
 			}
-			//todo，和人产生碰撞
 			for each(var h:Hero in Scene.sceneHeros){
 				if(this.checkCollisionWithHero(h)){
 					return true;
@@ -88,7 +87,7 @@ package
 			var checkPart:Shape = new Shape();
 			checkPart.graphics.clear();
 			checkPart.graphics.beginFill(0x66ccff,0.1);
-			checkPart.graphics.drawCircle(this.x,this.y,1);
+			checkPart.graphics.drawCircle(this.x,this.y,5);
 			checkPart.graphics.endFill();
 			
 			var cd:CollisionData=CDK.check(checkPart,planet);
@@ -108,15 +107,16 @@ package
 			var checkPart:Shape = new Shape();
 			checkPart.graphics.clear();
 			checkPart.graphics.beginFill(0x66ccff,0.1);
-			checkPart.graphics.drawCircle(this.x,this.y,5);
+			checkPart.graphics.drawCircle(this.x,this.y,2);
 			checkPart.graphics.endFill();
-			var cdk:CollisionData=CDK.check(checkPart,hero);
+//			var cdk:CollisionData=CDK.check(checkPart,hero);
+			var cdk:Boolean=checkPart.hitTestObject(hero);
 			if(cdk){
-				hitHeroAngle=this.rotation;
+				hitPoint.x=this.x;
+				hitPoint.y=this.y;
 				hitHero=true;
 				heroIndex=Scene.sceneHeros.indexOf(hero);
 				 return true;
-				 
 			}else{
 				hitHero=false;
 				return false;
@@ -158,7 +158,6 @@ package
 			var g:AVector=Scene.getAccelerationForBending(this.x,this.y);
 			vx+=g.x*0.997;
 			vy+=g.y*0.997;
-		
 			this.x+=vx*0.0285;
 			this.y+=vy*0.0285;
 			if(this.checkCollision()){

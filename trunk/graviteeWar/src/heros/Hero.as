@@ -21,7 +21,6 @@ package heros
 		private var leftArrow:Boolean = false;
 		private var rightArrow:Boolean = false;
 		private var isHit:Boolean=false;
-		private var _hitAngle:Number;
 		public function Hero(team:String)
 		{
 			super(team);
@@ -45,11 +44,13 @@ package heros
 				this.moveRight();	
 			}
 		}
-		private function onHitted(index:int,angle:Number):void
+		private var _hitPoint:Point;
+		private var an:Number;
+		private function onHitted(index:int,p:Point):void
 		{
 				if(this.index==index){
-					this._hitAngle=angle+90;
-					trace(this._hitAngle);
+					this._hitPoint=p;
+					 an=Math.atan2((_hitPoint.y-(this.y-12)),(_hitPoint.x-this.x));
 				this.addEventListener(Event.ENTER_FRAME,onFrame1);
 				}
 		}
@@ -95,19 +96,17 @@ package heros
 			var mouseY:Number=event.stageY;
 			var p:Point=new Point(mouseX,mouseY);
 //			p=this.globalToLocal(p);
-			this.simulatePath(p.x,p.y);
+			this.simulatePath(p.x,p.y);	
 		}
 		private function onFrame1(event:Event):void
 		{
-			var vx:Number=5*Math.cos(this._hitAngle);
-			var vy:Number=5*Math.sin(this._hitAngle);
-			trace(vx);
-			trace(vy);
+			var vx:Number=10*Math.cos(an+Math.PI);
+			var vy:Number=10*Math.sin(an+Math.PI);
 			this.x+=vx;
 			this.y+=vy;
 			if(this.x>700||this.x<0||this.y>500||this.y<0){
 				this.x=550;
-				this.y=178+80;
+				this.y=278;
 				this.removeEventListener(Event.ENTER_FRAME,onFrame1);
 				return;
 			}

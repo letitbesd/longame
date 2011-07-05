@@ -21,12 +21,9 @@ package
 		public static var planets:Array=[];
 		public static var pathCanvas:Shape=new Shape();
 		private  var hero:Hero;
-<<<<<<< .mine
 		private var hero1:Hero;
 		private var enemy:Hero;
-=======
 		public var _cam:Cam;
->>>>>>> .r25
 		public static var sceneHeros:Array=[];
 		public function Scene()
 		{

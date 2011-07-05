@@ -49,7 +49,7 @@ package
 			if(PathSimulator.hitHero==true){
 //				var index:int=PathSimulator.heroIndex;
 //				Scene.sceneHeros[index].hitByMissile(PathSimulator.hitHeroAngle);
-				FightSignals.onHeroHitted.dispatch(PathSimulator.heroIndex,PathSimulator.hitHeroAngle);
+				FightSignals.onHeroHitted.dispatch(PathSimulator.heroIndex,PathSimulator.hitPoint);
 				
 			}
 		}
