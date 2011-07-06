@@ -75,14 +75,14 @@ package
 		{
 			hero=new Hero("red");
 			hero1=new Hero("blue");
-			this.addChild(hero1);
 			this.addChild(hero);
+			this.addChild(hero1);
+
 			sceneHeros.push(hero);
 			sceneHeros.push(hero1);
 			hero.index=sceneHeros.indexOf(hero);
 			hero1.index=sceneHeros.indexOf(hero1);
 			hero.active();
-//			hero1.active();
 		}
 		private function addPlanet(p:Point):void
 		{
@@ -92,6 +92,5 @@ package
 			_planet.x=p.x;
 			_planet.y=p.y
 		}
-		
 	}
 }

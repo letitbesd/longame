@@ -20,7 +20,6 @@ package
 	import heros.Hero;
 	import heros.HeroBase;
 	
-	
 	import time.CountDown;
 	import time.CountdownEvent;
 	import time.EnterFrame;
@@ -62,7 +61,6 @@ package
 		protected function onLoaded(event:Event):void
 		{
 			EnterFrame.start();
-			
 			this.addChild(getMovieClip("background"));
 			scene=new Scene();
 			this.addChild(scene);
