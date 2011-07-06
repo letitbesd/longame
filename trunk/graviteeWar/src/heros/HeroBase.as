@@ -9,6 +9,7 @@ package heros
 	import flash.display.MovieClip;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.ui.KeyLocation;
 	import flash.ui.Keyboard;
@@ -28,6 +29,7 @@ package heros
 		protected var shootAngle:Number;
 		protected var _planet:Planet;
 		protected var atRight:Boolean=false;
+		protected var isAiming:Boolean = false;
 		protected var heroRotation:Number=0;
 		protected var cdCheck:Boolean = false;
 		protected var _index:int;
@@ -37,11 +39,10 @@ package heros
 		public function HeroBase(team:String)
 		{
 			super();
-			_content=Main.getMovieClip("hero");			
+			_content=Main.getMovieClip("hero");
 			this.addChild(_content);
 			this.team=team;
 			this.doAction(defaultAction);
-			//			_content.scaleX=_content.scaleY=1.5;
 			var i:int=Math.floor(Math.random()*Scene.planets.length);
 			_planet=Scene.planets[i];
 			var angle:Number=Math.random()*360;
@@ -50,18 +51,29 @@ package heros
 			this.x=_planet.radius*Math.cos(radiusAngle)+_planet.x;
 			this.y=_planet.radius*Math.sin(radiusAngle)+_planet.y;
 			this.rotation=360;	
+			
+			this.addEventListener(MouseEvent.MOUSE_OVER,showName);
+			this.addEventListener(MouseEvent.MOUSE_OUT,hideName);
+		}
+		
+		protected function showName(event:MouseEvent):void
+		{
+			// TODO Auto-generated method stub
+		}
+		
+		protected function hideName(event:MouseEvent):void
+		{
+			// TODO Auto-generated method stub
 		}
 		
 		public function active():void
 		{
 			EnterFrame.addObject(this);
 		}
-		
 		public function deactive():void
 		{
 			EnterFrame.removeObject(this);
 		}
-		
 		public function doAction(name:String):void
 		{
 			_content.gotoAndStop(name);
@@ -70,6 +82,7 @@ package heros
 		
 		public function aimAt(angle:uint):void  //攻击角度，1-180度
 		{
+			this.isAiming = true;
 			this.doAction("aiming7");
 			trace("aim at"+angle);
 			if(angle==0) angle=1;
@@ -250,7 +263,7 @@ package heros
 				this.turnRight();
 				this.shootAngle=Math.PI-this.shootAngle;
 				
-				//目标发射方向在炮筒的左边，人向左转
+			//目标发射方向在炮筒的左边，人向左转
 			}else{
 				an=angleInDegree-90;
 				if(an<0) an+=360;
@@ -305,11 +318,13 @@ package heros
 		}
 		
 		protected var currentPath:Vector.<PathNode>;
+		/**
+		 * 计算子弹发射的初始参数，包括力度，角度和初始位置
+		 * */
 		
 		protected function calMissileSate(shootX:Number,shootY:Number):Object
-			//计算子弹发射的初始参数，包括力度，角度和初始位置
 		{
-			var wep:MovieClip=this._content.graphic.wep;			
+			var wep:MovieClip=this._content.graphic.wep;
 			var startPos:Point=wep.localToGlobal(new Point(wep.start.x,wep.start.y));
 			var dx:Number=shootX-startPos.x;
 			var dy:Number=shootY-startPos.y;
@@ -319,22 +334,6 @@ package heros
 			trace("shootAngle"+shootAngle*180/Math.PI);
 			//trace("heroRotation"+heroRotation.toString())
 			return {strength:dist/30,angle:shootAngle+ag,startPos:startPos};			
-		}
-		protected function checkCollisionWithPlanet():void
-		{
-			var cd:CollisionData=CDK.check(this._content.hitarea, _planet);
-			var springParam:Number = 0.1;
-			if(cd)
-			{
-				trace("collisioned.......................");
-				//				var an:Number=cd.angleInRadian;
-				//				this.x-=cd.overlapping.length*Math.cos(an)*springParam;
-				//				this.y-=cd.overlapping.length*Math.sin(an)*springParam;
-			}
-			else
-			{
-				//				cd.
-			}
 		}
 		
 		public function get index():int
