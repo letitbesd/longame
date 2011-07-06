@@ -33,8 +33,7 @@ package
 		
 		private var _planet:MovieClip;
 		
-		private var _hero:Hero;
-		
+		private var _hero:Hero;		
 		private var _counter:TextField=new TextField();
 		
 		public function Main()
