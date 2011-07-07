@@ -6,6 +6,8 @@ package heros
 	import collision.CDK;
 	import collision.CollisionData;
 	
+	import com.longame.managers.AssetsLibrary;
+	
 	import flash.display.MovieClip;
 	import flash.display.Shape;
 	import flash.display.Sprite;
@@ -24,6 +26,7 @@ package heros
 		private static const collideRadius:Number = 5;
 		
 		public var accurate:int=50;				//玩家的射击精确度，实际就是显示子弹运行路径的长短
+		private var _healthy:int  = 0;
 		protected var _team:String;
 		public var _content:MovieClip;
 		protected var shootAngle:Number;
@@ -32,6 +35,7 @@ package heros
 		protected var isAiming:Boolean = false;
 		protected var heroRotation:Number=0;
 		protected var cdCheck:Boolean = false;
+		protected var _heroName:String = "";
 		protected var _index:int;
 		/**
 		 * 人物旋转之后，炮筒的角度计算不对。。。。
@@ -39,7 +43,7 @@ package heros
 		public function HeroBase(team:String)
 		{
 			super();
-			_content=Main.getMovieClip("hero");
+			_content= AssetsLibrary.getMovieClip("hero");
 			this.addChild(_content);
 			this.team=team;
 			this.doAction(defaultAction);
@@ -55,7 +59,7 @@ package heros
 			this.addEventListener(MouseEvent.MOUSE_OVER,showName);
 			this.addEventListener(MouseEvent.MOUSE_OUT,hideName);
 		}
-		
+
 		protected function showName(event:MouseEvent):void
 		{
 			// TODO Auto-generated method stub
@@ -84,12 +88,13 @@ package heros
 		{
 			this.isAiming = true;
 			this.doAction("aiming7");
+			trace("aim at"+angle);
 			if(angle==0) angle=1;
 			//if(angle>180&&angle<300) angle=180;
 			//if(angle>=300) angle=0;
 			if(angle < 0) angle = 1;
 			if(angle > 180) angle = 180;
-			if(angle == 180) angle = 1;			
+//			if(angle == 180) angle = 1;			
 			this._content.graphic.gotoAndStop(angle);
 		}
 		public function onFrame():void
@@ -106,17 +111,40 @@ package heros
 			return _team;
 		}
 		
+		public function get healthy():int
+		{
+			return _healthy;
+		}
+		
+		public function set healthy(value:int):void
+		{
+			_healthy = value;
+		}
+		
+		public function get heroName():String
+		{
+			return _heroName;
+		}
+		
+		public function set heroName(value:String):void
+		{
+			_heroName = value;
+		}
+		
 		public function moveLeft():void  
 		{
 			this.turnLeft();
 			this.doAction("walk");
 			var an:Number;
 			if(this.rotation > 180)
+			{
 				an = this.rotation - 180;
-			else
+			}else
+			{
 				an = this.rotation + 180;
+			}
 			var moveDirection:Number = an*Math.PI/180;  //移动方向垂直于rotation 实际方向会相差90度 原因不明
-			var moveOnce:Point = new Point();   //移动一步位移量
+			var moveOnce:Point = new Point();                  //移动一步位移量
 			moveOnce.x = Math.cos(moveDirection)*speed;
 			moveOnce.y = Math.sin(moveDirection)*speed;
 			
@@ -126,6 +154,7 @@ package heros
 			//if(this.rotation<-360) this.rotation+=360;
 			heroRotation=this.rotation+360;
 			if(heroRotation>360) heroRotation-=360;
+			trace("heroRotation" + heroRotation.toString());
 		}
 		
 		public function moveRight():void
@@ -151,10 +180,10 @@ package heros
 			//if(this.rotation<-360) this.rotation+=360;
 			heroRotation=this.rotation+360;
 			if(heroRotation>360) heroRotation-=360;
+			trace("heroRotation:" + heroRotation.toString());
 		}
 		
-		private function collideCheck(point:Point):void  
-			//参数是碰撞测试点  检查该点是否和星球碰撞 若不碰撞 向下调 若碰撞太多 向上调 调整后再执行检查
+		private function collideCheck(point:Point):void  //参数是碰撞测试点  检查该点是否和星球碰撞 若不碰撞 向下调 若碰撞太多 向上调 调整后再执行检查
 		{						
 			var checkCell:Shape = new Shape();	
 			var moveDirection:Number;
@@ -259,7 +288,6 @@ package heros
 				this.aimAt(an);
 				this.turnRight();
 				this.shootAngle=Math.PI-this.shootAngle;
-				
 			//目标发射方向在炮筒的左边，人向左转
 			}else{
 				an=angleInDegree-90;
@@ -308,7 +336,7 @@ package heros
 			
 			//更简单的算法  实际上 只取决于鼠标横坐标
 			var p0:Point=new Point(x,y);
-			p0=this.globalToLocal(p0);		
+			p0=this.globalToLocal(p0);	
 			var numberX:Number=p0.x;
 			if(atRight==true) p0.x=-numberX;
 			return p0.x <= 0;

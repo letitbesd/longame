@@ -2,6 +2,8 @@ package
 {
 	import AMath.*;
 	
+	import com.longame.managers.AssetsLibrary;
+	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.BlendMode;
@@ -39,7 +41,8 @@ package
 			var i:int=1+Math.floor(Math.random()*7);
 //			var i:int=8;
 			//加背景
-			backLayer=Main.getMovieClip("planet"+i);
+			
+			backLayer=AssetsLibrary.getMovieClip("planet"+i);
 			this.addChild(backLayer);
 //			backBD = new BitmapData(this._radius*2,this._radius*2,true,0x00000000);
 //			var mar:Matrix = new Matrix();

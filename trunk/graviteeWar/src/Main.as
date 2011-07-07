@@ -2,6 +2,10 @@ package
 {
 	import collision.CDK;
 	
+	import com.longame.managers.AssetsLibrary;
+	import com.longame.resource.Resource;
+	import com.longame.resource.ResourceManager;
+	
 	import flash.display.Loader;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
@@ -16,6 +20,8 @@ package
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.utils.getDefinitionByName;
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
 	
 	import heros.Hero;
 	import heros.HeroBase;
@@ -25,7 +31,7 @@ package
 	import time.EnterFrame;
 	
 	[SWF(width="700",height="500",backgroundColor="0x000000",frameRate="30")]
-	public class Main extends Sprite
+	public class Main extends Engine
 	{
 		public static var scene:Scene;
 		
@@ -38,8 +44,17 @@ package
 		
 		public function Main()
 		{
+			super();
+		}
+		
+		override protected function init():void
+		{
+			stage.scaleMode = StageScaleMode.NO_SCALE;
+			stage.align = StageAlign.TOP_LEFT;
+			super.init();
 			this.loadResource();
 		}
+		
 		public static function getMovieClip(name:String):MovieClip
 		{
 			var cls:Class=getDefinitionByName(name) as Class;
@@ -50,17 +65,19 @@ package
 		 * */
 		private function loadResource():void
 		{
-			_loader=new Loader();
-			var request:URLRequest=new URLRequest("assets.swf");
-			var context:LoaderContext=new LoaderContext(false,ApplicationDomain.currentDomain);
-			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE,onLoaded);
-			_loader.load(request,context);
+//			_loader=new Loader();
+//			var request:URLRequest=new URLRequest("assets.swf");
+//			var context:LoaderContext=new LoaderContext(false,ApplicationDomain.currentDomain);
+//			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE,onLoaded);
+//			_loader.load(request,context);
+			ResourceManager.instance.load("assets.swf",onLoaded);
 		}
 		
-		protected function onLoaded(event:Event):void
+		private function onLoaded(r:Resource):void
 		{
 			EnterFrame.start();
-			this.addChild(getMovieClip("background"));
+			this.addChild(AssetsLibrary.getMovieClip("background"));
+//			this.addChild(getMovieClip("background"));
 			scene=new Scene();
 			this.addChild(scene);
 			
@@ -69,11 +86,11 @@ package
 			//自动根据文字设定宽度，以显示全部文字
 			_counter.autoSize=TextFieldAutoSize.LEFT;
 			this.addChild(_counter);
-//			_counter.background=true;
-//			_counter.backgroundColor=0xff0000;
-//			
-//			_counter.border=true;
-//			_counter.borderColor=0x0000ff;
+			//			_counter.background=true;
+			//			_counter.backgroundColor=0xff0000;
+			//			
+			//			_counter.border=true;
+			//			_counter.borderColor=0x0000ff;
 			_counter.filters=[new GlowFilter(0x00ff00,0.6,10,10,6,3)];
 			_counter.selectable=false;
 			

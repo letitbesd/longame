@@ -38,8 +38,6 @@ package heros
 			{
 			roleMove();
 			}
-//			if(this.team=="blue")  trace(this.team,this.isHit);
-//			trace(isHit);
 		}
 		
 		private function roleMove():void
@@ -114,6 +112,7 @@ package heros
 //			p=this.globalToLocal(p);
 //			this.simulatePath(p.x,p.y);	
 		}
+		
 		private function onFrame1(event:Event):void
 		{
 			var vx:Number;
