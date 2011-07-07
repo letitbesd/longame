@@ -11,6 +11,10 @@ package
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	
+	import heros.Hero;
+	
+	import signals.FightSignals;
+	
 	public class Planet extends Sprite
 	{
 //		public static const radius:Number=75;		
@@ -117,6 +121,13 @@ package
 			this.holeLayer.addChild(hole);
 			hole.x=p.x;
 			hole.y=p.y;
+			for each(var h:Hero in Scene.sceneHeros){
+				if(hole.hitTestObject(h)){
+					var index:int=Scene.sceneHeros.indexOf(h);
+					var p1:Point=new Point(this.x,this.y);
+//					FightSignals.onHeroHitted.dispatch(index,p1);
+				}
+			}
 			
 //			var mar:Matrix = new Matrix();
 //			mar.translate(p.x,p.y);
