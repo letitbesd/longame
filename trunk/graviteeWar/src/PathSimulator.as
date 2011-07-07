@@ -13,6 +13,7 @@ package
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
 	import flash.globalization.CollatorMode;
+	
 	import heros.Hero;
 	public class PathSimulator  
 	{
@@ -72,6 +73,7 @@ package
 					return true;
 				}
 			}
+			//与人物碰撞检测
 			for each(var h:Hero in Scene.sceneHeros){
 				if(this.checkCollisionWithHero(h)){
 					return true;
@@ -109,13 +111,17 @@ package
 			checkPart.graphics.beginFill(0x66ccff,0.1);
 			checkPart.graphics.drawCircle(this.x,this.y,2);
 			checkPart.graphics.endFill();
-//			var cdk:CollisionData=CDK.check(checkPart,hero);
 			var cdk:Boolean=checkPart.hitTestObject(hero);
 			if(cdk){
 				hitPoint.x=this.x;
 				hitPoint.y=this.y;
 				hitHero=true;
 				heroIndex=Scene.sceneHeros.indexOf(hero);
+				//判断人物在那个星球上
+				for each(var p:Planet in Scene.planets){
+					var dist:Number=Math.sqrt((hero.x-p.x)*(hero.x-p.x)+(hero.y-p.y)*(hero.y-p.y));
+					if(dist<p.radius+10)  _planet=p;
+				}
 				 return true;
 			}else{
 				hitHero=false;

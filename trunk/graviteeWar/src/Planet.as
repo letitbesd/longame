@@ -120,7 +120,7 @@ package
 			//把子弹的全局坐标转换到holeLayer的坐标系下
 			var p:Point=new Point(x,y);
 			p=this.holeLayer.globalToLocal(p);
-			var hole:MovieClip=Main.getMovieClip("hole");
+			var hole:MovieClip=AssetsLibrary.getMovieClip("hole");
 			this.holeLayer.addChild(hole);
 			hole.x=p.x;
 			hole.y=p.y;

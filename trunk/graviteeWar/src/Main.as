@@ -1,11 +1,9 @@
 package
 {
 	import collision.CDK;
-	
 	import com.longame.managers.AssetsLibrary;
 	import com.longame.resource.Resource;
 	import com.longame.resource.ResourceManager;
-	
 	import flash.display.Loader;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;

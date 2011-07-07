@@ -55,10 +55,7 @@ package heros
 		{
 				if(this.index==index){
 					this._hitPoint=p;
-//					midPoint.x=this.x+15*Math.cos(this.rotation*Math.PI/180);
-//					midPoint.y=this.y+15*Math.sin(this.rotation*Math.PI/180);
 					 an=Math.atan2((this.y-_hitPoint.y),(this.x-_hitPoint.x));
-//					 an=Math.atan2((_hitPoint.y-this.y),(_hitPoint.x-this.x));
 					 trace(an*180/Math.PI);
 				this.addEventListener(Event.ENTER_FRAME,onFrame1);
 				}
@@ -118,7 +115,7 @@ package heros
 			var vx:Number;
 			var vy:Number;
 			var ag:Number=an*180/Math.PI;
-			if((ag>=60&&ag<=120)||(ag>=150&&ag<=180)){
+			if((ag>=60&&ag<=120)||(ag>=150&&ag<=180)||(ag<-60&&ag>-120)||(ag<-150&&ag>-180)){
 				vx=10*Math.cos(Math.PI*2-an);
 				vy=10*Math.sin(an);
 			}else{
@@ -132,24 +129,23 @@ package heros
 				var checkPart:Shape = new Shape();
 				checkPart.graphics.clear();
 				checkPart.graphics.beginFill(0x66ccff,0.1);
-				checkPart.graphics.drawCircle(this.x,this.y,5);
+				checkPart.graphics.drawCircle(this.x,this.y,4);
 				checkPart.graphics.endFill();
 				var cdk:CollisionData=CDK.check(checkPart,p);
 				if(cdk){
-					this.removeEventListener(Event.ENTER_FRAME,onFrame1);
-					trace("collisioned");
+//					trace("collisioned");
 //					var an:Number=cdk.angleInRadian;
 					var an1:Number=cdk.angleInDegree;
 					trace("*"+cdk.overlapping.length,an1);
 					this.x-=cdk.overlapping.length*Math.cos(an1*Math.PI/180)*0.1;
 					this.y-=cdk.overlapping.length*Math.sin(an1*Math.PI/180)*0.1;
-					trace(cdk.overlapping.length*Math.cos(an)*0.01,cdk.overlapping.length*Math.sin(an)*0.01);
+//					trace(cdk.overlapping.length*Math.cos(an)*0.01,cdk.overlapping.length*Math.sin(an)*0.01);
 					if(an1<0||an1>=180){
-						this.rotation=an1-180;
-					}else{
 						this.rotation=an1-90;
+					}else{
+						this.rotation=an1-180;
 					}
-//					trace(this.rotation);
+					this.removeEventListener(Event.ENTER_FRAME,onFrame1);
 					return;
 				}
 			}

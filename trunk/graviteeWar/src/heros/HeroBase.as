@@ -88,7 +88,6 @@ package heros
 		{
 			this.isAiming = true;
 			this.doAction("aiming7");
-			trace("aim at"+angle);
 			if(angle==0) angle=1;
 			//if(angle>180&&angle<300) angle=180;
 			//if(angle>=300) angle=0;
@@ -154,7 +153,6 @@ package heros
 			//if(this.rotation<-360) this.rotation+=360;
 			heroRotation=this.rotation+360;
 			if(heroRotation>360) heroRotation-=360;
-			trace("heroRotation" + heroRotation.toString());
 		}
 		
 		public function moveRight():void
@@ -180,7 +178,6 @@ package heros
 			//if(this.rotation<-360) this.rotation+=360;
 			heroRotation=this.rotation+360;
 			if(heroRotation>360) heroRotation-=360;
-			trace("heroRotation:" + heroRotation.toString());
 		}
 		
 		private function collideCheck(point:Point):void  //参数是碰撞测试点  检查该点是否和星球碰撞 若不碰撞 向下调 若碰撞太多 向上调 调整后再执行检查
