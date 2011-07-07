@@ -1,5 +1,7 @@
 package
 {
+	import com.longame.managers.AssetsLibrary;
+	
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -12,7 +14,7 @@ package
 		{
 			super();
 			
-			mc=Main.getMovieClip(clsName);
+			mc=AssetsLibrary.getMovieClip(clsName);
 			addChild(mc);
 			mc.addEventListener(Event.ENTER_FRAME,onFrame);
 		}

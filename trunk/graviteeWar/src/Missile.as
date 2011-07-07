@@ -1,10 +1,11 @@
 package
 {
+	import com.longame.managers.AssetsLibrary;
+	
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Point;
-	
 	
 	import signals.FightSignals;
 	
@@ -23,7 +24,7 @@ package
 			super();
 			this.path=path;
 			this._targetPlanet=targetPlanet;
-			_content=Main.getMovieClip("missile");
+			_content=AssetsLibrary.getMovieClip("missile");
 			this.addChild(_content);
 			this.addEventListener(Event.ADDED_TO_STAGE,onAdded);
 		}
