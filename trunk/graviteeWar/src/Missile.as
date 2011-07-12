@@ -49,9 +49,7 @@ package
 			PlayOnceObject.play("explodeEffect",this.x,this.y);
 			this.fire.destroy();
 			if(PathSimulator.hitHero==true){
-//				var index:int=PathSimulator.heroIndex;
-//				Scene.sceneHeros[index].hitByMissile(PathSimulator.hitHeroAngle);
-				FightSignals.onHeroHitted.dispatch(PathSimulator.heroIndex,PathSimulator.hitPoint);
+				FightSignals.onHeroHitted.dispatch(PathSimulator.heroIndex,PathSimulator.hitAngle,true);
 				
 			}
 		}

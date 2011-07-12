@@ -50,11 +50,9 @@ package heros
 			var i:int=Math.floor(Math.random()*Scene.planets.length);
 			_planet=Scene.planets[i];
 			var angle:Number=Math.random()*360;
-			
 			var radiusAngle:Number=Math.PI*270/180;
 			this.x=_planet.radius*Math.cos(radiusAngle)+_planet.x;
 			this.y=_planet.radius*Math.sin(radiusAngle)+_planet.y;
-			this.rotation=360;	
 			
 			this.addEventListener(MouseEvent.MOUSE_OVER,showName);
 			this.addEventListener(MouseEvent.MOUSE_OUT,hideName);
@@ -202,7 +200,7 @@ package heros
 						moveDirection = (this.rotation - 90)*Math.PI/180; 		 //移动方向与rotation相同 实际方向会相差90度 原因不明
 						moveOnce = new Point();   								//移动一步位移量
 						moveOnce.x = Math.cos(moveDirection)*speed;
-						moveOnce.y = Math.sin(moveDirection)*speed;
+						moveOnce.y = Math.sin(moveDirection)*speed;	
 						point.x += moveOnce.x;
 						point.y += moveOnce.y;
 					}
@@ -294,7 +292,7 @@ package heros
 			}
 			var param:Object=this.calMissileSate(p.x,p.y);
 			if(param==null) return;
-			simulator=new PathSimulator(param.strength,param.angle,param.startPos);
+			simulator=new PathSimulator(param.strength,param.angle,param.startPos,this.index);
 			currentPath=simulator.simulate(accurate,Scene.pathCanvas.graphics);
 		}
 		

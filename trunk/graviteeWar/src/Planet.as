@@ -2,12 +2,16 @@ package
 {
 	import AMath.*;
 	
+	import collision.CDK;
+	import collision.CollisionData;
+	
 	import com.longame.managers.AssetsLibrary;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.BlendMode;
 	import flash.display.MovieClip;
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.filters.GlowFilter;
 	import flash.geom.Matrix;
@@ -125,19 +129,31 @@ package
 			hole.x=p.x;
 			hole.y=p.y;
 			for each(var h:Hero in Scene.sceneHeros){
-				if(hole.hitTestObject(h)){
-					var index:int=Scene.sceneHeros.indexOf(h);
-					var p1:Point=new Point(this.x,this.y);
-//					FightSignals.onHeroHitted.dispatch(index,p1);
-				}
+				this.checkCollisionWithHero(hole,h,x,y);
 			}
-			
 //			var mar:Matrix = new Matrix();
 //			mar.translate(p.x,p.y);
 //			backBD.draw(hole,mar,null,BlendMode.ERASE);
 //			this.updateMask();
 		}
-		
+		private function checkCollisionWithHero(hole:MovieClip,hero:Hero,holeX:Number,holeY:Number):void
+		{
+//				var p:Point=new Point(hole.x,hole.y);
+//				var holePoint:Point=this.holeLayer.localToGlobal(p);
+				trace("^^^^^^^^^"+holeX,holeY);
+				var checkPart:Shape = new Shape();
+				checkPart.graphics.clear();
+				checkPart.graphics.beginFill(0x66ccff,0.1);
+				checkPart.graphics.drawCircle(holeX,holeY,27.5);
+				checkPart.graphics.endFill();
+				var cd:CollisionData=CDK.check(checkPart,hero);
+			if(cd){
+					trace("collisioned");
+					var index:int=Scene.sceneHeros.indexOf(hero);
+					var an:Number=cd.angleInRadian;
+					FightSignals.onHeroHitted.dispatch(index,an,false);
+				  }
+		}
 //		private function updateMask():void
 //		{
 //			maskBd=new BitmapData(this.width,this.height,true,0x000000);
