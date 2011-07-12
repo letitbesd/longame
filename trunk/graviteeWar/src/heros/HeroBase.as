@@ -48,7 +48,7 @@ package heros
 			this.team=team;
 			this.doAction(defaultAction);
 			var i:int=Math.floor(Math.random()*Scene.planets.length);
-			_planet=Scene.planets[0];
+			_planet=Scene.planets[i];
 			var angle:Number=Math.random()*360;
 			this.heroRotation = angle;
 			

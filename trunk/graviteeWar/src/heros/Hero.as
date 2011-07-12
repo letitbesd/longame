@@ -67,7 +67,7 @@ package heros
 //					{
 //						missileHitHeroAngle=Math.PI*2-missileHitHeroAngle;
 //					}
-//						trace(hitAngle*180/Math.PI,"×Óµ¯Åö×²½Ç¶È"+missileHitHeroAngle*180/Math.PI);
+//						trace(hitAngle*180/Math.PI,"ï¿½Óµï¿½ï¿½ï¿½×²ï¿½Ç¶ï¿½"+missileHitHeroAngle*180/Math.PI);
 //					this.addEventListener(Event.ENTER_FRAME,onFrame1);
 //				}
 //				else
@@ -87,7 +87,7 @@ package heros
 		{
 			var vx:Number=10*Math.cos(missileHitHeroAngle);
 			var vy:Number=10*Math.sin(missileHitHeroAngle);
-			var g:AVector=Scene.getAccelerationForBending(this.x,this.y);
+			var g:AVector=Scene.getAcceleration(this.x,this.y);
 			vx+=g.x*0.997*0.05;
 			vy+=g.y*0.997*0.05;
 //			trace("&&&"+g.x*0.997*0.05,g.y*0.997*0.05,vx,vy);
@@ -103,9 +103,7 @@ package heros
 					checkPart.graphics.endFill();
 					var cdk:CollisionData=CDK.check(checkPart,p);
 					if(cdk){
-						trace("ÖØµþÇøÓò£º"+cdk.overlapping.length);
 							var heroHitPlanetAngle:Number=cdk.angleInDegree;
-							trace("ÈËÎïÓëÐÇÇòÅö×²½Ç¶È"+heroHitPlanetAngle);
 							this.x-=cdk.overlapping.length*Math.cos(heroHitPlanetAngle*Math.PI/180)*0.05;
 							this.y-=cdk.overlapping.length*Math.sin(heroHitPlanetAngle*Math.PI/180)*0.05;
 							this.rotation=Math.round(heroHitPlanetAngle-90);
