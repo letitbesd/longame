@@ -54,8 +54,14 @@ package
 			for each(var p:Planet in  planets)
 			{
 					_loc_3 = new AVector(p.x - _loc_6.x, p.y - _loc_6.y);
-					_loc_3.multiplyScalar(1 / Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y));
-					_loc_3.multiplyScalar(_G * 120 * p.mass / (Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y) * Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y)));
+					var distance:Number = Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y);
+					if(distance < p.radius){  
+						distance = p.radius;
+					}
+					_loc_3.multiplyScalar(1 / distance);
+					if(distance > p.radius){
+						_loc_3.multiplyScalar(_G * 120 * p.mass / (Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y) * Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y)));
+					}
 					_loc_1.add(_loc_3);
 			}
 			return _loc_1;
@@ -85,6 +91,7 @@ package
 			sceneHeros.push(hero2);
 			hero.index=sceneHeros.indexOf(hero);
 			hero1.index=sceneHeros.indexOf(hero1);
+			hero2.index = sceneHeros.indexOf(hero2);
 			hero.active();
 		}
 		private function addPlanet(p:Point):void

@@ -13,7 +13,6 @@ package heros
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
-	import flash.text.TextField;
 	import flash.ui.KeyLocation;
 	import flash.ui.Keyboard;
 	
@@ -27,9 +26,7 @@ package heros
 		private static const collideRadius:Number = 5;
 		
 		public var accurate:int=50;				//玩家的射击精确度，实际就是显示子弹运行路径的长短
-		private var _totalHealthyNum:int  = 50;
-		private var _currentHealthyNum :int =  0;
-		private var healthyText:TextField;
+		private var _healthy:int  = 0;
 		protected var _team:String;
 		public var _content:MovieClip;
 		protected var shootAngle:Number;
@@ -53,9 +50,7 @@ package heros
 			var i:int=Math.floor(Math.random()*Scene.planets.length);
 			_planet=Scene.planets[0];
 			var angle:Number=Math.random()*360;
-			var radiusAngle:Number=Math.PI*270/180;
-			this.x=_planet.radius*Math.cos(radiusAngle)+_planet.x;
-			this.y=_planet.radius*Math.sin(radiusAngle)+_planet.y;
+			this.heroRotation = angle;
 			
 			this.addEventListener(MouseEvent.MOUSE_OVER,showName);
 			this.addEventListener(MouseEvent.MOUSE_OUT,hideName);
@@ -120,10 +115,10 @@ package heros
 			
 			collideCheck(new Point(this.x + moveOnce.x,this.y + moveOnce.y));
 			
-			heroRotation=0;
+			_heroRotation=0;
 			//if(this.rotation<-360) this.rotation+=360;
-			heroRotation=this.rotation+360;
-			if(heroRotation>360) heroRotation-=360;
+			_heroRotation=this.rotation+360;
+			if(_heroRotation>360) _heroRotation-=360;
 		}
 		
 		public function moveRight():void
@@ -145,10 +140,10 @@ package heros
 			
 			collideCheck(new Point(this.x + moveOnce.x,this.y + moveOnce.y));
 			
-			heroRotation=0;
+			_heroRotation=0;
 			//if(this.rotation<-360) this.rotation+=360;
-			heroRotation=this.rotation+360;
-			if(heroRotation>360) heroRotation-=360;
+			_heroRotation=this.rotation+360;
+			if(_heroRotation>360) _heroRotation-=360;
 		}
 		
 		private function collideCheck(point:Point):void  //参数是碰撞测试点  检查该点是否和星球碰撞 若不碰撞 向下调 若碰撞太多 向上调 调整后再执行检查
@@ -322,8 +317,8 @@ package heros
 			var dx:Number=shootX-startPos.x;
 			var dy:Number=shootY-startPos.y;
 			var dist:Number=Math.sqrt(dx*dx+dy*dy);
-			var ag:Number=heroRotation*Math.PI/180;
-			//trace("heroRotation"+heroRotation.toString())
+			var ag:Number=_heroRotation*Math.PI/180;
+			//trace("_heroRotation"+_heroRotation.toString())
 			return {strength:dist/30,angle:shootAngle+ag,startPos:startPos};			
 		}
 		
@@ -336,25 +331,7 @@ package heros
 		{
 			_index = value;
 		}
-		/**
-		 * 人物基于球中心的角度，也就决定了人物的位置
-		 * 和flash坐标系中的角度一致
-		 * */
-		public function get heroRotation():Number
-		{
-			return _heroRotation;
-		}
-
-		public function set heroRotation(value:Number):void
-		{
-			if (_heroRotation==value)  return;
-			_heroRotation=value;
-			var radiusAngle:Number=Math.PI*value/180;
-			this.x=_planet.radius*Math.cos(radiusAngle)+_planet.x;
-			this.y=_planet.radius*Math.sin(radiusAngle)+_planet.y;
-			this.rotation=value+90;
-		}
-
+		
 		public function set team(value:String):void
 		{
 			if(_team==value) return;
@@ -364,6 +341,16 @@ package heros
 		public function get team():String
 		{
 			return _team;
+		}
+		
+		public function get healthy():int
+		{
+			return _healthy;
+		}
+		
+		public function set healthy(value:int):void
+		{
+			_healthy = value;
 		}
 		
 		public function get heroName():String
@@ -376,27 +363,19 @@ package heros
 			_heroName = value;
 		}
 
-		public function get totalHealthyNum():int
+		public function get heroRotation():Number
 		{
-			return _totalHealthyNum;
+			return _heroRotation;
 		}
 
-		public function set totalHealthyNum(value:int):void
+		public function set heroRotation(value:Number):void
 		{
-			_totalHealthyNum = value;
+			if(this._heroRotation==value) return;
+			this._heroRotation=value;
+			var radiusAngle:Number=Math.PI*value/180;
+			this.x=_planet.radius*Math.cos(radiusAngle)+_planet.x;
+			this.y=_planet.radius*Math.sin(radiusAngle)+_planet.y;
+			this.rotation=value+90;
 		}
-
-		public function get currentHealthyNum():int
-		{
-			return _currentHealthyNum;
-		}
-
-		public function set currentHealthyNum(value:int):void
-		{
-			_currentHealthyNum = value;
-			healthyText.text = _currentHealthyNum.toString();
-		}
-
-
 	}
 }

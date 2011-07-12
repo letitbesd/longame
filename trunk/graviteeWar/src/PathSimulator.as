@@ -100,6 +100,7 @@ package
 //				var springParam:Number=0.1;
 //				this.x-=cd.overlapping.length*Math.cos(an)*springParam;
 //				this.y-=cd.overlapping.length*Math.sin(an)*springParam;
+//				trace(cd.overlapping.length+"   cd.overlapping.length");
 				return true;
 			}else
 			{
@@ -138,7 +139,7 @@ package
 		{
 			var node:PathNode;
 			var node1:PathNode;
-			for(var i:int=0;i<_path.length;i++){
+			for(var i:int=0;i<_path.length-1;i++){
 				if(i%2==0){
 					node=_path[i];
 					if(i+1<=_path.length-1) node1=_path[i+1];
