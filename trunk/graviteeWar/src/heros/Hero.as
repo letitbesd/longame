@@ -52,34 +52,44 @@ package heros
 				this.moveRight();	
 			}
 		}
-		private function onHitted(heroIndex:int,hitAngle:Number,hitByMissile:Boolean):void
+		private function onHitted(heroIndex:int,hitAngle:Number,belowPlanet:Boolean):void
 		{
 				if(this.index!=heroIndex) return;
-				if(hitByMissile==true)
-				{
-					missileHitHeroAngle=hitAngle;
-					var ag:Number=missileHitHeroAngle*180/Math.PI;
-					if((ag>=60&&ag<=130)||(ag<=-50&&ag>=-120))
-					{
+//				if(hitByMissile==true)
+//				{
+//					missileHitHeroAngle=hitAngle;
+//					var ag:Number=missileHitHeroAngle*180/Math.PI;
+//					if((ag>=60&&ag<=130)||(ag<=-50&&ag>=-120))
+//					{
+//						missileHitHeroAngle=hitAngle;
+//					}
+//					else
+//					{
+//						missileHitHeroAngle=Math.PI*2-missileHitHeroAngle;
+//					}
+//						trace(hitAngle*180/Math.PI,"å­å¼¹ç¢°æ’žè§’åº¦"+missileHitHeroAngle*180/Math.PI);
+//					this.addEventListener(Event.ENTER_FRAME,onFrame1);
+//				}
+//				else
+//				{
+//						missileHitHeroAngle=hitAngle;
+//						trace(hitAngle*180/Math.PI,"*"+missileHitHeroAngle*180/Math.PI);
+//						this.addEventListener(Event.ENTER_FRAME,onFrame1);
+//				 }
+				if(belowPlanet){
 						missileHitHeroAngle=hitAngle;
-					}else{
-							missileHitHeroAngle=Math.PI*2-missileHitHeroAngle;
-						 }
-						trace(hitAngle*180/Math.PI,"×Óµ¯Åö×²½Ç¶È"+missileHitHeroAngle*180/Math.PI);
-						this.addEventListener(Event.ENTER_FRAME,onFrame1);
 				}else{
-						missileHitHeroAngle=hitAngle+Math.PI+Math.PI/2;
-						trace(hitAngle*180/Math.PI,"*"+missileHitHeroAngle*180/Math.PI);
-						this.addEventListener(Event.ENTER_FRAME,onFrame1);
-					 }
+					missileHitHeroAngle=hitAngle+Math.PI;
+				}
+				this.addEventListener(Event.ENTER_FRAME,onFrame1);
 		}
 		private function onFrame1(event:Event):void
 		{
 			var vx:Number=10*Math.cos(missileHitHeroAngle);
 			var vy:Number=10*Math.sin(missileHitHeroAngle);
 			var g:AVector=Scene.getAccelerationForBending(this.x,this.y);
-			vx+=g.x*0.997*0.2;
-			vy+=g.y*0.997*0.2;
+			vx+=g.x*0.997*0.05;
+			vy+=g.y*0.997*0.05;
 //			trace("&&&"+g.x*0.997*0.05,g.y*0.997*0.05,vx,vy);
 			this.x+=vx;
 			this.y+=vy;
@@ -89,25 +99,18 @@ package heros
 					var checkPart:Shape = new Shape();
 					checkPart.graphics.clear();
 					checkPart.graphics.beginFill(0x66ccff,0.1);
-					checkPart.graphics.drawCircle(this.x,this.y,7);
+					checkPart.graphics.drawCircle(this.x,this.y,4);
 					checkPart.graphics.endFill();
 					var cdk:CollisionData=CDK.check(checkPart,p);
 					if(cdk){
-						trace("ÖØµþÇøÓò£º"+cdk.overlapping.length);
+						trace("é‡å åŒºåŸŸï¼š"+cdk.overlapping.length);
 							var heroHitPlanetAngle:Number=cdk.angleInDegree;
-							trace("ÈËÎïÓëÐÇÇòÅö×²½Ç¶È"+heroHitPlanetAngle);
-							if(heroHitPlanetAngle>90&&heroHitPlanetAngle<110){
-								this.x-=vx;
-								this.y-=vy;
-								this.rotation=0;
-										
-							}else{
+							trace("äººç‰©ä¸Žæ˜Ÿçƒç¢°æ’žè§’åº¦"+heroHitPlanetAngle);
 							this.x-=cdk.overlapping.length*Math.cos(heroHitPlanetAngle*Math.PI/180)*0.05;
 							this.y-=cdk.overlapping.length*Math.sin(heroHitPlanetAngle*Math.PI/180)*0.05;
 							this.rotation=Math.round(heroHitPlanetAngle-90);
-							}
-						this.removeEventListener(Event.ENTER_FRAME,onFrame1);
-						this.doAction("stand");
+							this.removeEventListener(Event.ENTER_FRAME,onFrame1);
+							this.doAction("stand");
 						this.addEventListener(Event.ENTER_FRAME,checkFrame);
 						}
 				}

@@ -51,7 +51,7 @@ package heros
 			this.team=team;
 			this.doAction(defaultAction);
 			var i:int=Math.floor(Math.random()*Scene.planets.length);
-			_planet=Scene.planets[i];
+			_planet=Scene.planets[0];
 			var angle:Number=Math.random()*360;
 			var radiusAngle:Number=Math.PI*270/180;
 			this.x=_planet.radius*Math.cos(radiusAngle)+_planet.x;

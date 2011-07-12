@@ -48,10 +48,6 @@ package
 			EnterFrame.removeObject(this);
 			PlayOnceObject.play("explodeEffect",this.x,this.y);
 			this.fire.destroy();
-			if(PathSimulator.hitHero==true){
-				FightSignals.onHeroHitted.dispatch(PathSimulator.heroIndex,PathSimulator.hitAngle,true);
-				
-			}
 		}
 		private var fire:MissileFire;
 		protected function onAdded(event:Event):void

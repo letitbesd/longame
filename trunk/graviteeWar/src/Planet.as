@@ -31,6 +31,7 @@ package
 		private var holeLayer:Sprite;
 		private var backLayer:MovieClip;
 		private var _attractive_coeff:int=400;
+
 		
 		public function Planet()
 		{
@@ -40,8 +41,10 @@ package
 			var i:int=1+Math.floor(Math.random()*7);
 //			var i:int=8;
 			//加背景
+		
 			backLayer=AssetsLibrary.getMovieClip("planet"+i);
 			this.addChild(backLayer);
+//	
 			//加hole层
 			holeLayer=new Sprite();
 			this.addChild(holeLayer);
@@ -102,24 +105,36 @@ package
 			hole.x=p.x;
 			hole.y=p.y;
 			for each(var h:Hero in Scene.sceneHeros){
-				this.checkCollisionWithHero(hole,h,x,y);
+				this.holeCollisionWithHero(h,x,y);
 			}
 		}
-		private function checkCollisionWithHero(hole:MovieClip,hero:Hero,holeX:Number,holeY:Number):void
+		private function holeCollisionWithHero(hero:Hero,holeX:Number,holeY:Number):void
 		{
 //				var p:Point=new Point(hole.x,hole.y);
 				trace("^^^^^^^^^"+holeX,holeY);
 				var checkPart:Shape = new Shape();
 				checkPart.graphics.clear();
-				checkPart.graphics.beginFill(0x66ccff,0.1);
+				checkPart.graphics.beginFill(0x66ccff,1);
 				checkPart.graphics.drawCircle(holeX,holeY,27.5);
 				checkPart.graphics.endFill();
-				var cd:CollisionData=CDK.check(checkPart,hero);
+//				Main.scene.addChild(checkPart);
+//				trace("hero"+hero.x,hero.y,"hole"+holeX,holeY);
+				
+				var cd:CollisionData=CDK.check(hero,checkPart);
 			if(cd){
-					trace("collisioned");
-					var index:int=Scene.sceneHeros.indexOf(hero);
-					var an:Number=cd.angleInRadian;
-					FightSignals.onHeroHitted.dispatch(index,an,false);
+//				trace("********************collisioned:"+cd.angleInDegree);
+					var heroIndex:int=Scene.sceneHeros.indexOf(hero);
+					var heroP:Point=new Point(hero.x,hero.y);
+					var holeP:Point=new Point(holeX,holeY);
+					//将Hole坐标转换到Hero坐标系下
+					var pToHole:Point=hero.globalToLocal(holeP);
+					//Hero中心点
+					var heroMidPoint:Point=new Point(0,-16);
+					//Hole中心点与人物中心点的夹角
+					var an:Number=Math.atan2((pToHole.y-heroMidPoint.y),(pToHole.x-heroMidPoint.x));
+					var belowPlanet:Boolean;
+					if(hero.y>this.y) belowPlanet=true;
+					FightSignals.onHeroHitted.dispatch(heroIndex,an,belowPlanet);
 				  }
 		}
 		public function getForceAttract (m1:Number, m2:Number, vec2Center:Vector2D):Vector2D

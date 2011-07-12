@@ -27,6 +27,8 @@ THE SOFTWARE.
 
 package collision
 {	
+	import AMath.AVector;
+	
 	import collision.util.DisplayObjectUtil;
 	
 	import flash.display.Bitmap;
@@ -40,6 +42,8 @@ package collision
 	import flash.text.TextField;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
+	
+	import heros.Hero;
 
 	public class CDK
 	{
