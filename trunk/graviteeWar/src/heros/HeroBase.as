@@ -13,6 +13,7 @@ package heros
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import flash.text.TextField;
 	import flash.ui.KeyLocation;
 	import flash.ui.Keyboard;
 	
@@ -26,14 +27,16 @@ package heros
 		private static const collideRadius:Number = 5;
 		
 		public var accurate:int=50;				//玩家的射击精确度，实际就是显示子弹运行路径的长短
-		private var _healthy:int  = 0;
+		private var _totalHealthyNum:int  = 50;
+		private var _currentHealthyNum :int =  0;
+		private var healthyText:TextField;
 		protected var _team:String;
 		public var _content:MovieClip;
 		protected var shootAngle:Number;
 		protected var _planet:Planet;
 		protected var atRight:Boolean=false;
 		protected var isAiming:Boolean = false;
-		protected var heroRotation:Number=0;
+		protected var _heroRotation:Number=0;
 		protected var cdCheck:Boolean = false;
 		protected var _heroName:String = "";
 		protected var _index:int;
@@ -96,36 +99,6 @@ package heros
 		}
 		public function onFrame():void
 		{			
-		}
-		public function set team(value:String):void
-		{
-			if(_team==value) return;
-			_team=value;
-			this.updateColor();
-		}
-		public function get team():String
-		{
-			return _team;
-		}
-		
-		public function get healthy():int
-		{
-			return _healthy;
-		}
-		
-		public function set healthy(value:int):void
-		{
-			_healthy = value;
-		}
-		
-		public function get heroName():String
-		{
-			return _heroName;
-		}
-		
-		public function set heroName(value:String):void
-		{
-			_heroName = value;
 		}
 		
 		public function moveLeft():void  
@@ -363,6 +336,67 @@ package heros
 		{
 			_index = value;
 		}
+		/**
+		 * 人物基于球中心的角度，也就决定了人物的位置
+		 * 和flash坐标系中的角度一致
+		 * */
+		public function get heroRotation():Number
+		{
+			return _heroRotation;
+		}
+
+		public function set heroRotation(value:Number):void
+		{
+			if (_heroRotation==value)  return;
+			_heroRotation=value;
+			var radiusAngle:Number=Math.PI*value/180;
+			this.x=_planet.radius*Math.cos(radiusAngle)+_planet.x;
+			this.y=_planet.radius*Math.sin(radiusAngle)+_planet.y;
+			this.rotation=value+90;
+		}
+
+		public function set team(value:String):void
+		{
+			if(_team==value) return;
+			_team=value;
+			this.updateColor();
+		}
+		public function get team():String
+		{
+			return _team;
+		}
 		
+		public function get heroName():String
+		{
+			return _heroName;
+		}
+		
+		public function set heroName(value:String):void
+		{
+			_heroName = value;
+		}
+
+		public function get totalHealthyNum():int
+		{
+			return _totalHealthyNum;
+		}
+
+		public function set totalHealthyNum(value:int):void
+		{
+			_totalHealthyNum = value;
+		}
+
+		public function get currentHealthyNum():int
+		{
+			return _currentHealthyNum;
+		}
+
+		public function set currentHealthyNum(value:int):void
+		{
+			_currentHealthyNum = value;
+			healthyText.text = _currentHealthyNum.toString();
+		}
+
+
 	}
 }

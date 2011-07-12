@@ -91,7 +91,7 @@ package
 			var checkPart:Shape = new Shape();
 			checkPart.graphics.clear();
 			checkPart.graphics.beginFill(0x66ccff,0.1);
-			checkPart.graphics.drawCircle(this.x,this.y,5);
+			checkPart.graphics.drawCircle(this.x,this.y,1);
 			checkPart.graphics.endFill();
 			
 			var cd:CollisionData=CDK.check(checkPart,planet);
@@ -111,7 +111,7 @@ package
 			var checkPart:Shape = new Shape();
 			checkPart.graphics.clear();
 			checkPart.graphics.beginFill(0x66ccff,0.1);
-			checkPart.graphics.drawCircle(this.x,this.y,2);
+			checkPart.graphics.drawCircle(this.x,this.y,1);
 			checkPart.graphics.endFill();
 			var cdk:CollisionData=CDK.check(checkPart,hero._content);
 			if(cdk&&hero.index!=this._diaspatchHeroIndex)
@@ -165,7 +165,7 @@ package
 		}
 		private function step():Boolean
 		{
-			var g:AVector=Scene.getAccelerationForBending(this.x,this.y);
+			var g:AVector=Scene.getAcceleration(this.x,this.y);
 			vx+=g.x*0.997;
 			vy+=g.y*0.997;
 			this.x+=vx*0.0285;

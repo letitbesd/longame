@@ -1,7 +1,6 @@
 package
 {
 	import AMath.*;
-	
 	import collision.CDK;
 	import collision.CollisionData;
 	
@@ -23,19 +22,15 @@ package
 	
 	public class Planet extends Sprite
 	{
-//		public static const radius:Number=75;		
 		public static const basicRadius:Number=50;
 		public static const basicG:Number=0.5;
-		private var _density:Number = 1;
 		private var G:Number=basicG;
-		
+		public var mass:Number=basicG;
 		private var maskBd:BitmapData;
 		private var maskLayer:Bitmap;
 		private var holeLayer:Sprite;
 		private var backLayer:MovieClip;
 		private var _attractive_coeff:int=400;
-//		private var back:Bitmap;
-//		private var backBD:BitmapData;
 		
 		public function Planet()
 		{
@@ -45,17 +40,8 @@ package
 			var i:int=1+Math.floor(Math.random()*7);
 //			var i:int=8;
 			//加背景
-			
 			backLayer=AssetsLibrary.getMovieClip("planet"+i);
 			this.addChild(backLayer);
-//			backBD = new BitmapData(this._radius*2,this._radius*2,true,0x00000000);
-//			var mar:Matrix = new Matrix();
-//			mar.translate(this._radius,this._radius);
-//			backBD.draw(backLayer,mar);
-//			back = new Bitmap(backBD);
-//			this.addChild(back);
-//			back.x -= this._radius;
-//			back.y -= this._radius;
 			//加hole层
 			holeLayer=new Sprite();
 			this.addChild(holeLayer);
@@ -66,7 +52,7 @@ package
 //			holeLayer.mask=maskLayer;
 
 			this.radius=60+Math.round(20*Math.random());
-			this.mass = radius*this._density;
+//			this.mass = radius*this._density;
 			this.filters =[new GlowFilter(0,0.5, 8, 8, 5, 1, true)];
 		}
 		private var _radius:Number;
@@ -80,21 +66,9 @@ package
 			_radius=value;
 			var scale:Number=_radius/basicRadius;
 			backLayer.scaleX=backLayer.scaleY=scale;
-//			maskLayer.scaleX=maskLayer.scaleY=scale;
-//			G=basicG*scale*scale*scale;
-			
-//			this.updateMask();
-			
-		}
-		private var _mass:Number;
-		public function get mass():Number
-		{
-			return _mass;
-		}
-		
-		public function set mass(value:Number):void{
-			if(_mass==value) return;
-			_mass=value;
+//			mass=basicG*scale*scale*scale;
+			trace("mass:"+mass);
+			this.mass = this._radius;
 		}
 		
 		public function getG(x:Number,y:Number):Point
@@ -111,7 +85,6 @@ package
             angle+=Math.PI;
 			g.x=gLength*Math.cos(angle);
 			g.y=gLength*Math.sin(angle);
-			
 			return g;
 		}
 		/**
@@ -131,15 +104,10 @@ package
 			for each(var h:Hero in Scene.sceneHeros){
 				this.checkCollisionWithHero(hole,h,x,y);
 			}
-//			var mar:Matrix = new Matrix();
-//			mar.translate(p.x,p.y);
-//			backBD.draw(hole,mar,null,BlendMode.ERASE);
-//			this.updateMask();
 		}
 		private function checkCollisionWithHero(hole:MovieClip,hero:Hero,holeX:Number,holeY:Number):void
 		{
 //				var p:Point=new Point(hole.x,hole.y);
-//				var holePoint:Point=this.holeLayer.localToGlobal(p);
 				trace("^^^^^^^^^"+holeX,holeY);
 				var checkPart:Shape = new Shape();
 				checkPart.graphics.clear();
@@ -154,14 +122,6 @@ package
 					FightSignals.onHeroHitted.dispatch(index,an,false);
 				  }
 		}
-//		private function updateMask():void
-//		{
-//			maskBd=new BitmapData(this.width,this.height,true,0x000000);
-//			maskLayer.bitmapData=maskBd;
-//			var mar:Matrix=new Matrix();
-//			mar.translate(this._radius,this._radius);
-//			maskBd.draw(this,mar,null,BlendMode.ERASE);
-//		}
 		public function getForceAttract (m1:Number, m2:Number, vec2Center:Vector2D):Vector2D
 		{
 			var numerator:Number = this._attractive_coeff * m1 * m2;

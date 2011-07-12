@@ -65,7 +65,7 @@ package heros
 					}else{
 							missileHitHeroAngle=Math.PI*2-missileHitHeroAngle;
 						 }
-						trace(hitAngle*180/Math.PI,"å­å¼¹ç¢°æ’žè§’åº¦"+missileHitHeroAngle*180/Math.PI);
+						trace(hitAngle*180/Math.PI,"×Óµ¯Åö×²½Ç¶È"+missileHitHeroAngle*180/Math.PI);
 						this.addEventListener(Event.ENTER_FRAME,onFrame1);
 				}else{
 						missileHitHeroAngle=hitAngle+Math.PI+Math.PI/2;
@@ -93,9 +93,9 @@ package heros
 					checkPart.graphics.endFill();
 					var cdk:CollisionData=CDK.check(checkPart,p);
 					if(cdk){
-						trace("é‡å åŒºåŸŸï¼š"+cdk.overlapping.length);
+						trace("ÖØµþÇøÓò£º"+cdk.overlapping.length);
 							var heroHitPlanetAngle:Number=cdk.angleInDegree;
-							trace("äººç‰©ä¸Žæ˜Ÿçƒç¢°æ’žè§’åº¦"+heroHitPlanetAngle);
+							trace("ÈËÎïÓëÐÇÇòÅö×²½Ç¶È"+heroHitPlanetAngle);
 							if(heroHitPlanetAngle>90&&heroHitPlanetAngle<110){
 								this.x-=vx;
 								this.y-=vy;

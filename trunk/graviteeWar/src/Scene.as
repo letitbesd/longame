@@ -46,7 +46,7 @@ package
 //			return g;
 //		}
 		
-		public static function getAccelerationForBending(x:Number,y:Number) :AVector
+		public static function getAcceleration(x:Number,y:Number) :AVector
 		{
 			var _loc_3:AVector;
 			var _loc_1:AVector = new AVector(0, 0);
@@ -75,11 +75,14 @@ package
 		{
 			hero=new Hero("red");
 			hero1=new Hero("blue");
+			var hero2 :Hero = new Hero("yellow");
 			this.addChild(hero);
 			this.addChild(hero1);
+			this.addChild(hero2);
 
 			sceneHeros.push(hero);
 			sceneHeros.push(hero1);
+			sceneHeros.push(hero2);
 			hero.index=sceneHeros.indexOf(hero);
 			hero1.index=sceneHeros.indexOf(hero1);
 			hero.active();

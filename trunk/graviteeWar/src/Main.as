@@ -7,7 +7,9 @@ package
 	import flash.display.Loader;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
+	import flash.display.StageAlign;
 	import flash.display.StageDisplayState;
+	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filters.GlowFilter;
@@ -18,8 +20,6 @@ package
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.utils.getDefinitionByName;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
 	
 	import heros.Hero;
 	import heros.HeroBase;
@@ -38,6 +38,7 @@ package
 		private var _planet:MovieClip;
 		
 		private var _hero:Hero;		
+		
 		private var _counter:TextField=new TextField();
 		
 		public function Main()
@@ -63,11 +64,6 @@ package
 		 * */
 		private function loadResource():void
 		{
-//			_loader=new Loader();
-//			var request:URLRequest=new URLRequest("assets.swf");
-//			var context:LoaderContext=new LoaderContext(false,ApplicationDomain.currentDomain);
-//			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE,onLoaded);
-//			_loader.load(request,context);
 			ResourceManager.instance.load("assets.swf",onLoaded);
 		}
 		
@@ -75,7 +71,6 @@ package
 		{
 			EnterFrame.start();
 			this.addChild(AssetsLibrary.getMovieClip("background"));
-//			this.addChild(getMovieClip("background"));
 			scene=new Scene();
 			this.addChild(scene);
 			
@@ -94,7 +89,13 @@ package
 			
 			var count:CountDown=new CountDown(100);
 			count.addEventListener(CountdownEvent.ON_SECOND,onSecond);
+			count.addEventListener(CountdownEvent.ON_COMPLETE,onComplete);
 			count.start();
+		}
+		
+		protected function onComplete(event:Event):void
+		{
+			// TODO Auto-generated method stub
 		}
 		
 		protected function onSecond(event:CountdownEvent):void
