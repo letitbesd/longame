@@ -1,10 +1,14 @@
 package
 {
 	import AMath.*;
+	
 	import collision.CDK;
 	import collision.CollisionData;
 	
+	import com.heros.Hero;
 	import com.longame.managers.AssetsLibrary;
+	import com.longame.utils.MathUtil;
+	import com.signals.FightSignals;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -15,10 +19,6 @@ package
 	import flash.filters.GlowFilter;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
-	
-	import heros.Hero;
-	
-	import signals.FightSignals;
 	
 	public class Planet extends Sprite
 	{
@@ -40,19 +40,13 @@ package
 			
 			var i:int=1+Math.floor(Math.random()*7);
 //			var i:int=8;
-			//加背景
-		
+			//加星球背景
 			backLayer=AssetsLibrary.getMovieClip("planet"+i);
 			this.addChild(backLayer);
 //	
 			//加hole层
 			holeLayer=new Sprite();
 			this.addChild(holeLayer);
-			//加遮罩
-//			maskLayer=new Bitmap();
-//			Main.scene.addChild(maskLayer);
-//			this.updateMask();			
-//			holeLayer.mask=maskLayer;
 
 			this.radius=60+Math.round(20*Math.random());
 //			this.mass = radius*this._density;
@@ -70,8 +64,8 @@ package
 			var scale:Number=_radius/basicRadius;
 			backLayer.scaleX=backLayer.scaleY=scale;
 //			mass=basicG*scale*scale*scale;
+			this.mass = _radius;
 			trace("mass:"+mass);
-			this.mass = this._radius;
 		}
 		
 		public function getG(x:Number,y:Number):Point
@@ -111,18 +105,15 @@ package
 		private function holeCollisionWithHero(hero:Hero,holeX:Number,holeY:Number):void
 		{
 //				var p:Point=new Point(hole.x,hole.y);
-				trace("^^^^^^^^^"+holeX,holeY);
 				var checkPart:Shape = new Shape();
 				checkPart.graphics.clear();
 				checkPart.graphics.beginFill(0x66ccff,1);
 				checkPart.graphics.drawCircle(holeX,holeY,27.5);
 				checkPart.graphics.endFill();
-//				Main.scene.addChild(checkPart);
-//				trace("hero"+hero.x,hero.y,"hole"+holeX,holeY);
 				
-				var cd:CollisionData=CDK.check(hero,checkPart);
+				var cd:CollisionData=CDK.check(checkPart,hero);
 			if(cd){
-//				trace("********************collisioned:"+cd.angleInDegree);
+				trace("collisioned : **********"+cd.angleInDegree);
 					var heroIndex:int=Scene.sceneHeros.indexOf(hero);
 					var heroP:Point=new Point(hero.x,hero.y);
 					var holeP:Point=new Point(holeX,holeY);
@@ -132,8 +123,11 @@ package
 					var heroMidPoint:Point=new Point(0,-16);
 					//Hole中心点与人物中心点的夹角
 					var an:Number=Math.atan2((pToHole.y-heroMidPoint.y),(pToHole.x-heroMidPoint.x));
+					var an1:Number=180*an/Math.PI
 					var belowPlanet:Boolean;
 					if(hero.y>this.y) belowPlanet=true;
+					trace(an1,belowPlanet);
+					
 					FightSignals.onHeroHitted.dispatch(heroIndex,an,belowPlanet);
 				  }
 		}

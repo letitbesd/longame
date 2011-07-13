@@ -1,4 +1,4 @@
-package time
+package com.time
 {
 	import flash.display.Shape;
 	import flash.events.Event;

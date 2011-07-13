@@ -8,7 +8,7 @@ package
 	import flash.utils.getTimer;
 	
 	
-	import time.EnterFrame;
+	import com.time.EnterFrame;
 	/**
 	 * 尾巴拖太长，todo
 	 * */

@@ -1,4 +1,4 @@
-package time
+package com.time
 {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -6,8 +6,8 @@ package time
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
-	[Event(name="on_second", type="time.CountdownEvent")]
-	[Event(name="on_complete", type="time.CountdownEvent")]
+	[Event(name="on_second", type="com.time.CountdownEvent")]
+	[Event(name="on_complete", type="com.time.CountdownEvent")]
 	public class CountDown extends EventDispatcher
 	{
 		private var _timer:Timer;

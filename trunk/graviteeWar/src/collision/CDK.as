@@ -43,7 +43,7 @@ package collision
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
-	import heros.Hero;
+	import com.heros.Hero;
 
 	public class CDK
 	{

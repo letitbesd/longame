@@ -1,7 +1,8 @@
 package
 {
 	import AMath.AVector;
-	import AMath.Mops;
+	
+	import com.longame.utils.MathUtil;
 	
 	import flash.display.MovieClip;
 	import flash.display.Shape;
@@ -10,9 +11,9 @@ package
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	
-	import heros.Hero;
+	import com.heros.Hero;
 	
-	import time.EnterFrame;
+	import com.time.EnterFrame;
 
 	public class Scene extends Sprite implements IFrameObject
 	{
@@ -22,8 +23,7 @@ package
 		public static var pathCanvas:Shape=new Shape();
 		private  var hero:Hero;
 		private var hero1:Hero;
-		private var enemy:Hero;
-		public var _cam:Cam;
+		private var  hero2 :Hero;
 		public static var sceneHeros:Array=[];
 		public function Scene()
 		{
@@ -54,13 +54,13 @@ package
 			for each(var p:Planet in  planets)
 			{
 					_loc_3 = new AVector(p.x - _loc_6.x, p.y - _loc_6.y);
-					var distance:Number = Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y);
+					var distance:Number = MathUtil.getDistance(_loc_6.x, _loc_6.y, p.x, p.y);
 					if(distance < p.radius){  
 						distance = p.radius;
 					}
 					_loc_3.multiplyScalar(1 / distance);
 					if(distance > p.radius){
-						_loc_3.multiplyScalar(_G * 120 * p.mass / (Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y) * Mops.distance(_loc_6.x, _loc_6.y, p.x, p.y)));
+						_loc_3.multiplyScalar(_G * 120 * p.mass / (distance*distance));
 					}
 					_loc_1.add(_loc_3);
 			}
@@ -81,7 +81,7 @@ package
 		{
 			hero=new Hero("red");
 			hero1=new Hero("blue");
-			var hero2 :Hero = new Hero("yellow");
+			hero2 = new Hero("yellow");
 			this.addChild(hero);
 			this.addChild(hero1);
 			this.addChild(hero2);

@@ -14,7 +14,7 @@ package
 	import flash.geom.Vector3D;
 	import flash.globalization.CollatorMode;
 	
-	import heros.Hero;
+	import com.heros.Hero;
 	public class PathSimulator  
 	{
 		private static const basicSpeed:Number=15;
@@ -111,7 +111,7 @@ package
 		{
 			var checkPart:Shape = new Shape();
 			checkPart.graphics.clear();
-			checkPart.graphics.beginFill(0x66ccff,0.1);
+			checkPart.graphics.beginFill(0x66ccff,1);
 			checkPart.graphics.drawCircle(this.x,this.y,1);
 			checkPart.graphics.endFill();
 			var cdk:CollisionData=CDK.check(checkPart,hero._content);

@@ -4,7 +4,6 @@ package
 	import com.longame.managers.AssetsLibrary;
 	import com.longame.resource.Resource;
 	import com.longame.resource.ResourceManager;
-	import flash.display.Loader;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -13,27 +12,23 @@ package
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filters.GlowFilter;
-	import flash.net.URLRequest;
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
-	import flash.utils.getDefinitionByName;
 	
-	import heros.Hero;
-	import heros.HeroBase;
+	import com.heros.Hero;
+	import com.heros.HeroBase;
 	
-	import time.CountDown;
-	import time.CountdownEvent;
-	import time.EnterFrame;
+	import com.time.CountDown;
+	import com.time.CountdownEvent;
+	import com.time.EnterFrame;
 	
 	[SWF(width="700",height="500",backgroundColor="0x000000",frameRate="30")]
 	public class Main extends Engine
 	{
 		public static var scene:Scene;
-		
-		private var _loader:Loader;
 		
 		private var _planet:MovieClip;
 		
@@ -52,12 +47,6 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			super.init();
 			this.loadResource();
-		}
-		
-		public static function getMovieClip(name:String):MovieClip
-		{
-			var cls:Class=getDefinitionByName(name) as Class;
-			return new cls() as MovieClip;
 		}
 		/**
 		 * 加载资源

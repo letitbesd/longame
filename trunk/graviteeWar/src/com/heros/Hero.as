@@ -1,4 +1,4 @@
-package heros
+package com.heros
 {
 	import AMath.AVector;
 	
@@ -17,7 +17,7 @@ package heros
 	import flash.geom.Vector3D;
 	import flash.ui.Keyboard;
 	
-	import signals.FightSignals;
+	import com.signals.FightSignals;
 	
 	public class Hero extends HeroBase
 	{

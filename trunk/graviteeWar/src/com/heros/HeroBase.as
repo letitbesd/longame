@@ -1,4 +1,4 @@
-package heros
+package com.heros
 {
 	import AMath.AVector;
 	import AMath.Vector2D;
@@ -7,6 +7,7 @@ package heros
 	import collision.CollisionData;
 	
 	import com.longame.managers.AssetsLibrary;
+	import com.time.EnterFrame;
 	
 	import flash.display.MovieClip;
 	import flash.display.Shape;
@@ -15,8 +16,6 @@ package heros
 	import flash.geom.Point;
 	import flash.ui.KeyLocation;
 	import flash.ui.Keyboard;
-	
-	import time.EnterFrame;
 	
 	public class HeroBase extends Sprite implements IFrameObject
 	{
@@ -33,12 +32,13 @@ package heros
 		protected var _planet:Planet;
 		protected var atRight:Boolean=false;
 		protected var isAiming:Boolean = false;
-		protected var _heroRotation:Number=0;
+		protected var _angle:Number;
+		protected var _heroRotation:Number=0;          //人物旋转角度，人物变化后的导弹的发射角偏移量
 		protected var cdCheck:Boolean = false;
 		protected var _heroName:String = "";
 		protected var _index:int;
 		/**
-		 * 人物旋转之后，炮筒的角度计算不对。。。。
+		 * 人物旋转之后，炮筒的角度计算不对。。。。   搞定
 		 * */
 		public function HeroBase(team:String)
 		{
@@ -50,8 +50,8 @@ package heros
 			var i:int=Math.floor(Math.random()*Scene.planets.length);
 			_planet=Scene.planets[i];
 			var angle:Number=Math.random()*360;
-			this.heroRotation = angle;
-			
+			this.angle = angle;
+
 			this.addEventListener(MouseEvent.MOUSE_OVER,showName);
 			this.addEventListener(MouseEvent.MOUSE_OUT,hideName);
 		}
@@ -84,10 +84,7 @@ package heros
 		{
 			this.isAiming = true;
 			this.doAction("aiming7");
-			if(angle==0) angle=1;
-			//if(angle>180&&angle<300) angle=180;
-			//if(angle>=300) angle=0;
-			if(angle < 0) angle = 1;
+			if(angle <= 0) angle = 1;
 			if(angle > 180) angle = 180;
 //			if(angle == 180) angle = 1;			
 			this._content.graphic.gotoAndStop(angle);
@@ -109,6 +106,7 @@ package heros
 				an = this.rotation + 180;
 			}
 			var moveDirection:Number = an*Math.PI/180;  //移动方向垂直于rotation 实际方向会相差90度 原因不明
+			trace("an"+an);
 			var moveOnce:Point = new Point();                  //移动一步位移量
 			moveOnce.x = Math.cos(moveDirection)*speed;
 			moveOnce.y = Math.sin(moveDirection)*speed;
@@ -119,13 +117,15 @@ package heros
 			//if(this.rotation<-360) this.rotation+=360;
 			_heroRotation=this.rotation+360;
 			if(_heroRotation>360) _heroRotation-=360;
+			trace("heroRotation: ",_heroRotation);
 		}
 		
 		public function moveRight():void
 		{
 			this.turnRight();
 			this.doAction("walk");
-			var moveDirection:Number = this.rotation*Math.PI/180;  //移动方向垂直于rotation 实际方向会相差90度 原因不明
+			var moveDirection:Number = this.rotation*Math.PI/180;  
+			trace("an"+this.rotation);
 			var moveOnce:Point = new Point();   //移动一步位移量
 			moveOnce.x = Math.cos(moveDirection)*speed;
 			moveOnce.y = Math.sin(moveDirection)*speed;
@@ -144,6 +144,7 @@ package heros
 			//if(this.rotation<-360) this.rotation+=360;
 			_heroRotation=this.rotation+360;
 			if(_heroRotation>360) _heroRotation-=360;
+			trace("heroRotation: ",_heroRotation);
 		}
 		
 		private function collideCheck(point:Point):void  //参数是碰撞测试点  检查该点是否和星球碰撞 若不碰撞 向下调 若碰撞太多 向上调 调整后再执行检查
@@ -267,36 +268,6 @@ package heros
 		private function pointIsLeft(x:Number,y:Number):Boolean		
 			//鼠标点击并移动后 判断小人是否向左  方法是找到分割小人左右的那条直线的方程 把鼠标X Y值代入看是否>=0
 		{
-			/*调试代码 误删
-			//判断全局坐标系下的点x,y是否在人物和圆心连线的左边  此算法只有在星球完整的时候正确   
-			//注意trace斜率K之后 发现 不管小人走到哪  K一直是无穷大  且atan(K)一直是90度  
-			//这说明小人的rotation变化之后 以他为准的坐标系也随之旋转
-			var p:Point=new Point(_planet.x,_planet.y);
-			p=_planet.parent.localToGlobal(p);
-			p=this.globalToLocal(p);	
-			if(p.x<0) p.x=0;
-			
-			var p1:Point=new Point(x,y);
-			p1=this.globalToLocal(p1);
-			
-			var numberX:Number=p1.x;
-			if(atRight==true) p1.x=-numberX;
-			//trace("斜率"+Math.atan2(p.y,p.x)*180/Math.PI);
-			trace("斜率"+p.y/p.x);
-			return (p.y/p.x)*p1.x-p1.y<=0;
-			*/						
-			
-			/*基于直线方程的算法  此算法正确
-			var p0:Point=new Point(x,y);
-			p0=this.globalToLocal(p0);		
-			var numberX:Number=p0.x;
-			if(atRight==true) p0.x=-numberX;		
-			
-			var k:Number = Number.MAX_VALUE;		
-			//小人的rotation变化之后 以他为准的坐标系也随之旋转  所以以小人为准建立坐标系的话(此例中就是把p0转为小人的坐标系下)
-			//判断小人向左还是向右的这直线的斜率K总是无穷大的(角度总是90度)
-			return p0.y - k*p0.x >= 0;*/
-			
 			//更简单的算法  实际上 只取决于鼠标横坐标
 			var p0:Point=new Point(x,y);
 			p0=this.globalToLocal(p0);	
@@ -363,19 +334,22 @@ package heros
 			_heroName = value;
 		}
 
-		public function get heroRotation():Number
+		public function get angle():Number
 		{
-			return _heroRotation;
+			return _angle;
 		}
 
-		public function set heroRotation(value:Number):void
+		public function set angle(value:Number):void
 		{
-			if(this._heroRotation==value) return;
-			this._heroRotation=value;
+			if(this._angle==value) return;
+			this._angle=value;
 			var radiusAngle:Number=Math.PI*value/180;
 			this.x=_planet.radius*Math.cos(radiusAngle)+_planet.x;
 			this.y=_planet.radius*Math.sin(radiusAngle)+_planet.y;
-			this.rotation=value+90;
+			this.rotation = value + 90;
+			_heroRotation=0;
+			_heroRotation=this.rotation+360;
+			if(_heroRotation>360) _heroRotation-=360;
 		}
 	}
 }

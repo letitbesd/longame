@@ -7,10 +7,10 @@ package
 	import flash.events.Event;
 	import flash.geom.Point;
 	
-	import signals.FightSignals;
+	import com.signals.FightSignals;
 	
-	import time.CountdownEvent;
-	import time.EnterFrame;
+	import com.time.CountdownEvent;
+	import com.time.EnterFrame;
 	
 	public class Missile extends Sprite implements IFrameObject
 	{

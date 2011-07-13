@@ -1,4 +1,4 @@
-package signals
+package com.signals
 {
 	import flash.geom.Point;
 	
