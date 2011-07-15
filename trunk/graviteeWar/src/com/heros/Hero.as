@@ -5,6 +5,8 @@ package com.heros
 	import collision.CDK;
 	import collision.CollisionData;
 	
+	import com.longame.utils.MathUtil;
+	import com.signals.FightSignals;
 	import com.xingcloud.core.xingcloud_internal;
 	
 	import flash.display.MovieClip;
@@ -17,8 +19,6 @@ package com.heros
 	import flash.geom.Vector3D;
 	import flash.ui.Keyboard;
 	
-	import com.signals.FightSignals;
-	
 	public class Hero extends HeroBase
 	{
 		private var leftArrow:Boolean = false;
@@ -27,12 +27,15 @@ package com.heros
 		private var midPoint:Point=new Point();
 		private var temp:Point=new Point();
 		private var missileHitHeroAngle:Number;
-
+		private var _hitPointAboveMid:Boolean;
+		private var tempAngle:Number;
 		public function Hero(team:String)
 		{
 			super(team);
 			temp.x=this.x;
 			temp.y=this.y;
+			tempAngle=this.rotation;
+			
 			FightSignals.onHeroHitted.add(onHitted);
 		}
 		override public function onFrame():void
@@ -52,72 +55,100 @@ package com.heros
 				this.moveRight();	
 			}
 		}
-		private function onHitted(heroIndex:int,hitAngle:Number,belowPlanet:Boolean):void
+		private function onHitted(heroIndex:int,hitAngle:Number,belowPlanet:Boolean,hitPointAboveMid:Boolean):void
 		{
 				if(this.index!=heroIndex) return;
-//				if(hitByMissile==true)
-//				{
-//					missileHitHeroAngle=hitAngle;
-//					var ag:Number=missileHitHeroAngle*180/Math.PI;
-//					if((ag>=60&&ag<=130)||(ag<=-50&&ag>=-120))
-//					{
-//						missileHitHeroAngle=hitAngle;
-//					}
-//					else
-//					{
-//						missileHitHeroAngle=Math.PI*2-missileHitHeroAngle;
-//					}
-//						trace(hitAngle*180/Math.PI,"�ӵ���ײ�Ƕ�"+missileHitHeroAngle*180/Math.PI);
-//					this.addEventListener(Event.ENTER_FRAME,onFrame1);
-//				}
-//				else
-//				{
-//						missileHitHeroAngle=hitAngle;
-//						trace(hitAngle*180/Math.PI,"*"+missileHitHeroAngle*180/Math.PI);
-//						this.addEventListener(Event.ENTER_FRAME,onFrame1);
-//				 }
 				if(belowPlanet){
 						missileHitHeroAngle=hitAngle;
 				}else{
 					missileHitHeroAngle=hitAngle+Math.PI;
 				}
+				trace("加速度角度"+missileHitHeroAngle*180/Math.PI);
+				this._hitPointAboveMid=hitPointAboveMid;
 				this.addEventListener(Event.ENTER_FRAME,onFrame1);
 		}
 		private function onFrame1(event:Event):void
 		{
-			var vx:Number=10*Math.cos(missileHitHeroAngle);
-			var vy:Number=10*Math.sin(missileHitHeroAngle);
-			var g:AVector=Scene.getAcceleration(this.x,this.y);
-			vx+=g.x*0.997*0.05;
-			vy+=g.y*0.997*0.05;
-//			trace("&&&"+g.x*0.997*0.05,g.y*0.997*0.05,vx,vy);
-			this.x+=vx;
-			this.y+=vy;
-			this.rotation+=10;
-				for each(var p:Planet in Scene.planets)
+			//子弹击中HERO点在Hero中点上方 Hero停留在原始位置
+			if(this._hitPointAboveMid)
+			{
+				var check:Boolean=true;
+				//与人物站立星球做碰撞检测，碰到了做倒地动作，没碰到修正位移
+				while(check==true)
 				{
 					var checkPart:Shape = new Shape();
 					checkPart.graphics.clear();
-					checkPart.graphics.beginFill(0x66ccff,0.1);
-					checkPart.graphics.drawCircle(this.x,this.y,4);
+					checkPart.graphics.beginFill(0x66ccff,1);
+					checkPart.graphics.drawCircle(this.x,this.y,2);
 					checkPart.graphics.endFill();
-					var cdk:CollisionData=CDK.check(checkPart,p);
-					if(cdk){
-							var heroHitPlanetAngle:Number=cdk.angleInDegree;
-							this.x-=cdk.overlapping.length*Math.cos(heroHitPlanetAngle*Math.PI/180)*0.05;
-							this.y-=cdk.overlapping.length*Math.sin(heroHitPlanetAngle*Math.PI/180)*0.05;
-							this.rotation=Math.round(heroHitPlanetAngle-90);
-							this.removeEventListener(Event.ENTER_FRAME,onFrame1);
-							this.doAction("stand");
-						this.addEventListener(Event.ENTER_FRAME,checkFrame);
+					var cd1:CollisionData=CDK.check(checkPart,this._planet);
+					var heroMove:Boolean;
+					if(cd1){
+						this.doAction("stand");
+						check=false;
+						//如果人物修正了位移，旋转角度用CDK返回的碰撞角度
+						if(heroMove==true){
+							this.rotation=cd1.angleInDegree-90;
+							heroMove=false;
+						}
+					}
+					else{
+						if(MathUtil.getDistance(this.x,this.y,this._planet.x,this._planet.y)>this._planet.radius+5){
+								heroMove=false;
+						}else{
+							this.x+=5*Math.cos((this.rotation+90)*Math.PI/180);
+							this.y+=5*Math.sin((this.rotation+90)*Math.PI/180);
+						}
+							heroMove=true;
 						}
 				}
+				this.addEventListener(Event.ENTER_FRAME,checkFrame);
+				this.removeEventListener(Event.ENTER_FRAME,onFrame1);
+				return;
+			 }
+//			Hero 飞走
+			else
+			{
+				var vx:Number=8*Math.cos(missileHitHeroAngle);
+				var vy:Number=8*Math.sin(missileHitHeroAngle);
+				var g:AVector=Scene.getAcceleration(this.x,this.y);
+				vx+=g.x*0.997*0.15;
+				vy+=g.y*0.997*0.15;
+//				trace("&&&"+g.x*0.997*0.05,g.y*0.997*0.05,vx,vy);
+				trace("vx"+vx,"vy"+vy,"gx"+g.x*0.997*0.05,"gy"+g.y*0.997*0.2);
+				this.x+=vx;
+				this.y+=vy;
+				this.rotation+=10;
+				//飞出去与Scene内所有星球做碰撞检测
+					for each(var p:Planet in Scene.planets)
+					{
+						var checkPart1:Shape = new Shape();
+						checkPart1.graphics.clear();
+						checkPart1.graphics.beginFill(0x66ccff,1);
+						checkPart1.graphics.drawCircle(this.x,this.y,5);
+						checkPart1.graphics.endFill();
+						var cdk:CollisionData=CDK.check(checkPart1,p);
+						if(cdk){
+								trace("人物和星球重叠区域"+cdk.overlapping.length);
+								var heroHitPlanetAngle:Number=cdk.angleInDegree;
+								trace("人物碰撞星球角度"+heroHitPlanetAngle);
+								if(cdk.overlapping.length>20){
+								this.x-=cdk.overlapping.length*Math.cos(heroHitPlanetAngle*Math.PI/180)*0.08;
+								this.y-=cdk.overlapping.length*Math.sin(heroHitPlanetAngle*Math.PI/180)*0.08;
+									}
+								this.rotation=Math.round(heroHitPlanetAngle-90);
+								this.removeEventListener(Event.ENTER_FRAME,onFrame1);
+								this.doAction("stand");
+								this.addEventListener(Event.ENTER_FRAME,checkFrame);
+								this._planet=p;
+							   }
+					}
+			}
 			if(this.x>700||this.x<0||this.y>500||this.y<0){
 				this.x=temp.x;
 				this.y=temp.y;
-				this.rotation=0;
+				this.rotation=tempAngle;
 				this.removeEventListener(Event.ENTER_FRAME,onFrame1);
-				return;
 			}
 		}
 		

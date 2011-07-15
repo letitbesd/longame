@@ -107,28 +107,30 @@ package
 //				var p:Point=new Point(hole.x,hole.y);
 				var checkPart:Shape = new Shape();
 				checkPart.graphics.clear();
-				checkPart.graphics.beginFill(0x66ccff,1);
+				checkPart.graphics.beginFill(0x66ccff,0.1);
 				checkPart.graphics.drawCircle(holeX,holeY,27.5);
 				checkPart.graphics.endFill();
-				
-				var cd:CollisionData=CDK.check(checkPart,hero);
+//				Main.scene.addChild(checkPart);
+//				var cd:CollisionData=CDK.check(checkPart,hero);
+				var cd:Boolean=checkPart.hitTestObject(hero);
 			if(cd){
-				trace("collisioned : **********"+cd.angleInDegree);
+//				trace("collisioned : **********"+cd.angleInDegree);
 					var heroIndex:int=Scene.sceneHeros.indexOf(hero);
-					var heroP:Point=new Point(hero.x,hero.y);
 					var holeP:Point=new Point(holeX,holeY);
 					//将Hole坐标转换到Hero坐标系下
 					var pToHole:Point=hero.globalToLocal(holeP);
 					//Hero中心点
-					var heroMidPoint:Point=new Point(0,-16);
+					var heroMidPoint:Point=new Point(0,-15);
 					//Hole中心点与人物中心点的夹角
 					var an:Number=Math.atan2((pToHole.y-heroMidPoint.y),(pToHole.x-heroMidPoint.x));
-					var an1:Number=180*an/Math.PI
+					var an1:Number=180*an/Math.PI;
 					var belowPlanet:Boolean;
+					var hitPointAboveMid:Boolean;
 					if(hero.y>this.y) belowPlanet=true;
-					trace(an1,belowPlanet);
-					
-					FightSignals.onHeroHitted.dispatch(heroIndex,an,belowPlanet);
+					if(pToHole.y+14<0)   hitPointAboveMid=true;
+					trace("Hole与人碰撞角度"+an*180/Math.PI);
+					trace(pToHole);
+					FightSignals.onHeroHitted.dispatch(heroIndex,an,belowPlanet,hitPointAboveMid);
 				  }
 		}
 		public function getForceAttract (m1:Number, m2:Number, vec2Center:Vector2D):Vector2D

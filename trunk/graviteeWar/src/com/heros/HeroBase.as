@@ -106,7 +106,6 @@ package com.heros
 				an = this.rotation + 180;
 			}
 			var moveDirection:Number = an*Math.PI/180;  //移动方向垂直于rotation 实际方向会相差90度 原因不明
-			trace("an"+an);
 			var moveOnce:Point = new Point();                  //移动一步位移量
 			moveOnce.x = Math.cos(moveDirection)*speed;
 			moveOnce.y = Math.sin(moveDirection)*speed;
@@ -117,7 +116,6 @@ package com.heros
 			//if(this.rotation<-360) this.rotation+=360;
 			_heroRotation=this.rotation+360;
 			if(_heroRotation>360) _heroRotation-=360;
-			trace("heroRotation: ",_heroRotation);
 		}
 		
 		public function moveRight():void
@@ -125,7 +123,6 @@ package com.heros
 			this.turnRight();
 			this.doAction("walk");
 			var moveDirection:Number = this.rotation*Math.PI/180;  
-			trace("an"+this.rotation);
 			var moveOnce:Point = new Point();   //移动一步位移量
 			moveOnce.x = Math.cos(moveDirection)*speed;
 			moveOnce.y = Math.sin(moveDirection)*speed;
@@ -144,7 +141,6 @@ package com.heros
 			//if(this.rotation<-360) this.rotation+=360;
 			_heroRotation=this.rotation+360;
 			if(_heroRotation>360) _heroRotation-=360;
-			trace("heroRotation: ",_heroRotation);
 		}
 		
 		private function collideCheck(point:Point):void  //参数是碰撞测试点  检查该点是否和星球碰撞 若不碰撞 向下调 若碰撞太多 向上调 调整后再执行检查

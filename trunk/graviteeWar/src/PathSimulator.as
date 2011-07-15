@@ -28,7 +28,6 @@ package
 		private var _planet:Planet;
 		private var _path:Vector.<PathNode>=new Vector.<PathNode>();
 		private var _steps:int;
-		public static var hitHero:Boolean=false;
 		public static var heroIndex:int;
 		public static var hitAngle:Number;
 		private var _diaspatchHeroIndex:int;
@@ -114,23 +113,24 @@ package
 			checkPart.graphics.beginFill(0x66ccff,1);
 			checkPart.graphics.drawCircle(this.x,this.y,1);
 			checkPart.graphics.endFill();
-			var cdk:CollisionData=CDK.check(checkPart,hero._content);
-			if(cdk&&hero.index!=this._diaspatchHeroIndex)
+//			var cd:CollisionData=CDK.check(checkPart,hero._content);
+			var cd:Boolean=checkPart.hitTestObject(hero._content);
+			if(cd&&hero.index!=this._diaspatchHeroIndex)
 			{
-				hitHero=true;
 				hitAngle=Math.atan2((hero.y-this.y),(hero.x-this.x));
 				heroIndex=Scene.sceneHeros.indexOf(hero);
 				//判断人物在那个星球上
-				for each(var p:Planet in Scene.planets)
-				{
+				 for each(var p:Planet in Scene.planets)
+				 {
 					var dist:Number=Math.sqrt((hero.x-p.x)*(hero.x-p.x)+(hero.y-p.y)*(hero.y-p.y));
 					if(dist<p.radius+10)  _planet=p;
-				}
+				 }
 				 return true;
-			}else{
-				hitHero=false;
+			 }
+			 else
+			 {
 				return false;
-			}
+			 }
 		}
 		/**
 		 * 用虚线画路径
@@ -139,7 +139,7 @@ package
 		{
 			var node:PathNode;
 			var node1:PathNode;
-			for(var i:int=0;i<_path.length-1;i++){
+			for(var i:int=0;i<_path.length;i++){
 				if(i%2==0){
 					node=_path[i];
 					if(i+1<=_path.length-1) node1=_path[i+1];
@@ -152,7 +152,7 @@ package
 		}
 		
 		/**
-		 * 用实线画路径
+		 * 用实线画路径	
 		 * */
 		private function drawSolideLine(canvas:Graphics):void
 		{

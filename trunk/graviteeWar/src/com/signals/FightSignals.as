@@ -6,6 +6,6 @@ package com.signals
 
 	public class FightSignals
 	{
-        public static var onHeroHitted:Signal=new Signal(int,Number,Boolean);
+        public static var onHeroHitted:Signal=new Signal(int,Number,Boolean,Boolean);
 	}
 }
