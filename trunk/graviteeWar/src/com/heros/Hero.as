@@ -7,6 +7,8 @@ package com.heros
 	
 	import com.longame.utils.MathUtil;
 	import com.signals.FightSignals;
+	import com.time.EnterFrame;
+	import com.xingcloud.core.xingcloud_internal;
 	
 	import flash.display.MovieClip;
 	import flash.display.Shape;
@@ -27,9 +29,20 @@ package com.heros
 		
 		private var midPoint:Point=new Point();
 		private var temp:Point=new Point();
+		/**
+		 * 子弹击中人物加速度方向
+		 * */
 		private var missileHitHeroAngle:Number;
+		/**
+		 *   子弹击中人物点是否在人物中点上方
+		 * */
 		private var _hitPointAboveMid:Boolean;
 		private var tempAngle:Number;
+		/**
+		 *   是否被击中
+		 * */
+		private var _isHit:Boolean;
+		private var _shooterIndex:int;
 		public function Hero(team:String)
 		{
 			super(team);
@@ -44,6 +57,9 @@ package com.heros
 			{
 			roleMove();
 			}
+			if(isHit){
+				this.hit();
+			}
 		}
 		
 		private function roleMove():void
@@ -55,7 +71,7 @@ package com.heros
 				this.moveRight();	
 			}
 		}
-		private function onHitted(heroIndex:int,hitAngle:Number,belowPlanet:Boolean,hitPointAboveMid:Boolean):void
+		private function onHitted(heroIndex:int,hitAngle:Number,belowPlanet:Boolean,hitPointAboveMid:Boolean,shooterIndex:int):void
 		{
 				if(this.index!=heroIndex) return;
 				if(belowPlanet){
@@ -63,11 +79,14 @@ package com.heros
 				}else{
 					missileHitHeroAngle=hitAngle+Math.PI;
 				}
-				trace("加速度角度"+missileHitHeroAngle*180/Math.PI);
+//				trace("加速度角度"+missileHitHeroAngle*180/Math.PI);
 				this._hitPointAboveMid=hitPointAboveMid;
-				this.addEventListener(Event.ENTER_FRAME,onFrame1);
+				isHit=true;
+				this._shooterIndex=shooterIndex;
+				EnterFrame.addObject(this);
+//				this.addEventListener(Event.ENTER_FRAME,onFrame1);
 		}
-		private function onFrame1(event:Event):void
+		private function hit():void
 		{
 			//子弹击中HERO点在Hero中点上方 Hero停留在原始位置
 			if(this._hitPointAboveMid==true)
@@ -103,8 +122,7 @@ package com.heros
 						}
 				}
 				this.addEventListener(Event.ENTER_FRAME,checkFrame);
-				this.removeEventListener(Event.ENTER_FRAME,onFrame1);
-				return;
+				isHit=false;
 			 }
 //			Hero 飞走
 			else
@@ -147,7 +165,7 @@ package com.heros
 									}else{
 											this.rotation = heroHitPlanetAngle-90;
 										}
-								this.removeEventListener(Event.ENTER_FRAME,onFrame1);
+									isHit=false;
 								this.doAction("stand");
 								this.addEventListener(Event.ENTER_FRAME,checkFrame);
 								this._planet=p;
@@ -158,7 +176,7 @@ package com.heros
 				this.x=temp.x;
 				this.y=temp.y;
 				this.rotation=tempAngle;
-				this.removeEventListener(Event.ENTER_FRAME,onFrame1);
+				isHit=false;
 			}
 		}
 		
@@ -167,6 +185,8 @@ package com.heros
 			if(this._content.graphic.currentFrame>=30){
 				this.doAction("bob");
 				this.removeEventListener(Event.ENTER_FRAME,checkFrame);
+				trace(this._shooterIndex);
+				FightSignals.turnNextHero.dispatch(this._shooterIndex);
 			}
 		}
 		override public function active():void
@@ -209,7 +229,7 @@ package com.heros
 		protected function onMouseDown(event:MouseEvent):void
 		{
 			this.isAiming = true;
-			this.stage.removeEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
+//			this.stage.removeEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
 			this.stage.addEventListener(MouseEvent.MOUSE_UP,onMouseUp);
 			this.stage.addEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
 //			var mouseX:Number=event.stageX;
@@ -224,9 +244,9 @@ package com.heros
 		{
 			this.isAiming = false;
 			this.doAction("notaiming7");
-			this.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp);
+			this.stage.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp);
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
-			this.stage.addEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
+//			this.stage.addEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
             this.shoot();
 		}
 		protected function onMouseMove(event:MouseEvent):void

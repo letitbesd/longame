@@ -39,10 +39,12 @@ package
 		}
 		public function destroy():void
 		{
+			trace(this._shooterIndex);
 			if(_targetPlanet){
-				_targetPlanet.addHole(this.x,this.y);
-			}
+				_targetPlanet.addHole(this.x,this.y,this._shooterIndex);
+			}else{
 				FightSignals.turnNextHero.dispatch(this._shooterIndex);
+				}
 			if(this.parent) this.parent.removeChild(this);
 			EnterFrame.removeObject(this);
 			PlayOnceObject.play("explodeEffect",this.x,this.y);

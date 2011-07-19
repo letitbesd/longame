@@ -32,6 +32,7 @@ package
 		private var holeLayer:Sprite;
 		private var backLayer:MovieClip;
 		private var _attractive_coeff:int=400;
+		private var _shooterIndex:int;
 
 		
 		public function Planet()
@@ -89,7 +90,7 @@ package
 		 * @param x: 弹孔中心的x坐标
 		 * @param y: 弹孔中心的y坐标
 		 * */
-		public function addHole(x:Number,y:Number):void
+		public function addHole(x:Number,y:Number,shooterIndex:int):void
 		{
 			//把子弹的全局坐标转换到holeLayer的坐标系下
 			var p:Point=new Point(x,y);
@@ -97,6 +98,9 @@ package
 			var hole:MovieClip=AssetsLibrary.getMovieClip("hole");
 			hole.x=p.x;
 			hole.y=p.y;
+		
+			this._shooterIndex=shooterIndex;
+			trace("&***************"+this._shooterIndex);
 			hole.addEventListener(Event.ADDED_TO_STAGE,onAdded);
 			this.holeLayer.addChild(hole);
 		}
@@ -140,7 +144,9 @@ package
 					if(pToHole.y<heroMidPoint.y)   hitPointAboveMid=true;
 					trace("Hole与人碰撞角度"+an*180/Math.PI);
 					trace(pToHole);
-					FightSignals.onHeroHitted.dispatch(heroIndex,an,belowPlanet,hitPointAboveMid);
+					FightSignals.onHeroHitted.dispatch(heroIndex,an,belowPlanet,hitPointAboveMid,this._shooterIndex);
+				  }else{
+				  		FightSignals.turnNextHero.dispatch(this._shooterIndex);
 				  }
 		}
 		public function getForceAttract (m1:Number, m2:Number, vec2Center:Vector2D):Vector2D

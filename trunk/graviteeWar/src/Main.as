@@ -34,8 +34,6 @@ package
 		
 		private var _hero:Hero;		
 		
-		private var _counter:TextField=new TextField();
-		
 		public function Main()
 		{
 			super();
@@ -63,34 +61,7 @@ package
 			scene=new Scene();
 			this.addChild(scene);
 			
-			var format:TextFormat=new TextFormat(null,30,0x00ff00,true);
-			_counter.defaultTextFormat=format;
-			//自动根据文字设定宽度，以显示全部文字
-			_counter.autoSize=TextFieldAutoSize.LEFT;
-			this.addChild(_counter);
-			//			_counter.background=true;
-			//			_counter.backgroundColor=0xff0000;
-			//			
-			//			_counter.border=true;
-			//			_counter.borderColor=0x0000ff;
-			_counter.filters=[new GlowFilter(0x00ff00,0.6,10,10,6,3)];
-			_counter.selectable=false;
-			
-			var count:CountDown=new CountDown(100);
-			count.addEventListener(CountdownEvent.ON_SECOND,onSecond);
-			count.addEventListener(CountdownEvent.ON_COMPLETE,onComplete);
-			count.start();
 		}
-		
-		protected function onComplete(event:Event):void
-		{
-			// TODO Auto-generated method stub
-		}
-		
-		protected function onSecond(event:CountdownEvent):void
-		{
-//			trace("还剩下： "+event.secondLeft);
-			_counter.text="还剩下： "+event.secondLeft;
-		}
+
 	}
 }

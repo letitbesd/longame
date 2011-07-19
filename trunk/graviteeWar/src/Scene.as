@@ -5,6 +5,8 @@ package
 	import com.heros.Hero;
 	import com.longame.utils.MathUtil;
 	import com.signals.FightSignals;
+	import com.time.CountDown;
+	import com.time.CountdownEvent;
 	import com.time.EnterFrame;
 	
 	import flash.display.MovieClip;
@@ -12,7 +14,11 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.filters.GlowFilter;
 	import flash.geom.Point;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	import flash.utils.setTimeout;
 
 	public class Scene extends Sprite implements IFrameObject
@@ -25,8 +31,7 @@ package
 		private var hero1:Hero;
 		private var  hero2 :Hero;
 		public static var sceneHeros:Array=[];
-		public static var turnNextHero:Boolean;
-		public static var nextHeroIndex:int;
+		private var _counter:TextField=new TextField();
 		public function Scene()
 		{
 			super();
@@ -76,7 +81,30 @@ package
 			this.addHero();
 			this.addChild(pathCanvas);
 			EnterFrame.addObject(this);
+			var format:TextFormat=new TextFormat(null,30,0x00ff00,true);
+			_counter.defaultTextFormat=format;
+			//自动根据文字设定宽度，以显示全部文字
+			_counter.autoSize=TextFieldAutoSize.LEFT;
+			this.addChild(_counter);
+			_counter.filters=[new GlowFilter(0x00ff00,0.6,10,10,6,3)];
+			_counter.selectable=false;
+			this.addChild(_counter);
+			var count:CountDown=new CountDown(100);
+			count.addEventListener(CountdownEvent.ON_SECOND,onSecond);
+			count.addEventListener(CountdownEvent.ON_COMPLETE,onComplete);
+			count.start();
 			FightSignals.turnNextHero.add(turnNextHero);
+		}
+		
+		private function onComplete(event:Event):void
+		{
+			// TODO Auto-generated method stub
+		}
+		
+		private function onSecond(event:CountdownEvent):void
+		{
+			//			trace("还剩下： "+event.secondLeft);
+			_counter.text="还剩下： "+event.secondLeft;
 		}
 		private function turnNextHero(index:int):void
 		{
