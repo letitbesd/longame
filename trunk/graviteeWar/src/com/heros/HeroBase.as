@@ -37,8 +37,19 @@ package com.heros
 		protected var _angle:Number;
 		protected var _heroRotation:Number=0;          //人物旋转角度，人物变化后的导弹的发射角偏移量
 		protected var cdCheck:Boolean = false;
-		protected var _heroName:String = "";
 		protected var _index:int;
+		
+		protected var _heroName:String = "";
+		public var danceID:int = 0;
+		public var healthShown:int = 25;
+		public var positionPlanet:int = 0;
+		public var unitName:String = "";
+		public var health:int = 25;
+		public var killReg:int = -1;
+		public var timeSince:int = 0;
+		public var damageTaken:int = 0;
+		private var mass:int = 0;
+		
 		/**
 		 * 人物旋转之后，炮筒的角度计算不对。。。。   搞定
 		 * */
@@ -88,7 +99,6 @@ package com.heros
 			this.doAction("aiming7");
 			if(angle <= 0) angle = 1;
 			if(angle > 180) angle = 180;
-//			if(angle == 180) angle = 1;			
 			this._content.graphic.gotoAndStop(angle);
 		}
 		public function onFrame():void
@@ -241,7 +251,7 @@ package com.heros
 			//以炮管注册点为中心，炮管的发射方向
 			var p:Point=new Point(shootX,shootY);
 			p=this.globalToLocal(p);
-			this.shootAngle=Math.atan2(p.y,p.x);
+			this.shootAngle=Math.atan2(p.y+16,p.x);
 			var angleInDegree:int=Math.round(shootAngle*180/Math.PI);
 			//目标发射方向在炮筒的右边，人向右转
 			if(!inLeft) {
@@ -264,7 +274,6 @@ package com.heros
 		}
 		
 		private function pointIsLeft(x:Number,y:Number):Boolean		
-			//鼠标点击并移动后 判断小人是否向左  方法是找到分割小人左右的那条直线的方程 把鼠标X Y值代入看是否>=0
 		{
 			//更简单的算法  实际上 只取决于鼠标横坐标
 			var p0:Point=new Point(x,y);
@@ -289,6 +298,19 @@ package com.heros
 			var ag:Number=_heroRotation*Math.PI/180;
 			//trace("_heroRotation"+_heroRotation.toString())
 			return {strength:dist/30,angle:shootAngle+ag,startPos:startPos};			
+		}
+		
+		public function updateMass():void
+		{
+			mass = health * 5;
+			if (mass < 100)
+			{
+				mass = 100;
+			}
+		}
+		
+		protected function die():void{
+			
 		}
 		
 		public function get index():int

@@ -25,7 +25,7 @@ package
 	import com.time.CountdownEvent;
 	import com.time.EnterFrame;
 	
-	[SWF(width="700",height="500",backgroundColor="0x000000",frameRate="30")]
+	[SWF(width="700",height="500",backgroundColor="0x000000",frameRate="60")]
 	public class Main extends Engine
 	{
 		public static var scene:Scene;

@@ -4,6 +4,7 @@ package
 	
 	import collision.CDK;
 	import collision.CollisionData;
+	import collision.util.MathUtil;
 	
 	import com.longame.modules.components.AbstractComp;
 	
@@ -89,7 +90,7 @@ package
 		{		
 			var checkPart:Shape = new Shape();
 			checkPart.graphics.clear();
-			checkPart.graphics.beginFill(0x66ccff,0.1);
+			checkPart.graphics.beginFill(0x66ccff,1);
 			checkPart.graphics.drawCircle(this.x,this.y,1);
 			checkPart.graphics.endFill();
 			
@@ -106,6 +107,7 @@ package
 				return false;
 			}
 		} 
+		
 		private function checkCollisionWithHero(hero:Hero):Boolean
 		{
 			var checkPart:Shape = new Shape();
@@ -164,6 +166,7 @@ package
 				canvas.lineTo(node.x,node.y);
 			}
 		}
+
 		private function step():Boolean
 		{
 			var g:AVector=Scene.getAcceleration(this.x,this.y);
@@ -171,15 +174,19 @@ package
 			vy+=g.y*0.997;
 			this.x+=vx*0.0285;
 			this.y+=vy*0.0285;
+			
 			if(this.checkCollision()){
 				return false;
 			}
+			
 			this.rotation=Math.atan(vy/vx)*180/Math.PI;
 			if(vx<0) this.rotation=180+this.rotation;
+			
 			var node:PathNode=new PathNode();
 			node.x=this.x;
 			node.y=this.y;
 			node.rotation=this.rotation;
+			
 			_path.push(node);
 			return true;
 		}

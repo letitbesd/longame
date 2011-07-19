@@ -16,6 +16,7 @@ package
 	import flash.display.MovieClip;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.filters.GlowFilter;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
@@ -48,7 +49,6 @@ package
 			holeLayer=new Sprite();
 			this.addChild(holeLayer);
 			this.radius=60+Math.round(20*Math.random());
-//			this.mass = radius*this._density;
 			this.filters =[new GlowFilter(0,0.5, 8, 8, 5, 1, true)];
 		}
 		private var _radius:Number;
@@ -63,9 +63,11 @@ package
 			var scale:Number=_radius/basicRadius;
 			backLayer.scaleX=backLayer.scaleY=scale;
 //			mass=basicG*scale*scale*scale;
+//			mass = 4 / 3 * Math.PI * Math.pow(value, 3);
 			this.mass = _radius;
 			trace("mass:"+mass);
 		}
+		
 		public function getG(x:Number,y:Number):Point
 		{
 			var g:Point=new Point();
@@ -93,13 +95,23 @@ package
 			var p:Point=new Point(x,y);
 			p=this.holeLayer.globalToLocal(p);
 			var hole:MovieClip=AssetsLibrary.getMovieClip("hole");
-			this.holeLayer.addChild(hole);
 			hole.x=p.x;
 			hole.y=p.y;
-			for each(var h:Hero in Scene.sceneHeros){
-				this.holeCollisionWithHero(h,x,y);
+			hole.addEventListener(Event.ADDED_TO_STAGE,onAdded);
+			this.holeLayer.addChild(hole);
+		}
+		
+		protected function onAdded(event:Event):void
+		{
+			event.target.removeEventListener(Event.ADDED_TO_STAGE,onAdded);
+			var p:Point=new Point(event.target.x,event.target.y);
+			p=this.holeLayer.localToGlobal(p);
+			for each(var h:Hero in Scene.sceneHeros)
+			{
+				this.holeCollisionWithHero(h,p.x,p.y);
 			}
 		}
+		
 		private function holeCollisionWithHero(hero:Hero,holeX:Number,holeY:Number):void
 		{
 //				var p:Point=new Point(hole.x,hole.y);

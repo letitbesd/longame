@@ -7,7 +7,6 @@ package com.heros
 	
 	import com.longame.utils.MathUtil;
 	import com.signals.FightSignals;
-	import com.xingcloud.core.xingcloud_internal;
 	
 	import flash.display.MovieClip;
 	import flash.display.Shape;
@@ -24,6 +23,8 @@ package com.heros
 		private var leftArrow:Boolean = false;
 		private var rightArrow:Boolean = false;
 		private var isHit:Boolean=false;
+		public var isWalking:Boolean = false;
+		
 		private var midPoint:Point=new Point();
 		private var temp:Point=new Point();
 		private var missileHitHeroAngle:Number;
@@ -77,8 +78,8 @@ package com.heros
 				{
 					var checkPart:Shape = new Shape();
 					checkPart.graphics.clear();
-					checkPart.graphics.beginFill(0x66ccff,1);
-					checkPart.graphics.drawCircle(this.x,this.y,5);
+					checkPart.graphics.beginFill(0xffffff,1);
+					checkPart.graphics.drawCircle(this.x,this.y-2,4);
 					checkPart.graphics.endFill();
 					var cd1:CollisionData=CDK.check(checkPart,this._planet);
 					var heroMove:Boolean;
@@ -175,7 +176,6 @@ package com.heros
 			this.stage.addEventListener(KeyboardEvent.KEY_DOWN,onKeydown);
 			this.stage.addEventListener(KeyboardEvent.KEY_UP,onKeyUp);
 			this.addEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
-			this.stage.addEventListener(MouseEvent.MOUSE_UP,onMouseUp);
 		}
 		override public function deactive():void
 		{
@@ -184,7 +184,6 @@ package com.heros
 			this.stage.removeEventListener(KeyboardEvent.KEY_DOWN,onKeydown);
 			this.stage.removeEventListener(KeyboardEvent.KEY_UP,onKeyUp);
 			this.removeEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
-			this.stage.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp);
 		}
 		private function onKeyUp(event:KeyboardEvent):void
 		{
@@ -210,6 +209,8 @@ package com.heros
 		protected function onMouseDown(event:MouseEvent):void
 		{
 			this.isAiming = true;
+			this.stage.removeEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
+			this.stage.addEventListener(MouseEvent.MOUSE_UP,onMouseUp);
 			this.stage.addEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
 //			var mouseX:Number=event.stageX;
 //			var mouseY:Number=event.stageY;
@@ -223,16 +224,16 @@ package com.heros
 		{
 			this.isAiming = false;
 			this.doAction("notaiming7");
+			this.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp);
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
+			this.stage.addEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
             this.shoot();
-//			FightSignals.turnNextHero.dispatch(this.index);
 		}
 		protected function onMouseMove(event:MouseEvent):void
 		{
 			var mouseX:Number=event.stageX;
 			var mouseY:Number=event.stageY;
 			var p:Point=new Point(mouseX,mouseY);
-//			p=this.globalToLocal(p);
 			this.simulatePath(p.x,p.y);
 		}
 	}
