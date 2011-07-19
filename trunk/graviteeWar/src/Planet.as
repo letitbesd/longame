@@ -47,7 +47,6 @@ package
 			//加hole层
 			holeLayer=new Sprite();
 			this.addChild(holeLayer);
-
 			this.radius=60+Math.round(20*Math.random());
 //			this.mass = radius*this._density;
 			this.filters =[new GlowFilter(0,0.5, 8, 8, 5, 1, true)];
@@ -67,7 +66,6 @@ package
 			this.mass = _radius;
 			trace("mass:"+mass);
 		}
-		
 		public function getG(x:Number,y:Number):Point
 		{
 			var g:Point=new Point();
@@ -112,7 +110,7 @@ package
 				checkPart.graphics.endFill();
 //				Main.scene.addChild(checkPart);
 //				var cd:CollisionData=CDK.check(checkPart,hero);
-				var cd:Boolean=checkPart.hitTestObject(hero);
+				var cd:Boolean=checkPart.hitTestObject(hero._content);
 			if(cd){
 //				trace("collisioned : **********"+cd.angleInDegree);
 					var heroIndex:int=Scene.sceneHeros.indexOf(hero);
@@ -120,14 +118,14 @@ package
 					//将Hole坐标转换到Hero坐标系下
 					var pToHole:Point=hero.globalToLocal(holeP);
 					//Hero中心点
-					var heroMidPoint:Point=new Point(0,-15);
+					var heroMidPoint:Point=new Point(0,-16);
 					//Hole中心点与人物中心点的夹角
 					var an:Number=Math.atan2((pToHole.y-heroMidPoint.y),(pToHole.x-heroMidPoint.x));
 					var an1:Number=180*an/Math.PI;
 					var belowPlanet:Boolean;
 					var hitPointAboveMid:Boolean;
 					if(hero.y>this.y) belowPlanet=true;
-					if(pToHole.y+14<0)   hitPointAboveMid=true;
+					if(pToHole.y<heroMidPoint.y)   hitPointAboveMid=true;
 					trace("Hole与人碰撞角度"+an*180/Math.PI);
 					trace(pToHole);
 					FightSignals.onHeroHitted.dispatch(heroIndex,an,belowPlanet,hitPointAboveMid);

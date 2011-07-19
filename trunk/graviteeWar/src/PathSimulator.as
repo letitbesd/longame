@@ -28,10 +28,10 @@ package
 		private var _planet:Planet;
 		private var _path:Vector.<PathNode>=new Vector.<PathNode>();
 		private var _steps:int;
-		public static var heroIndex:int;
-		public static var hitAngle:Number;
-		private var _diaspatchHeroIndex:int;
-		public function PathSimulator(strength:Number,angle:Number,startPos:Point,dispatchHeroIndex:int)
+//		public static var heroIndex:int;
+//		public static var hitAngle:Number;
+		public var heroShootIndex:int;
+		public function PathSimulator(strength:Number,angle:Number,startPos:Point,heroIndex:int)
 		{
 			strength=Math.max(1,strength);
 			startSpeed=basicSpeed*strength;
@@ -40,7 +40,7 @@ package
 			this.y=startPos.y;
 			vx=startSpeed*Math.cos(this.startAngle);
 			vy=startSpeed*Math.sin(this.startAngle);
-			this._diaspatchHeroIndex=dispatchHeroIndex;
+			heroShootIndex=heroIndex;
 		}
 		public function simulate(steps:int,canvas:Graphics):Vector.<PathNode>
 		{ 
@@ -93,7 +93,7 @@ package
 			checkPart.graphics.drawCircle(this.x,this.y,1);
 			checkPart.graphics.endFill();
 			
-			var cd:CollisionData=CDK.check(checkPart,planet);
+			var cd:CollisionData=CDK.check(checkPart,planet);	
 			if(cd){
 //				var an:Number=cd.angleInRadian;
 //				var springParam:Number=0.1;
@@ -115,10 +115,10 @@ package
 			checkPart.graphics.endFill();
 //			var cd:CollisionData=CDK.check(checkPart,hero._content);
 			var cd:Boolean=checkPart.hitTestObject(hero._content);
-			if(cd&&hero.index!=this._diaspatchHeroIndex)
+			if(cd&&hero.index!=this.heroShootIndex)
 			{
-				hitAngle=Math.atan2((hero.y-this.y),(hero.x-this.x));
-				heroIndex=Scene.sceneHeros.indexOf(hero);
+//				hitAngle=Math.atan2((hero.y-this.y),(hero.x-this.x));
+//				heroIndex=Scene.sceneHeros.indexOf(hero);
 				//判断人物在那个星球上
 				 for each(var p:Planet in Scene.planets)
 				 {

@@ -14,6 +14,8 @@ package com.heros
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
 	import flash.ui.KeyLocation;
 	import flash.ui.Keyboard;
 	
@@ -224,7 +226,7 @@ package com.heros
 		protected function shoot():void
 		{
 			if((currentPath==null)||(currentPath.length==0)) return;
-			var missile:Missile=new Missile(this.currentPath,simulator.planet);
+			var missile:Missile=new Missile(this.currentPath,simulator.planet,simulator.heroShootIndex);
 			Scene.pathCanvas.graphics.clear();
 			Main.scene.addChild(missile);
 			this.doAction("notaiming7");

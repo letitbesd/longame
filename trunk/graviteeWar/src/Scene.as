@@ -2,7 +2,10 @@ package
 {
 	import AMath.AVector;
 	
+	import com.heros.Hero;
 	import com.longame.utils.MathUtil;
+	import com.signals.FightSignals;
+	import com.time.EnterFrame;
 	
 	import flash.display.MovieClip;
 	import flash.display.Shape;
@@ -10,10 +13,7 @@ package
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
-	
-	import com.heros.Hero;
-	
-	import com.time.EnterFrame;
+	import flash.utils.setTimeout;
 
 	public class Scene extends Sprite implements IFrameObject
 	{
@@ -25,6 +25,8 @@ package
 		private var hero1:Hero;
 		private var  hero2 :Hero;
 		public static var sceneHeros:Array=[];
+		public static var turnNextHero:Boolean;
+		public static var nextHeroIndex:int;
 		public function Scene()
 		{
 			super();
@@ -32,7 +34,6 @@ package
 		}
 		public function onFrame():void
 		{
-			
 		}
 //        public static function calG(x:Number,y:Number):Point
 //		{
@@ -75,8 +76,18 @@ package
 			this.addHero();
 			this.addChild(pathCanvas);
 			EnterFrame.addObject(this);
+			FightSignals.turnNextHero.add(turnNextHero);
 		}
-
+		private function turnNextHero(index:int):void
+		{
+			sceneHeros[index].deactive();
+			var nextIndex:int=index+1;
+			if(nextIndex>2){
+				nextIndex=0;
+			}
+			sceneHeros[nextIndex].active();
+			
+		}
 		private function addHero():void
 		{
 			hero=new Hero("red");
@@ -85,7 +96,6 @@ package
 			this.addChild(hero);
 			this.addChild(hero1);
 			this.addChild(hero2);
-
 			sceneHeros.push(hero);
 			sceneHeros.push(hero1);
 			sceneHeros.push(hero2);

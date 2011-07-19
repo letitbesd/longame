@@ -1,31 +1,29 @@
 package
 {
 	import com.longame.managers.AssetsLibrary;
+	import com.signals.FightSignals;
+	import com.time.CountdownEvent;
+	import com.time.EnterFrame;
 	
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Point;
 	
-	import com.signals.FightSignals;
-	
-	import com.time.CountdownEvent;
-	import com.time.EnterFrame;
-	
 	public class Missile extends Sprite implements IFrameObject
 	{
 		private var path:Vector.<PathNode>;
 		private var _content:MovieClip;
-		
 		private var _targetPlanet:Planet;
-		
-		public function Missile(path:Vector.<PathNode>,targetPlanet:Planet)
+		private var _shooterIndex:int;
+		public function Missile(path:Vector.<PathNode>,targetPlanet:Planet,heroIndex:int)
 		{
 			super();
 			this.path=path;
 			this._targetPlanet=targetPlanet;
 			_content=AssetsLibrary.getMovieClip("missile");
 			this.addChild(_content);
+			this._shooterIndex=heroIndex;
 			this.addEventListener(Event.ADDED_TO_STAGE,onAdded);
 		}
 		public function onFrame():void
@@ -44,10 +42,12 @@ package
 			if(_targetPlanet){
 				_targetPlanet.addHole(this.x,this.y);
 			}
+				FightSignals.turnNextHero.dispatch(this._shooterIndex);
 			if(this.parent) this.parent.removeChild(this);
 			EnterFrame.removeObject(this);
 			PlayOnceObject.play("explodeEffect",this.x,this.y);
 			this.fire.destroy();
+//			FightSignals.turnNextHero.dispatch(this._heroShootIndex);
 		}
 		private var fire:MissileFire;
 		protected function onAdded(event:Event):void

@@ -35,7 +35,6 @@ package com.heros
 			temp.x=this.x;
 			temp.y=this.y;
 			tempAngle=this.rotation;
-			
 			FightSignals.onHeroHitted.add(onHitted);
 		}
 		override public function onFrame():void
@@ -70,7 +69,7 @@ package com.heros
 		private function onFrame1(event:Event):void
 		{
 			//子弹击中HERO点在Hero中点上方 Hero停留在原始位置
-			if(this._hitPointAboveMid)
+			if(this._hitPointAboveMid==true)
 			{
 				var check:Boolean=true;
 				//与人物站立星球做碰撞检测，碰到了做倒地动作，没碰到修正位移
@@ -79,7 +78,7 @@ package com.heros
 					var checkPart:Shape = new Shape();
 					checkPart.graphics.clear();
 					checkPart.graphics.beginFill(0x66ccff,1);
-					checkPart.graphics.drawCircle(this.x,this.y,2);
+					checkPart.graphics.drawCircle(this.x,this.y,5);
 					checkPart.graphics.endFill();
 					var cd1:CollisionData=CDK.check(checkPart,this._planet);
 					var heroMove:Boolean;
@@ -94,7 +93,7 @@ package com.heros
 					}
 					else{
 						if(MathUtil.getDistance(this.x,this.y,this._planet.x,this._planet.y)>this._planet.radius+5){
-								heroMove=false;
+								check=false;
 						}else{
 							this.x+=5*Math.cos((this.rotation+90)*Math.PI/180);
 							this.y+=5*Math.sin((this.rotation+90)*Math.PI/180);
@@ -109,16 +108,21 @@ package com.heros
 //			Hero 飞走
 			else
 			{
-				var vx:Number=8*Math.cos(missileHitHeroAngle);
-				var vy:Number=8*Math.sin(missileHitHeroAngle);
-				var g:AVector=Scene.getAcceleration(this.x,this.y);
-				vx+=g.x*0.997*0.15;
-				vy+=g.y*0.997*0.15;
-//				trace("&&&"+g.x*0.997*0.05,g.y*0.997*0.05,vx,vy);
-				trace("vx"+vx,"vy"+vy,"gx"+g.x*0.997*0.05,"gy"+g.y*0.997*0.2);
+				//被子弹击中后的加速度
+				var vx:Number=10*Math.cos(missileHitHeroAngle);
+				var vy:Number=10*Math.sin(missileHitHeroAngle);
+				//Hero脱离当前星球，受到场景内所有星球引力影响 
+				if(MathUtil.getDistance(this.x,this.y,this._planet.x,this._planet.y)>this._planet.radius+5){
+					var g:AVector=Scene.getAcceleration(this.x,this.y);
+					vx+=g.x*0.997*0.0285;
+					vy+=g.y*0.997*0.0285;
+//					trace("vx"+vx,"vy"+vy,"gx"+g.x*0.997*0.05,"gy"+g.y*0.997*0.2);
+				}
+//				trace(vx,vy);
 				this.x+=vx;
 				this.y+=vy;
 				this.rotation+=10;
+				this.doAction("aiming9");
 				//飞出去与Scene内所有星球做碰撞检测
 					for each(var p:Planet in Scene.planets)
 					{
@@ -129,14 +133,19 @@ package com.heros
 						checkPart1.graphics.endFill();
 						var cdk:CollisionData=CDK.check(checkPart1,p);
 						if(cdk){
-								trace("人物和星球重叠区域"+cdk.overlapping.length);
+//								trace("人物和星球重叠区域"+cdk.overlapping.length);
 								var heroHitPlanetAngle:Number=cdk.angleInDegree;
-								trace("人物碰撞星球角度"+heroHitPlanetAngle);
-								if(cdk.overlapping.length>20){
-								this.x-=cdk.overlapping.length*Math.cos(heroHitPlanetAngle*Math.PI/180)*0.08;
-								this.y-=cdk.overlapping.length*Math.sin(heroHitPlanetAngle*Math.PI/180)*0.08;
+//								trace("人物碰撞星球角度"+heroHitPlanetAngle);
+									if(cdk.overlapping.length>20)
+									{
+										this.x-=cdk.overlapping.length*Math.cos(heroHitPlanetAngle*Math.PI/180)*0.08;
+										this.y-=cdk.overlapping.length*Math.sin(heroHitPlanetAngle*Math.PI/180)*0.08;
 									}
-								this.rotation=Math.round(heroHitPlanetAngle-90);
+									if(heroHitPlanetAngle==180){
+											this.rotation=missileHitHeroAngle*180/Math.PI+180;
+									}else{
+											this.rotation = heroHitPlanetAngle-90;
+										}
 								this.removeEventListener(Event.ENTER_FRAME,onFrame1);
 								this.doAction("stand");
 								this.addEventListener(Event.ENTER_FRAME,checkFrame);
@@ -175,7 +184,7 @@ package com.heros
 			this.stage.removeEventListener(KeyboardEvent.KEY_DOWN,onKeydown);
 			this.stage.removeEventListener(KeyboardEvent.KEY_UP,onKeyUp);
 			this.removeEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
-			this.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp);
+			this.stage.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp);
 		}
 		private function onKeyUp(event:KeyboardEvent):void
 		{
@@ -216,6 +225,7 @@ package com.heros
 			this.doAction("notaiming7");
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
             this.shoot();
+//			FightSignals.turnNextHero.dispatch(this.index);
 		}
 		protected function onMouseMove(event:MouseEvent):void
 		{
