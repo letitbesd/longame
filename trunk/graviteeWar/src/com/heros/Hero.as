@@ -5,6 +5,7 @@ package com.heros
 	import collision.CDK;
 	import collision.CollisionData;
 	
+	import com.longame.managers.AssetsLibrary;
 	import com.longame.utils.MathUtil;
 	import com.signals.FightSignals;
 	import com.time.EnterFrame;
@@ -204,6 +205,7 @@ package com.heros
 			this.stage.removeEventListener(KeyboardEvent.KEY_DOWN,onKeydown);
 			this.stage.removeEventListener(KeyboardEvent.KEY_UP,onKeyUp);
 			this.removeEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
+//			this.removeChild();
 		}
 		private function onKeyUp(event:KeyboardEvent):void
 		{
@@ -229,14 +231,8 @@ package com.heros
 		protected function onMouseDown(event:MouseEvent):void
 		{
 			this.isAiming = true;
-//			this.stage.removeEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
 			this.stage.addEventListener(MouseEvent.MOUSE_UP,onMouseUp);
 			this.stage.addEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
-//			var mouseX:Number=event.stageX;
-//			var mouseY:Number=event.stageY;
-//			var p:Point=new Point(mouseX,mouseY);
-//			p=this.globalToLocal(p);
-//			this.simulatePath(p.x,p.y);	
 		}
 		
 		
@@ -246,7 +242,6 @@ package com.heros
 			this.doAction("notaiming7");
 			this.stage.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp);
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
-//			this.stage.addEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
             this.shoot();
 		}
 		protected function onMouseMove(event:MouseEvent):void

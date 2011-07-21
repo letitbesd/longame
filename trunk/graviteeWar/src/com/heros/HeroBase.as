@@ -30,6 +30,7 @@ package com.heros
 		private var _healthy:int  = 0;
 		protected var _team:String;
 		public var _content:MovieClip;
+		public var arrow:MovieClip ;
 		protected var shootAngle:Number;
 		protected var _planet:Planet;
 		protected var atRight:Boolean=false;
@@ -60,6 +61,11 @@ package com.heros
 			this.addChild(_content);
 			this.team=team;
 			this.doAction(defaultAction);
+			
+			arrow =  AssetsLibrary.getMovieClip("Arrow");
+			this.addChild(arrow);
+			arrow.visible = false;
+			
 			var i:int=Math.floor(Math.random()*Scene.planets.length);
 			_planet=Scene.planets[i];
 			var angle:Number=Math.random()*360;
@@ -82,10 +88,13 @@ package com.heros
 		public function active():void
 		{
 			EnterFrame.addObject(this);
+			arrow.visible = true;
+			arrow.cndtext.visible = false;
 		}
 		public function deactive():void
 		{
 			EnterFrame.removeObject(this);
+			arrow.visible = false;
 		}
 		public function doAction(name:String):void
 		{

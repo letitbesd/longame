@@ -29,8 +29,6 @@ package
 		private var _planet:Planet;
 		private var _path:Vector.<PathNode>=new Vector.<PathNode>();
 		private var _steps:int;
-//		public static var heroIndex:int;
-//		public static var hitAngle:Number;
 		public var heroShootIndex:int;
 		public function PathSimulator(strength:Number,angle:Number,startPos:Point,heroIndex:int)
 		{
