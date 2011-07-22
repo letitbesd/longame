@@ -32,8 +32,6 @@ package
 		private var holeLayer:Sprite;
 		private var backLayer:MovieClip;
 		private var _attractive_coeff:int=400;
-		private var _shooterIndex:int;
-
 		
 		public function Planet()
 		{
@@ -45,7 +43,6 @@ package
 			//加星球背景
 			backLayer=AssetsLibrary.getMovieClip("planet"+i);
 			this.addChild(backLayer);
-//	
 			//加hole层
 			holeLayer=new Sprite();
 			this.addChild(holeLayer);
@@ -90,7 +87,7 @@ package
 		 * @param x: 弹孔中心的x坐标
 		 * @param y: 弹孔中心的y坐标
 		 * */
-		public function addHole(x:Number,y:Number,shooterIndex:int):void
+		public function addHole(x:Number,y:Number):void
 		{
 			//把子弹的全局坐标转换到holeLayer的坐标系下
 			var p:Point=new Point(x,y);
@@ -98,9 +95,6 @@ package
 			var hole:MovieClip=AssetsLibrary.getMovieClip("hole");
 			hole.x=p.x;
 			hole.y=p.y;
-		
-			this._shooterIndex=shooterIndex;
-			trace("&***************"+this._shooterIndex);
 			hole.addEventListener(Event.ADDED_TO_STAGE,onAdded);
 			this.holeLayer.addChild(hole);
 		}
@@ -124,7 +118,7 @@ package
 				checkPart.graphics.beginFill(0x66ccff,0.1);
 				checkPart.graphics.drawCircle(holeX,holeY,27.5);
 				checkPart.graphics.endFill();
-//				Main.scene.addChild(checkPart);
+				Main.scene.addChild(checkPart);
 //				var cd:CollisionData=CDK.check(checkPart,hero);
 				var cd:Boolean=checkPart.hitTestObject(hero._content);
 			if(cd){
@@ -137,16 +131,14 @@ package
 					var heroMidPoint:Point=new Point(0,-16);
 					//Hole中心点与人物中心点的夹角
 					var an:Number=Math.atan2((pToHole.y-heroMidPoint.y),(pToHole.x-heroMidPoint.x));
-					var an1:Number=180*an/Math.PI;
+//					var an1:Number=180*an/Math.PI;
 					var belowPlanet:Boolean;
 					var hitPointAboveMid:Boolean;
 					if(hero.y>this.y) belowPlanet=true;
 					if(pToHole.y<heroMidPoint.y)   hitPointAboveMid=true;
 					trace("Hole与人碰撞角度"+an*180/Math.PI);
 					trace(pToHole);
-					FightSignals.onHeroHitted.dispatch(heroIndex,an,belowPlanet,hitPointAboveMid,this._shooterIndex);
-				  }else{
-				  		FightSignals.turnNextHero.dispatch(this._shooterIndex);
+					FightSignals.onHeroHitted.dispatch(heroIndex,an,belowPlanet,hitPointAboveMid);
 				  }
 		}
 		public function getForceAttract (m1:Number, m2:Number, vec2Center:Vector2D):Vector2D

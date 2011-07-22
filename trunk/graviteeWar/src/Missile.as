@@ -15,7 +15,6 @@ package
 		private var path:Vector.<PathNode>;
 		private var _content:MovieClip;
 		private var _targetPlanet:Planet;
-		private var _shooterIndex:int;
 		public function Missile(path:Vector.<PathNode>,targetPlanet:Planet,heroIndex:int)
 		{
 			super();
@@ -23,7 +22,6 @@ package
 			this._targetPlanet=targetPlanet;
 			_content=AssetsLibrary.getMovieClip("missile");
 			this.addChild(_content);
-			this._shooterIndex=heroIndex;
 			this.addEventListener(Event.ADDED_TO_STAGE,onAdded);
 		}
 		public function onFrame():void
@@ -39,18 +37,14 @@ package
 		}
 		public function destroy():void
 		{
-			trace(this._shooterIndex);
 			if(_targetPlanet){
-				_targetPlanet.addHole(this.x,this.y,this._shooterIndex);
-			}else{
-				FightSignals.turnNextHero.dispatch(this._shooterIndex);
+				_targetPlanet.addHole(this.x,this.y);
 				}
 			if(this.parent) this.parent.removeChild(this);
 			EnterFrame.removeObject(this);
 			PlayOnceObject.play("explodeEffect",this.x,this.y);
 			this.fire.destroy();
-//			FightSignals.turnNextHero.dispatch(this._heroShootIndex);
-		}
+		}		
 		private var fire:MissileFire;
 		protected function onAdded(event:Event):void
 		{

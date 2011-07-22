@@ -28,7 +28,10 @@ package com.time
 		{
 			_timer.stop();
 		}
-		
+		public function reset():void
+		{
+			_timer.reset();
+		}
 		protected function onTimer(event:TimerEvent):void
 		{
 //			trace("currentCount: "+_timer.currentCount,"totalCount: "+_timer.repeatCount);

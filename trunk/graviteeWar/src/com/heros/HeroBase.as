@@ -25,7 +25,6 @@ package com.heros
 		public static const teams:Array=["white","red","blue","green","yellow"]; 	
 		public static const defaultAction:String="bob";
 		private static const collideRadius:Number = 5;
-		
 		public var accurate:int=50;				//玩家的射击精确度，实际就是显示子弹运行路径的长短
 		private var _healthy:int  = 0;
 		protected var _team:String;
@@ -34,13 +33,13 @@ package com.heros
 		protected var shootAngle:Number;
 		protected var _planet:Planet;
 		protected var atRight:Boolean=false;
-		protected var isAiming:Boolean = false;
 		protected var _angle:Number;
 		protected var _heroRotation:Number=0;          //人物旋转角度，人物变化后的导弹的发射角偏移量
 		protected var cdCheck:Boolean = false;
 		protected var _index:int;
-		
+		protected var isAiming:Boolean = false;
 		protected var _heroName:String = "";
+		protected var hp:HealthDisplay;
 		public var danceID:int = 0;
 		public var healthShown:int = 25;
 		public var positionPlanet:int = 0;
@@ -61,11 +60,13 @@ package com.heros
 			this.addChild(_content);
 			this.team=team;
 			this.doAction(defaultAction);
-			
+//			
 			arrow =  AssetsLibrary.getMovieClip("Arrow");
-			this.addChild(arrow);
+			this.addChild(arrow);	
 			arrow.visible = false;
-			
+			//血量
+			hp=new HealthDisplay(teams.indexOf(team));
+			this.addChild(hp);
 			var i:int=Math.floor(Math.random()*Scene.planets.length);
 			_planet=Scene.planets[i];
 			var angle:Number=Math.random()*360;
@@ -216,6 +217,7 @@ package com.heros
 		{
 			if(this.scaleX==1) return;
 			this.scaleX=1;
+			this.hp.scaleX=1;
 			atRight=false;
 		}
 		
@@ -223,6 +225,7 @@ package com.heros
 		{
 			if(this.scaleX==-1) return;
 			this.scaleX=-1;
+			this.hp.scaleX=-1;
 			atRight=true;			
 		}
 		
@@ -251,7 +254,7 @@ package com.heros
 			this.doAction("notaiming7");
 		}
 		
-		private var simulator:PathSimulator;
+		protected var simulator:PathSimulator;
 		
 		protected function simulatePath(shootX:Number,shootY:Number):void
 		{

@@ -29,7 +29,6 @@ package
 	public class Main extends Engine
 	{
 		public static var scene:Scene;
-		
 		private var _planet:MovieClip;
 		
 		private var _hero:Hero;		

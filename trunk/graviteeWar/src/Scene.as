@@ -3,6 +3,8 @@ package
 	import AMath.AVector;
 	
 	import com.heros.Hero;
+	import com.heros.HeroBase;
+	import com.longame.managers.AssetsLibrary;
 	import com.longame.utils.MathUtil;
 	import com.signals.FightSignals;
 	import com.time.CountDown;
@@ -31,11 +33,15 @@ package
 		private var hero1:Hero;
 		private var  hero2 :Hero;
 		public static var sceneHeros:Array=[];
-		private var _counter:TextField=new TextField();
+		private var _counter:MovieClip;
+		private var _counterColor:String;
+		private var _counterOn:Boolean;
+		private var _count:CountDown;
 		public function Scene()
 		{
 			super();
 			this.addEventListener(Event.ADDED_TO_STAGE,onAdded);
+			_counter = AssetsLibrary.getMovieClip("counter");
 		}
 		public function onFrame():void
 		{
@@ -71,6 +77,7 @@ package
 					_loc_1.add(_loc_3);
 			}
 			return _loc_1;
+				
 		}
 	
 		protected function onAdded(event:Event):void
@@ -81,41 +88,35 @@ package
 			this.addHero();
 			this.addChild(pathCanvas);
 			EnterFrame.addObject(this);
-			var format:TextFormat=new TextFormat(null,30,0x00ff00,true);
-			_counter.defaultTextFormat=format;
-			//自动根据文字设定宽度，以显示全部文字
-			_counter.autoSize=TextFieldAutoSize.LEFT;
-			this.addChild(_counter);
-			_counter.filters=[new GlowFilter(0x00ff00,0.6,10,10,6,3)];
-			_counter.selectable=false;
-			this.addChild(_counter);
-			var count:CountDown=new CountDown(100);
-			count.addEventListener(CountdownEvent.ON_SECOND,onSecond);
-			count.addEventListener(CountdownEvent.ON_COMPLETE,onComplete);
-			count.start();
 			FightSignals.turnNextHero.add(turnNextHero);
 		}
-		
-		private function onComplete(event:Event):void
+		private function turnNextHero(index:int,isFire:Boolean):void
 		{
-			// TODO Auto-generated method stub
+			//如果当前HERO开火，倒计时还剩4秒，不开火则轮到下一个HERO
+			if(isFire){
+				_count.reset();
+				_count=new CountDown(4);
+				_count.addEventListener(CountdownEvent.ON_SECOND,onSecond);
+				_count.addEventListener(CountdownEvent.ON_COMPLETE,onComplete);
+				_count.start();
+				setTimeout(this.changeHeroStage,4000,index);
+			}else{
+				this.changeHeroStage(index);			
+			}
 		}
-		
-		private function onSecond(event:CountdownEvent):void
+		private function changeHeroStage(heroIndex:int):void
 		{
-			//			trace("还剩下： "+event.secondLeft);
-			_counter.text="还剩下： "+event.secondLeft;
-		}
-		private function turnNextHero(index:int):void
-		{
-			sceneHeros[index].deactive();
-			var nextIndex:int=index+1;
+			sceneHeros[heroIndex].deactive();
+			sceneHeros[heroIndex].isTurn=false;
+			var nextIndex:int=heroIndex+1;
 			if(nextIndex>2){
 				nextIndex=0;
 			}
 			sceneHeros[nextIndex].active();
-			
+			sceneHeros[nextIndex].isTurn=true;
+			this.counterColor=sceneHeros[nextIndex].team;
 		}
+		//添加英雄
 		private function addHero():void
 		{
 			hero=new Hero("red");
@@ -131,7 +132,10 @@ package
 			hero1.index=sceneHeros.indexOf(hero1);
 			hero2.index = sceneHeros.indexOf(hero2);
 			hero.active();
+			hero.isTurn=true;
+			this.counterColor=hero.team;
 		}
+		//添加星球
 		private function addPlanet(p:Point):void
 		{
 			var _planet:Planet=new Planet();
@@ -140,5 +144,48 @@ package
 			_planet.x=p.x;
 			_planet.y=p.y
 		}
+		//倒计时器颜色
+		public function set counterColor(value:String):void
+		{
+			_counterColor = value;
+			var teamIndex:uint;
+			switch(value)
+			 {
+				case "red": teamIndex=1;
+				 break;
+				case "blue":  teamIndex=2;
+				 break;
+				case "green":  teamIndex=3;
+				 break;
+				case "yellow": teamIndex=4;
+				 break;
+			 }
+			this.addCounter(teamIndex);
+		}
+		private function addCounter(teamIndex:int):void
+		{
+			this.addChild(_counter);
+			_counter.gotoAndStop(teamIndex);
+			if(this._counterOn==true) _count.reset();
+			_count=new CountDown(45);
+			_count.addEventListener(CountdownEvent.ON_SECOND,onSecond);
+			_count.addEventListener(CountdownEvent.ON_COMPLETE,onComplete);
+			_count.start();
+		}
+		private function onComplete(event:Event):void
+		{
+			var currentHeroIndex:int;
+			for each(var h:Hero in sceneHeros){
+				if(_counterColor==h.team) currentHeroIndex=h.index;
+			}
+			this.turnNextHero(currentHeroIndex,false);
+		}
+		
+		private function onSecond(event:CountdownEvent):void
+		{
+			_counter.time.text=String(event.secondLeft);
+			this._counterOn=true;
+		}
+
 	}
 }

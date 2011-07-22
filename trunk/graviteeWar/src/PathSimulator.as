@@ -172,20 +172,17 @@ package
 			vy+=g.y*0.997;
 			this.x+=vx*0.0285;
 			this.y+=vy*0.0285;
-			
 			if(this.checkCollision()){
 				return false;
 			}
 			
 			this.rotation=Math.atan(vy/vx)*180/Math.PI;
 			if(vx<0) this.rotation=180+this.rotation;
-			
 			var node:PathNode=new PathNode();
 			node.x=this.x;
 			node.y=this.y;
 			node.rotation=this.rotation;
-			
-			_path.push(node);
+			_path.push(node);	
 			return true;
 		}
 	}
