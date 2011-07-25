@@ -61,7 +61,7 @@ package com.heros
 			this.team=team;
 			this.doAction(defaultAction);
 //			
-			arrow =  AssetsLibrary.getMovieClip("Arrow");
+			arrow =  AssetsLibrary.getMovieClip("arrow");
 			this.addChild(arrow);	
 			arrow.visible = false;
 			//血量
