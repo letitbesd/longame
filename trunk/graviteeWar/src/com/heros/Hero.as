@@ -94,7 +94,6 @@ package com.heros
 				this._hitPointAboveMid=hitPointAboveMid;
 				isHit=true;
 				EnterFrame.addObject(this);
-				this.hp.hpNum=20;
 		}
 		private function hit():void
 		{
@@ -196,6 +195,7 @@ package com.heros
 			if(this._content.graphic.currentFrame>=30){
 				this.doAction("bob");
 				this.removeEventListener(Event.ENTER_FRAME,checkFrame);
+				this.hp.hurtNum=5;
 				isAiming=false;
 			}
 		}

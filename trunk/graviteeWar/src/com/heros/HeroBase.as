@@ -65,7 +65,7 @@ package com.heros
 			this.addChild(arrow);	
 			arrow.visible = false;
 			//血量
-			hp=new HealthDisplay(teams.indexOf(team));
+			hp=new HealthDisplay(teams.indexOf(team),team);
 			this.addChild(hp);
 			var i:int=Math.floor(Math.random()*Scene.planets.length);
 			_planet=Scene.planets[i];
@@ -78,12 +78,12 @@ package com.heros
 
 		protected function showName(event:MouseEvent):void
 		{
-			// TODO Auto-generated method stub
+			this.hp.healthMc.unitname.visible=true;;
 		}
 		
 		protected function hideName(event:MouseEvent):void
 		{
-			// TODO Auto-generated method stub
+			this.hp.healthMc.unitname.visible=false;
 		}
 		
 		public function active():void
