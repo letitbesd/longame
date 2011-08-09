@@ -2,6 +2,7 @@ package com.time
 {
 	import flash.display.Shape;
 	import flash.events.Event;
+	import com.IFrameObject;
 
 	public class EnterFrame
 	{

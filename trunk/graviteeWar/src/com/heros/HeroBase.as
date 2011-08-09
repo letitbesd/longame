@@ -6,8 +6,14 @@ package com.heros
 	import collision.CDK;
 	import collision.CollisionData;
 	
+	import com.IFrameObject;
+	import com.PathNode;
+	import com.PathSimulator;
+	import com.Planet;
+	import com.Scene;
 	import com.longame.managers.AssetsLibrary;
 	import com.time.EnterFrame;
+	import com.weapons.*;
 	
 	import flash.display.MovieClip;
 	import flash.display.Shape;
@@ -19,19 +25,29 @@ package com.heros
 	import flash.ui.KeyLocation;
 	import flash.ui.Keyboard;
 	
+	import com.missiles.MissileBase;
+	
 	public class HeroBase extends Sprite implements IFrameObject
 	{
 		public static const speed:Number=2;
 		public static const teams:Array=["white","red","blue","green","yellow"]; 	
 		public static const defaultAction:String="bob";
 		private static const collideRadius:Number = 5;
+		public var _planet:Planet;
 		public var accurate:int=50;				//玩家的射击精确度，实际就是显示子弹运行路径的长短
-		private var _healthy:int  = 0;
-		protected var _team:String;
+		public var damageTaken:int = 0;
+		public var danceID:int = 0;
+		public var healthShown:int = 25;
+		public var positionPlanet:int = 0;
+		public var unitName:String = "";
+		public var health:int = 25;
+		public var killReg:int = -1;
+		public var timeSince:int = 0;
+		public var isTurn:Boolean=false;
 		public var _content:MovieClip;
 		public var arrow:MovieClip ;
+		protected var _team:String;
 		protected var shootAngle:Number;
-		protected var _planet:Planet;
 		protected var atRight:Boolean=false;
 		protected var _angle:Number;
 		protected var _heroRotation:Number=0;          //人物旋转角度，人物变化后的导弹的发射角偏移量
@@ -40,16 +56,12 @@ package com.heros
 		protected var isAiming:Boolean = false;
 		protected var _heroName:String = "";
 		protected var hp:HealthDisplay;
-		public var danceID:int = 0;
-		public var healthShown:int = 25;
-		public var positionPlanet:int = 0;
-		public var unitName:String = "";
-		public var health:int = 25;
-		public var killReg:int = -1;
-		public var timeSince:int = 0;
-		public var damageTaken:int = 0;
+		protected var fireAction:String="aiming1";
+		protected var unfireAction:String="notaiming1"
+		protected var currentWepID:int=1;
+		protected var wep:WepBase=new Wep1(1);
 		private var mass:int = 0;
-		
+		private var _healthy:int  = 0;
 		/**
 		 * 人物旋转之后，炮筒的角度计算不对。。。。   搞定
 		 * */
@@ -94,7 +106,7 @@ package com.heros
 		}
 		public function deactive():void
 		{
-			EnterFrame.removeObject(this);
+//			EnterFrame.removeObject(this);
 			arrow.visible = false;
 		}
 		public function doAction(name:String):void
@@ -106,7 +118,7 @@ package com.heros
 		public function aimAt(angle:uint):void  //攻击角度，1-180度
 		{
 			this.isAiming = true;
-			this.doAction("aiming7");
+			this.doAction(fireAction);
 			if(angle <= 0) angle = 1;
 			if(angle > 180) angle = 180;
 			this._content.graphic.gotoAndStop(angle);
@@ -131,7 +143,6 @@ package com.heros
 			var moveOnce:Point = new Point();                  //移动一步位移量
 			moveOnce.x = Math.cos(moveDirection)*speed;
 			moveOnce.y = Math.sin(moveDirection)*speed;
-			
 			collideCheck(new Point(this.x + moveOnce.x,this.y + moveOnce.y));
 			
 			_heroRotation=0;
@@ -148,7 +159,6 @@ package com.heros
 			var moveOnce:Point = new Point();   //移动一步位移量
 			moveOnce.x = Math.cos(moveDirection)*speed;
 			moveOnce.y = Math.sin(moveDirection)*speed;
-			
 			/*调试代码 误删
 			var checkCell:Shape = new Shape();
 			checkCell.graphics.clear();
@@ -178,7 +188,6 @@ package com.heros
 				checkCell.graphics.beginFill(0xFFFFFF,1);
 				checkCell.graphics.drawCircle(point.x,point.y,collideRadius);
 				checkCell.graphics.endFill();
-				
 				var cd:CollisionData=CDK.check(checkCell,_planet);
 				if(cd)		//有碰撞这时point与星球球面有接触了  设置小人位置和方向
 				{
@@ -247,11 +256,19 @@ package com.heros
 		
 		protected function shoot():void
 		{
-			if((currentPath==null)||(currentPath.length==0)) return;
-			var missile:Missile=new Missile(this.currentPath,simulator.planet,simulator.heroShootIndex);
-			Scene.pathCanvas.graphics.clear();
-			Main.scene.addChild(missile);
-			this.doAction("notaiming7");
+//			if((currentPath==null)||(currentPath.length==0)) return;
+//			var missile:Missile=new Missile(this.currentPath,simulator.planet);
+//			Scene.pathCanvas.graphics.clear();
+//			Main.scene.addChild(missile);
+			if(currentWepID==5){
+				var info:Object={x:this.x,y:this.y,rotation:this.rotation}
+				wep.heroInfo=info;
+			}
+			wep.shoot();
+			this.doAction(fireAction);
+			if(wep.changeAction==true){
+				this.unfireAction=defaultAction;
+			}
 		}
 		
 		protected var simulator:PathSimulator;
@@ -280,11 +297,11 @@ package com.heros
 				this.turnLeft();
 			}
 			var param:Object=this.calMissileSate(p.x,p.y);
-			if(param==null) return;
-			simulator=new PathSimulator(param.strength,param.angle,param.startPos,this.index);
-			currentPath=simulator.simulate(accurate,Scene.pathCanvas.graphics);
+			wep.simulatePath(param,this.index);
+//			if(param==null) return;
+//			simulator=new PathSimulator(param.strength,param.angle,param.startPos,this.index);
+//			currentPath=simulator.simulate(accurate,Scene.pathCanvas.graphics);
 		}
-		
 		private function pointIsLeft(x:Number,y:Number):Boolean		
 		{
 			//更简单的算法  实际上 只取决于鼠标横坐标
@@ -303,6 +320,7 @@ package com.heros
 		protected function calMissileSate(shootX:Number,shootY:Number):Object
 		{
 			var wep:MovieClip=this._content.graphic.wep;
+			if(wep.start==null) return {};
 			var startPos:Point=wep.localToGlobal(new Point(wep.start.x,wep.start.y));
 			var dx:Number=shootX-startPos.x;
 			var dy:Number=shootY-startPos.y;
@@ -311,7 +329,6 @@ package com.heros
 			//trace("_heroRotation"+_heroRotation.toString())
 			return {strength:dist/30,angle:shootAngle+ag,startPos:startPos};			
 		}
-		
 		public function updateMass():void
 		{
 			mass = health * 5;
@@ -320,8 +337,8 @@ package com.heros
 				mass = 100;
 			}
 		}
-		
-		protected function die():void{
+		protected function die():void
+		{
 			
 		}
 		

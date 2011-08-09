@@ -24,6 +24,7 @@ package
 	import com.time.CountDown;
 	import com.time.CountdownEvent;
 	import com.time.EnterFrame;
+	import com.Scene;
 	
 	[SWF(width="700",height="500",backgroundColor="0x000000",frameRate="30")]
 	public class Main extends Engine
@@ -56,7 +57,7 @@ package
 		private function onLoaded(r:Resource):void
 		{
 			EnterFrame.start();
-			this.addChild(AssetsLibrary.getMovieClip("background"));
+//			this.addChild(AssetsLibrary.getMovieClip("background"));
 			scene=new Scene();
 			this.addChild(scene);
 		}
