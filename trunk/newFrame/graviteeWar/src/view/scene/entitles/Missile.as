@@ -37,7 +37,7 @@ package view.scene.entitles
 		{
 			super.doWhenActive();
 			fire=new MissileFire(this);
-			this.scene.add(fire);
+//			this.scene.add(fire);
 		}
 		
 		override protected function doWhenDeactive():void
@@ -71,7 +71,7 @@ package view.scene.entitles
 			this.scene.add(explodeEffect);
 			explodeEffect.x = this.x;
 			explodeEffect.y = this.y;
-			this.fire.destroy();
+//			this.fire.destroy();
 			
 			super.destroy();
 		}		

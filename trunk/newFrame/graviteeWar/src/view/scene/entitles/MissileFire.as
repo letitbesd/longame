@@ -22,15 +22,15 @@ package view.scene.entitles
 		{
 			super();
 			this.missile=missile;
-//			this.container.filters=[new GlowFilter(0xff0000,0.8,10,10,5)];
 		}
 		private var currentCount:int=0;
 		private var fullTime:int=-1;
 		
 		override protected function doWhenActive():void
 		{
-			super.doWhenActive();
 			this.generateFireCell(5);
+			this.container.filters=[new GlowFilter(0xff0000,0.8,10,10,5)];
+			super.doWhenActive();
 		}
 		
 		override public  function destroy():void
@@ -48,7 +48,7 @@ package view.scene.entitles
 			for (var i:int=0;i<count;i++){
 				var cell:OnceClipEntity= new OnceClipEntity();
 				cell.source = "fireCell";
-//					PlayOnceObject.play(,startPoint.x,startPoint.y,this);
+				this.add(cell);
 				cell.x = startPoint.x;
 				cell.y = startPoint.y;
 //				cell.rotation=range/2-range*Math.random();
