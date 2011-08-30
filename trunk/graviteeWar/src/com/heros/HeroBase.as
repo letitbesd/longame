@@ -12,6 +12,8 @@ package com.heros
 	import com.Planet;
 	import com.Scene;
 	import com.longame.managers.AssetsLibrary;
+	import com.longame.utils.MathUtil;
+	import com.missiles.MissileBase;
 	import com.time.EnterFrame;
 	import com.weapons.*;
 	
@@ -24,8 +26,6 @@ package com.heros
 	import flash.text.TextFormat;
 	import flash.ui.KeyLocation;
 	import flash.ui.Keyboard;
-	
-	import com.missiles.MissileBase;
 	
 	public class HeroBase extends Sprite implements IFrameObject
 	{
@@ -46,9 +46,9 @@ package com.heros
 		public var isTurn:Boolean=false;
 		public var _content:MovieClip;
 		public var arrow:MovieClip ;
+		public var atRight:Boolean=false;
 		protected var _team:String;
 		protected var shootAngle:Number;
-		protected var atRight:Boolean=false;
 		protected var _angle:Number;
 		protected var _heroRotation:Number=0;          //人物旋转角度，人物变化后的导弹的发射角偏移量
 		protected var cdCheck:Boolean = false;
@@ -143,8 +143,11 @@ package com.heros
 			var moveOnce:Point = new Point();                  //移动一步位移量
 			moveOnce.x = Math.cos(moveDirection)*speed;
 			moveOnce.y = Math.sin(moveDirection)*speed;
-			collideCheck(new Point(this.x + moveOnce.x,this.y + moveOnce.y));
-			
+			var pos:Point=this.parent.localToGlobal(new Point(this.x,this.y));
+			pos.x+=moveOnce.x;
+			pos.y+=moveOnce.y;
+			collideCheck(pos);
+//			collideCheck(new Point(this.x + moveOnce.x,this.y + moveOnce.y));
 			_heroRotation=0;
 			//if(this.rotation<-360) this.rotation+=360;
 			_heroRotation=this.rotation+360;
@@ -166,9 +169,11 @@ package com.heros
 			checkCell.graphics.drawCircle(this.x + moveOnce.x,this.y + moveOnce.y,collideRadius);
 			checkCell.graphics.endFill();
 			_planet.parent.addChild(checkCell);*/
-			
-			collideCheck(new Point(this.x + moveOnce.x,this.y + moveOnce.y));
-			
+			var pos:Point=this.parent.localToGlobal(new Point(this.x,this.y));
+			pos.x+=moveOnce.x;
+			pos.y+=moveOnce.y;
+//			collideCheck(new Point(this.x + moveOnce.x,this.y + moveOnce.y));
+			collideCheck(pos);
 			_heroRotation=0;
 			//if(this.rotation<-360) this.rotation+=360;
 			_heroRotation=this.rotation+360;
@@ -180,14 +185,17 @@ package com.heros
 			var checkCell:Shape = new Shape();	
 			var moveDirection:Number;
 			var moveOnce:Point;
-			cdCheck = true;		
-			
+			cdCheck = true;
 			while(cdCheck)
-			{					
+			{	
 				checkCell.graphics.clear();
 				checkCell.graphics.beginFill(0xFFFFFF,1);
 				checkCell.graphics.drawCircle(point.x,point.y,collideRadius);
 				checkCell.graphics.endFill();
+//				Main.scene.addChild(checkCell);
+//				point=this.parent.globalToLocal(point);
+//				checkCell.x=point.x;
+//				checkCell.y=point.y;
 				var cd:CollisionData=CDK.check(checkCell,_planet);
 				if(cd)		//有碰撞这时point与星球球面有接触了  设置小人位置和方向
 				{
@@ -202,10 +210,13 @@ package com.heros
 					}
 					else
 					{
-						this.x = point.x;
-						this.y = point.y;
-						this.rotation = Math.round(cd.angleInDegree-90);  		
-						//用测试点与星球的碰撞角度给小人的rotation赋值	 得出的这个rotation值Y轴负方向是为0  范围在-180到+180之间  顺时针为正
+//						this.x = point.x;
+//						this.y = point.y;
+						point=this.parent.globalToLocal(point);
+						this.x=point.x;
+						this.y=point.y;
+						this.rotation = Math.round(cd.angleInDegree-90);
+						//用测试点与星球的碰撞角度给小人的rotation赋值	 得出的这个rotation值Y轴负方向是为0  范围在-180到+180之间  顺时针为正X
 						//trace("this.rotation"+this.rotation);
 						cdCheck = false;
 					}					
@@ -216,12 +227,12 @@ package com.heros
 					moveOnce = new Point();   								//移动一步位移量
 					moveOnce.x = Math.cos(moveDirection)*speed;
 					moveOnce.y = Math.sin(moveDirection)*speed;
+					trace(moveOnce);
 					point.x += moveOnce.x;
 					point.y += moveOnce.y;
 				}
 			}
 		}
-		
 		protected function turnLeft():void
 		{
 			if(this.scaleX==1) return;
@@ -270,9 +281,7 @@ package com.heros
 				this.unfireAction=defaultAction;
 			}
 		}
-		
 		protected var simulator:PathSimulator;
-		
 		protected function simulatePath(shootX:Number,shootY:Number):void
 		{
 			var inLeft:Boolean=pointIsLeft(shootX,shootY);

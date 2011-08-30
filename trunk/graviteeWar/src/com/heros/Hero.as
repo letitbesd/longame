@@ -58,6 +58,11 @@ package com.heros
 			tempAngle=this.rotation;
 			FightSignals.onHeroHitted.add(onHitted);
 			FightSignals.heroPoisoned.add(onPoisoned);
+//			if(this.rotation>=-90&&this.rotation<=90){
+//				this._heroBelowAboveCenter=true;
+//			}else{
+//				this._heroBelowAboveCenter=false;
+//			}
 		}
 		override public function onFrame():void
 		{	
@@ -98,14 +103,15 @@ package com.heros
 			currentWepID=wepID;
 			this.updateWep(currentWepID);
 			//如果武器不具备攻击性 禁止Hero鼠标行为
-			if(this.wep.startPointIsHero==false){
+			if(this.wep.isAssist==true){
 				this.deactive();
 				wep.setWepPos();
 			}
 		}
 		private function updateWep(id:int):void
 		{
-			switch(id){
+			switch(id)
+			{
 				case 1: this.wep=new Wep1(id);
 					break;
 				case 2: this.wep=new Wep2(id);
@@ -114,8 +120,7 @@ package com.heros
 					break;
 				case 4: this.wep=new Wep4(id);
 					break;
-				case 5: 
-					this.wep=new Wep5(id,this._planet);
+				case 5: this.wep=new Wep5(id,this._planet);
 					break;
 				case 6 :this.wep=new Wep6(id);
 					break;
@@ -153,11 +158,13 @@ package com.heros
 		private function onHitted(heroIndex:int,hitAngle:Number,belowPlanet:Boolean,hitPointAboveMid:Boolean):void
 		{
 				if(this.index!=heroIndex) return;
-				if(belowPlanet){
-						missileHitHeroAngle=hitAngle;	
-				}else{
-					missileHitHeroAngle=hitAngle+Math.PI;
-				}
+				var rotationAngle:Number = this.rotation;
+				if(rotationAngle<0) rotationAngle += 360;
+//				if(belowPlanet){
+//						missileHitHeroAngle = hitAngle+Math.PI+rotationAngle*Math.PI/180;	
+//				}else{
+					missileHitHeroAngle = hitAngle+Math.PI+rotationAngle*Math.PI/180;
+//				}
 //				trace("加速度角度"+missileHitHeroAngle*180/Math.PI);
 				this._hitPointAboveMid=hitPointAboveMid;
 				isHit=true;
@@ -165,6 +172,7 @@ package com.heros
 		}
 		private function hit():void
 		{
+			var pos:Point=this.parent.localToGlobal(new Point(this.x,this.y));
 			//子弹击中HERO点在Hero中点上方 Hero停留在原始位置
 			if(this._hitPointAboveMid==true)
 			{
@@ -175,7 +183,7 @@ package com.heros
 					var checkPart:Shape = new Shape();
 					checkPart.graphics.clear();
 					checkPart.graphics.beginFill(0xffffff,1);
-					checkPart.graphics.drawCircle(this.x,this.y,4);
+					checkPart.graphics.drawCircle(pos.x,pos.y,4);
 					checkPart.graphics.endFill();
 					var cd1:CollisionData=CDK.check(checkPart,this._planet);
 					var heroMove:Boolean;
@@ -200,7 +208,7 @@ package com.heros
 					}
 					else
 					{
-						if(MathUtil.getDistance(this.x,this.y,this._planet.x,this._planet.y)>this._planet.radius+5)
+						if(MathUtil.getDistance(this.x,this.y,this._planet.x,this._planet.y)>this._planet.radius+10)
 						{
 								check=false;
 						}else
@@ -222,13 +230,19 @@ package com.heros
 				var vx:Number=10*Math.cos(missileHitHeroAngle);
 				var vy:Number=10*Math.sin(missileHitHeroAngle);
 				//Hero脱离当前星球，受到场景内所有星球引力影响 
-				if(MathUtil.getDistance(this.x,this.y,this._planet.x,this._planet.y)>this._planet.radius+5){
+				if(MathUtil.getDistance(this.x,this.y,this._planet.x,this._planet.y)>this._planet.radius){
 					var g:AVector=Scene.getAcceleration(this.x,this.y);
-					vx+=g.x*0.997*0.0285;
-					vy+=g.y*0.997*0.0285;
+					vx+=g.x*0.997*0.1;
+					vy+=g.y*0.997*0.1;
 				}
 				this.x+=vx;
 				this.y+=vy;
+				var c:Shape = new Shape();
+				c.graphics.clear();
+				c.graphics.beginFill(0x66ccff,.5);
+				c.graphics.drawCircle(this.x,this.y,3);
+				c.graphics.endFill();
+//				Main.scene.addChild(c);
 				this.rotation+=10;
 				//飞出去与Scene内所有星球做碰撞检测
 					for each(var p:Planet in Scene.planets)
@@ -236,7 +250,7 @@ package com.heros
 						var checkPart1:Shape = new Shape();
 						checkPart1.graphics.clear();
 						checkPart1.graphics.beginFill(0x66ccff,1);
-						checkPart1.graphics.drawCircle(this.x,this.y,5);
+						checkPart1.graphics.drawCircle(pos.x,pos.y,5);
 						checkPart1.graphics.endFill();
 						var cdk:CollisionData=CDK.check(checkPart1,p);
 						if(cdk){
@@ -339,16 +353,16 @@ package com.heros
 		}
 		private function onKeyUp(event:KeyboardEvent):void
 		{
-			if(event.keyCode==Keyboard.A){
+			if(event.keyCode==Keyboard.LEFT){
 				this.leftArrow = false;
-			}else if(event.keyCode==Keyboard.D){
+			}else if(event.keyCode==Keyboard.RIGHT){
 				this.rightArrow = false;
 			}
-			if(this.rotation>=-90&&this.rotation<=90){
-				this._heroBelowAboveCenter=true;
-			}else{
-				this._heroBelowAboveCenter=false;
-			}
+//			if(this.rotation>=-90&&this.rotation<=90){
+//				this._heroBelowAboveCenter=true;
+//			}else{
+//				this._heroBelowAboveCenter=false;
+//			}
 			if(!isAiming){
 				this.doAction(unfireAction);
 			}
@@ -356,11 +370,12 @@ package com.heros
 		
 		protected function onKeydown(event:KeyboardEvent):void
 		{
-			if(event.keyCode==Keyboard.A){
+			if(event.keyCode==Keyboard.LEFT){
 				this.leftArrow = true;
-			}else if(event.keyCode==Keyboard.D){
+			}else if(event.keyCode==Keyboard.RIGHT){
 				this.rightArrow = true;
 			}
+			
 		}
 
 		protected function onMouseDown(event:MouseEvent):void
