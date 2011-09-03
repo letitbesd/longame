@@ -4,13 +4,16 @@ package view.ui.mediators
 	
 	import org.robotlegs.mvcs.Mediator;
 	
-	public class CountDownMediators extends Mediator
+	import view.ui.baseComponents.GameCounter;
+	import view.ui.components.BattleUI;
+	
+	public class BattleUIMediator extends Mediator
 	{
 		public static const NAME:String = "BattleUIMediator";
 		[Inject]
-		public var view:CountDown;
+		public var view:BattleUI;
 		
-		public function CountDownMediators()
+		public function BattleUIMediator()
 		{
 			super();
 		}

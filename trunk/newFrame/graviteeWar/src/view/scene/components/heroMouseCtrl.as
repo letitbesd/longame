@@ -15,7 +15,7 @@ package view.scene.components
 		private var _animation:String;
 		public var hero:Hero;
 		public var scene:GameScene;
-		public function heroMouseCtrl(animation:String = "notaiming7")
+		public function heroMouseCtrl(animation:String = "notaiming1")
 		{
 			super();
 			_animation = animation;
@@ -52,7 +52,7 @@ package view.scene.components
 //			(_owner as Hero).state = "";
 			hero.shoot();
 			hero.isAiming = false;
-			hero.doAction("notaiming7");
+			hero.doAction("bob");
 			InputManager.onMouseUp.remove(onMouseUp);
 			InputManager.onMouseMove.remove(onMouseMove);
 		}

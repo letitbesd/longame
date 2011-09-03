@@ -46,6 +46,7 @@ package view.scene.entitles
 			this.radius=60+Math.round(20*Math.random());
 			//添加滤镜
 			this.container.filters = [new GlowFilter(0,0.5, 8, 8, 5, 1, true)];
+			
 		}
 		
 		public function get radius():Number
@@ -57,7 +58,7 @@ package view.scene.entitles
 			if(_radius==value) return;
 			_radius=value;
 			var scale:Number=_radius/basicRadius;
-//			this.scaleX=this.scaleY=scale;                        //Todo：缩放后星球坐标出现偏移，与longgame有关
+			this.scaleX=this.scaleY=scale;                        //Todo：缩放后星球坐标出现偏移，与longgame有关
 //			mass=basicG*scale*scale*scale;
 //			mass = 4 / 3 * Math.PI * Math.pow(value, 3);
 			this.mass = _radius;
@@ -84,8 +85,9 @@ package view.scene.entitles
 		 * 添加弹孔
 		 * @param x: 弹孔中心的x坐标
 		 * @param y: 弹孔中心的y坐标
+		 * @param scope: 弹孔大小
 		 * */
-		public function addHole(x:Number,y:Number):void
+		public function addHole(x:Number,y:Number,scope:Number):void
 		{
 			//把子弹的全局坐标转换到planet的坐标系下
 			var p:Point=new Point(x,y);
@@ -93,6 +95,7 @@ package view.scene.entitles
 			var hole:MovieClip=AssetsLibrary.getMovieClip("hole");
 			hole.x=p.x;
 			hole.y=p.y;
+			hole.scaleX=hole.scaleY=scope;
 			this.container.addChild(hole);
 
 			//将坐标转回全局，检测hole和hero是否发生碰撞
@@ -129,6 +132,8 @@ package view.scene.entitles
 					var hitPointAboveMid:Boolean;
 					if(hero.y>this.y) belowPlanet=true;
 					if(pToHole.y<heroMidPoint.y)   hitPointAboveMid=true;
+					//根据人物朝向调整角度
+					if(hero.atRight)  an += Math.PI;
 					trace("Hole与人碰撞角度"+an*180/Math.PI);
 					trace(pToHole);
 					FightSignals.onHeroHitted.dispatch(heroIndex,an,belowPlanet,hitPointAboveMid);

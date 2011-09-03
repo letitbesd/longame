@@ -22,6 +22,7 @@ package view.scene.entitles.heros
 	import view.scene.components.heroMouseCtrl;
 	import view.scene.entitles.HeroState;
 	import view.scene.entitles.Planet;
+	import view.scene.entitles.heros.weapons.Wep1;
 	
 	public class Hero extends HeroBase
 	{
@@ -35,10 +36,15 @@ package view.scene.entitles.heros
 		private var temp:Point=new Point();
 		private var tempAngle:Number;
 		private var keyer:heroKeyboardCtrl;
-
-		private var missileHitHeroAngle:Number;  //子弹击中人物加速度方向
-		private var _hitPointAboveMid:Boolean = false; //子弹击中人物点是否在人物中点上方
-		private var _isHit:Boolean = false;  //是否被击中
+        /**
+		 * 子弹击中人物角度
+		 * */
+		private var missileHitHeroAngle:Number;  
+		/**
+		 * 子弹爆炸点是否在HERO中点上方
+		 * */
+		private var _hitPointAboveMid:Boolean = false; 
+		private var _isHit:Boolean = false;  
 
 		public function Hero(team:String)
 		{
@@ -51,7 +57,6 @@ package view.scene.entitles.heros
 			//添加鼠标控制组件
 			var mouseCtrl:heroMouseCtrl = new heroMouseCtrl();
 			this.add(mouseCtrl,HeroState.NOTAIMING);
-			
 			//添加键盘控制组件
 			keyer = new heroKeyboardCtrl();
 			this.add(keyer,HeroState.NOTAIMING);
@@ -59,6 +64,7 @@ package view.scene.entitles.heros
 			arrow =  AssetsLibrary.getMovieClip("arrow");
 			this.container.addChild(arrow);
 			arrow.visible = false;
+			
 		}
 		
 		override protected function  doWhenActive():void
@@ -105,13 +111,10 @@ package view.scene.entitles.heros
 		
 		private function onHitted(heroIndex:int,hitAngle:Number,belowPlanet:Boolean,hitPointAboveMid:Boolean):void
 		{
-				if(this.index!=heroIndex) return;
-				if(belowPlanet){
-						missileHitHeroAngle=hitAngle;
-				}else{
-					missileHitHeroAngle=hitAngle+Math.PI;
-				}
-//				trace("加速度角度"+missileHitHeroAngle*180/Math.PI);
+				if(this.heroIndex!=heroIndex) return;
+				var rotationAngle:Number = this.rotation;
+				if(rotationAngle<0) rotationAngle += 360;
+				missileHitHeroAngle=hitAngle+Math.PI+rotationAngle*Math.PI/180;
 				this._hitPointAboveMid=hitPointAboveMid;
 				isHit=true;
 //				EnterFrame.addObject(this);
@@ -131,7 +134,7 @@ package view.scene.entitles.heros
 					checkPart.graphics.beginFill(0xffffff,1);
 					checkPart.graphics.drawCircle(this.x,this.y,4);
 					checkPart.graphics.endFill();
-					var cd1:CollisionData=CDK.check(checkPart,this._planet.container);
+					var cd1:CollisionData=CDK.check(checkPart,this._currentPlanet.container);
 					var heroMove:Boolean;
 					if(cd1){
 						this.doAction("stand");
@@ -144,7 +147,7 @@ package view.scene.entitles.heros
 						}
 					}
 					else{
-						if(MathUtil.getDistance(this.x,this.y,this._planet.x,this._planet.y)>this._planet.radius+5){
+						if(MathUtil.getDistance(this.x,this.y,this._currentPlanet.x,this._currentPlanet.y)>this._currentPlanet.radius+5){
 								check=false;
 						}else{
 							this.x+=5*Math.cos((this.rotation+90)*Math.PI/180);
@@ -164,7 +167,7 @@ package view.scene.entitles.heros
 				var vx:Number=10*Math.cos(missileHitHeroAngle);
 				var vy:Number=10*Math.sin(missileHitHeroAngle);
 				//Hero脱离当前星球，受到场景内所有星球引力影响 
-				if(MathUtil.getDistance(this.x,this.y,this._planet.x,this._planet.y)>this._planet.radius+5)
+				if(MathUtil.getDistance(this.x,this.y,this._currentPlanet.x,this._currentPlanet.y)>this._currentPlanet.radius+5)
 				{
 					var g:AVector=BattleScene.getAcceleration(this.x,this.y);
 					vx+=g.x*0.997*0.0285;
@@ -195,7 +198,7 @@ package view.scene.entitles.heros
 								isHit=false;
 								this.doAction("stand");
 //								checkFrame();
-								this._planet=p;
+								this._currentPlanet=p;
 							   }
 					}
 			}
@@ -221,9 +224,8 @@ package view.scene.entitles.heros
 		override public function shoot():void
 		{
 			super.shoot();
-			if(isMyTurn)  FightSignals.turnNextHero.dispatch(this.index,true);
+			if(isMyTurn)  FightSignals.turnNextHero.dispatch(this.heroIndex,true);
 		}
-
 		private function clear():void
 		{
 			this.currentPath=null;

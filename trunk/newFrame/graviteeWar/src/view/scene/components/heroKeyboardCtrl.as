@@ -33,7 +33,7 @@ package view.scene.components
 			leftArrow = false;
 			rightArrow = false;
 			if(!hero.isAiming){
-				hero.doAction("notaiming7");
+				hero.doAction(hero.unfireAction);
 			}
 		}
 		

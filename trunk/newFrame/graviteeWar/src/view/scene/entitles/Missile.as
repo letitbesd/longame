@@ -23,20 +23,20 @@ package view.scene.entitles
 		private var path:Vector.<PathNode>;
 		private var _content:MovieClip;
 		private var _targetPlanet:Planet;
-		private var fire:MissileFire;
+//		private var fire:MissileFire;
 		public function Missile(path:Vector.<PathNode>,targetPlanet:Planet,heroIndex:int)
 		{
 			super();
 			this.path=path;
 			this._targetPlanet=targetPlanet;
-			this.source = "missile";
-			this._content = AssetsLibrary.getMovieClip("missile");
+			this.source = "missile"+id;
+			this._content = AssetsLibrary.getMovieClip("missile1");
 		}
 		
 		override protected function doWhenActive():void
 		{
 			super.doWhenActive();
-			fire=new MissileFire(this);
+//			fire=new MissileFire(this);
 //			this.scene.add(fire);
 		}
 		
@@ -64,7 +64,7 @@ package view.scene.entitles
 			
 			if(_targetPlanet)
 			{
-				_targetPlanet.addHole(this.x,this.y);
+				_targetPlanet.addHole(this.x,this.y,1);
 			}
 			var explodeEffect:OnceClipEntity = new OnceClipEntity(OnceClipEntity.AUTO_REMOVE);
 			explodeEffect.source = "explodeEffect";

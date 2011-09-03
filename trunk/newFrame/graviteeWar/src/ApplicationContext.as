@@ -5,6 +5,8 @@ package
 	import org.robotlegs.mvcs.Context;
 	
 	import view.ui.baseComponents.GlobalUI;
+	import view.ui.components.BattleUI;
+	import view.ui.mediators.BattleUIMediator;
 	
 	public class ApplicationContext extends Context
 	{
@@ -22,8 +24,7 @@ package
 		{
 			injector.mapSingleton(GlobalUI);
 			
-//			mediatorMap.mapView();
-			
+			mediatorMap.mapView(BattleUI,BattleUIMediator);
 		}
 	}
 }

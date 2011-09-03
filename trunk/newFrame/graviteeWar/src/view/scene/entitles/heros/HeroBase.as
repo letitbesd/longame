@@ -28,6 +28,8 @@ package view.scene.entitles.heros
 	import flash.ui.KeyLocation;
 	import flash.ui.Keyboard;
 	
+	import signals.FightSignals;
+	
 	import view.scene.BattleScene;
 	import view.scene.components.heroMouseCtrl;
 	import view.scene.entitles.HealthDisplay;
@@ -36,6 +38,8 @@ package view.scene.entitles.heros
 	import view.scene.entitles.PathNode;
 	import view.scene.entitles.PathSimulator;
 	import view.scene.entitles.Planet;
+	import view.scene.entitles.heros.weapons.*;
+	import view.scene.entitles.missiles.MissileBase;
 	
 	public class HeroBase extends AnimatorEntity
 	{
@@ -53,22 +57,29 @@ package view.scene.entitles.heros
 		public var timeSince:int = 0;
 		public var healthShown:int = 25;		
 		public var isAiming:Boolean = false;
-		
+		public var atRight:Boolean=false;
+		public var isTurn:Boolean=false;
+		public var heroIndex:int;	
 		protected var _team:String;
 		protected var shootAngle:Number;
-		protected var _planet:Planet;
-		protected var atRight:Boolean=false;
+		protected var _currentPlanet:Planet;
 		protected var _angle:Number;
 		protected var _heroRotation:Number=0;          //人物旋转角度，人物变化后的导弹的发射角偏移量
 		protected var cdCheck:Boolean = false;
 		protected var _heroName:String = "";
 		protected var hp:HealthDisplay;
 		protected var _health:HealthComp;
-		
+		protected var currentWepID:int=1;
+//		protected var wep:WepBase=new Wep1(1);
+		protected var wep:WepBase;
+		protected var isTeleport:Boolean=false;
+		public var fireAction:String="aiming1";
+	    public var unfireAction:String="notaiming1"
+		private var isInCheck:Boolean;
 		private var maxHealth:Number;
 		private var currentHealth:Number;
 		private var mass:int = 0;
-	
+		private var _checkPart:Shape;
 		public function HeroBase(team:String)
 		{
 			super();
@@ -82,18 +93,21 @@ package view.scene.entitles.heros
 			this.animator.clip.onBuild.add(onBuilded);
 			this.team=team;
 			this.defaultAnimation="bob";
+			this.doAction(defaultAnimation);
 
 			//血量
 			hp=new HealthDisplay(teams.indexOf(team),team);
 			this.container.addChild(hp);
 			
 			var i:int=Math.floor(Math.random()*BattleScene.planets.length);
-			_planet=BattleScene.planets[i];
+			_currentPlanet=BattleScene.planets[i];
 			
 			var angle:Number=Math.random()*360;
 			this.angle = angle;
+			 wep = new Wep1(this);
+			 FightSignals.changWep.add(changeWep);
+			 FightSignals.heroPoisoned.add(onPoisoned)
 		}
-		
 		private function onBuilded(clip:Clip):void
 		{
 			this.updateColor();
@@ -108,11 +122,71 @@ package view.scene.entitles.heros
 			super.doWhenDeactive();
 		}
 		
+		override protected function doRender():void
+		{
+			super.doRender();
+			if(isTeleport){
+				this.checkTeleport();
+			}
+		   
+		}
+		/**
+		 * 检测传送动作完成程度，调整HERO的位置
+		 * */
+		private function checkTeleport():void
+		{
+			if(this._content.graphic.currentFrame>=40&&isInCheck==false) //如果第一个动作做完了
+			{
+				//调整HERO位置
+				var circle:Shape=new Shape();
+				circle.graphics.beginFill(0xFFFFFF,0.3);
+				circle.graphics.drawCircle(_checkPart.x,_checkPart.y,7);
+				circle.graphics.endFill();
+				this.scene.container.addChild(circle);
+				if(_checkPart.parent) _checkPart.parent.removeChild(_checkPart);  //移除检测圆球
+				//获得CIRCLE与星球碰撞角度既人物ROTATION
+				var cd1:CollisionData=CDK.check(circle,currentPlanet.container);
+				if(cd1){
+					angle=cd1.angleInDegree-90;
+					if(circle.parent) circle.parent.removeChild(circle);
+				}
+				this.rotation=angle;
+				this.x=_checkPart.x;
+				this.y=_checkPart.y;
+				this.doAction("teleportin");
+				isInCheck=true;
+			}
+			if(this._content.graphic.currentFrame>=40&&isInCheck==true)  //如果第二个动作做完了
+			{
+				this.doAction("bob");
+				isTeleport=false;
+				isInCheck=false;
+			}
+		}
+		/**
+		 * 人物中毒
+		 * */
+		private function  onPoisoned(index:int):void
+		{
+			if(this.heroIndex!=index) return;
+			var poisonEffect:MovieClip=AssetsLibrary.getMovieClip("poisonEffect");
+			var p:Point=this._content.globalToLocal(new Point(this.x,this.y));
+			poisonEffect.x=p.x;
+			poisonEffect.y=p.y-25;
+			this._content.addChild(poisonEffect);
+			//回合结束，扣除5HP 更新HP显示
+//			FightSignals.roundEnd.add(updateHp);
+		}
 		
+		public function teleport(checkPart:Shape):void
+		{
+		   _checkPart=checkPart;
+		  	isTeleport=true;
+		}
 		public function aimAt(angle:uint):void  //攻击角度，1-180度
 		{
 			this.isAiming = true;
-			this.doAction("aiming7");
+			this.doAction(fireAction);
 			if(angle <= 0) angle = 1;
 			if(angle > 180) angle = 180;
 			this._content.graphic.gotoAndStop(angle);
@@ -199,20 +273,19 @@ package view.scene.entitles.heros
 				checkCell.graphics.beginFill(0xFFFFFF,1);
 				checkCell.graphics.drawCircle(point.x,point.y,collideRadius);
 				checkCell.graphics.endFill();
-				_planet.parent.container.addChild(checkCell);
+//				_currentPlanet.parent.container.addChild(checkCell);
 				
-				var cd:CollisionData=CDK.check(checkCell,_planet.container);
+				var cd:CollisionData=CDK.check(checkCell,_currentPlanet.container);
 //				trace(_planet.x,_planet.y+"****",_planet.container.x,_planet.container.y+ point);
 				var checkCell1:Shape = new Shape();
 				checkCell1.graphics.clear();
 				checkCell1.graphics.beginFill(0xFFFFFF,1);
-				checkCell1.graphics.drawCircle(_planet.container.x,_planet.container.y,collideRadius);
+				checkCell1.graphics.drawCircle(_currentPlanet.container.x,_currentPlanet.container.y,collideRadius);
 				checkCell1.graphics.endFill();
-				_planet.parent.container.addChild(checkCell1);
+//				_currentPlanet.parent.container.addChild(checkCell1);
 				
 				if(cd)		//有碰撞这时point与星球球面有接触了  设置小人位置和方向
 				{
-					trace("cd.overlapping.length"+cd.overlapping.length);
 					if(cd.overlapping.length>collideRadius*10)			//测试点进入星球太多了 需要调整 使overlapping.length维持在一个值以下
 					{
 						moveDirection = (this.rotation - 90)*Math.PI/180; 		 //向站立垂直向上移动一步
@@ -265,14 +338,65 @@ package view.scene.entitles.heros
 		{
 			return this.scaleX==1;
 		}
-		
+		public function changeWep(wepID:int):void
+		{
+			trace(isTurn,wepID);
+			if(this.isTurn==false) return;
+			this.fireAction="aiming"+wepID;
+			this.unfireAction="notaiming"+wepID;
+			this.doAction(unfireAction);
+			currentWepID=wepID;
+			this.updateWep(currentWepID);
+			//如果武器不具备攻击性 禁止Hero鼠标行为
+			if(this.wep.isAssist==true){
+				wep.setWepPos();
+//				this.deactive();
+			}
+		}
+		private function updateWep(id:int):void
+		{
+			switch(id)
+			{
+				case 1: this.wep=new Wep1(this);
+					break;
+				case 2: this.wep=new Wep2(this);
+					break;
+				case 3: this.wep=new Wep3(this);
+					break;
+				case 4: this.wep=new Wep4(this);
+					break;
+				case 5: this.wep=new Wep5(this);
+					break;
+				case 6 :this.wep=new Wep6(this);
+					break;
+				case 7: this.wep=new Wep7(this);
+					break;
+				case 8: this.wep=new Wep8(this);
+					break;
+				case 9: this.wep=new Wep9(this);
+					break;
+				case 10:this.wep=new Wep10(this);
+					break;
+			}
+		}
 		public  function shoot():void
 		{
-			if((currentPath==null)||(currentPath.length==0)) return;
-			this.state = "";
-			var missile:Missile=new Missile(this.currentPath,simulator.planet,simulator.heroShootIndex);
-			BattleScene.pathCanvas.graphics.clear();
-			this.scene.add(missile);
+//			if((currentPath==null)||(currentPath.length==0)) return;
+//			this.state = "";
+////			var missile:Missile=new Missile(this.currentPath,simulator.planet,simulator.heroShootIndex);
+//			var missile:MissileBase=new MissileBase(this.currentPath,this.currentPlanet,1,1);
+//			BattleScene.pathCanvas.graphics.clear();
+//			this.scene.add(missile);
+			//如果当前武器是地雷，记录HERO当前的位置
+			if(currentWepID==5){
+				var info:Object={x:this.x,y:this.y,rotation:this.rotation}
+				wep.heroInfo=info;
+			}
+			wep.shoot();
+			this.doAction(fireAction);
+			if(wep.changeAction==true){
+				this.unfireAction="bob";
+			}
 		}
 		
 		public  var simulator:PathSimulator;
@@ -300,9 +424,10 @@ package view.scene.entitles.heros
 				this.turnLeft();
 			}
 			var param:Object=this.calMissileSate(p.x,p.y);
-			if(param==null) return;
-			simulator=new PathSimulator(param.strength,param.angle,param.startPos,this.index);
-			currentPath=simulator.simulate(accurate,BattleScene.pathCanvas.graphics);
+			wep.simulatePath(param);
+//			if(param==null) return;
+//			simulator=new PathSimulator(param.strength,param.angle,param.startPos,this.index);
+//			currentPath=simulator.simulate(accurate,BattleScene.pathCanvas.graphics);
 		}
 		
 		private function pointIsLeft(x:Number,y:Number):Boolean		
@@ -323,6 +448,8 @@ package view.scene.entitles.heros
 		protected function calMissileSate(shootX:Number,shootY:Number):Object
 		{
 			var wep:MovieClip=this._content.graphic.wep;
+			//如果子弹没有拖尾效果
+			if(wep.start==null) return {};
 			var startPos:Point=wep.localToGlobal(new Point(wep.start.x,wep.start.y));
 			var dx:Number=shootX-startPos.x;
 			var dy:Number=shootY-startPos.y;
@@ -345,17 +472,6 @@ package view.scene.entitles.heros
 		{
 			return _health;
 		}
-		
-		public function get index():int
-		{
-			return _index;
-		}
-		
-		public function set index(value:int):void
-		{
-			_index = value;
-		}
-		
 		public function set team(value:String):void
 		{
 			if(_team==value) return;
@@ -387,8 +503,8 @@ package view.scene.entitles.heros
 			if(this._angle==value) return;
 			this._angle=value;
 			var radiusAngle:Number=value*Math.PI/180;
-			this.x=_planet.radius*Math.cos(radiusAngle)+_planet.x;
-			this.y=_planet.radius*Math.sin(radiusAngle)+_planet.y;
+			this.x=_currentPlanet.radius*Math.cos(radiusAngle)+_currentPlanet.x;
+			this.y=_currentPlanet.radius*Math.sin(radiusAngle)+_currentPlanet.y;
 			this.rotation = value + 90;
 			
 			_heroRotation=0;
@@ -398,13 +514,23 @@ package view.scene.entitles.heros
 
 		public function get onTopHalf():Boolean
 		{
-			if(this.y > this._planet.y)
+			if(this.y > this._currentPlanet.y)
 			{
 				return true;
 			}else
 			{
 				return false;
 			}
+		}
+		
+		public function get currentPlanet():Planet
+		{
+		   return _currentPlanet;
+		}
+		
+		public function set currentPlanet(value:Planet):void
+		{
+		    this._currentPlanet = value;
 		}
 	}
 }

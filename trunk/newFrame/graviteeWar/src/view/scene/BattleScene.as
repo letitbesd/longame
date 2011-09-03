@@ -4,6 +4,7 @@ package view.scene
 	
 	import com.longame.managers.AssetsLibrary;
 	import com.longame.managers.InputManager;
+	import com.longame.modules.groups.DisplayGroup;
 	import com.longame.utils.MathUtil;
 	
 	import flash.display.MovieClip;
@@ -23,20 +24,23 @@ package view.scene
 	import signals.FightSignals;
 	
 	import view.scene.entitles.IFrameObject;
+	import view.scene.entitles.Missile;
 	import view.scene.entitles.Planet;
 	import view.scene.entitles.heros.Hero;
 	import view.scene.entitles.heros.HeroBase;
+	import view.scene.entitles.missiles.MissileBase;
+	import view.ui.components.BattleUI;
 	import view.ui.components.time.CountDown;
 	import view.ui.components.time.CountdownEvent;
 
 	public class BattleScene extends SceneBase
 	{
 		public static const planetPositions:Array=[new Point(330,388),new Point(155,158),new Point(550,178)];
-		
 		private static var _G:Number = 30;
 		public static var planets:Array=[];
 		public static var pathCanvas:Shape=new Shape();
 		public static var sceneHeros:Array=[];
+		public static var lightnings:Array=[];
 		protected var currentHero:Hero;
 		private  var hero:Hero;
 		private var hero1:Hero;
@@ -53,7 +57,7 @@ package view.scene
 			}
 			this.addHero();
 			this.container.addChild(pathCanvas);
-			
+//			this._uiLayer.add(_battleUI);
 			FightSignals.turnNextHero.add(turnNextHero);
 			
 			 InputManager.onKeyDown.add(onKeyDown);
@@ -111,20 +115,21 @@ package view.scene
 			hero.isMyTurn = true;
 			currentHero = hero;
 			sceneHeros.push(hero);
-			hero.index=sceneHeros.indexOf(hero);
+			hero.isTurn=true;
+			hero.heroIndex=sceneHeros.indexOf(hero);
 			this.heroLayer.add(hero);
 			
 			hero1=new Hero("blue");
 			sceneHeros.push(hero1);
-			hero1.index=sceneHeros.indexOf(hero1);
+			hero1.heroIndex=sceneHeros.indexOf(hero1);
 			this.heroLayer.add(hero1);
 			
 			hero2 = new Hero("yellow");
 			sceneHeros.push(hero2);		
-			hero2.index = sceneHeros.indexOf(hero2);
+			hero2.heroIndex = sceneHeros.indexOf(hero2);
 			this.heroLayer.add(hero2);		
 //			this.counterColor=hero.team;
-			
+			trace("&&&&&"+BattleScene.sceneHeros.length);
 			this.currentHero = hero;
 		}
 
