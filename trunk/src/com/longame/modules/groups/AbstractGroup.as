@@ -17,16 +17,6 @@ package com.longame.modules.groups
 		{
 			super(id);
 		}
-		override protected function doWhenActive():void
-		{
-			super.doWhenActive();
-			ProcessManager.addAnimatedObject(this);
-		}
-		override protected function doWhenDeactive():void
-		{
-			super.doWhenDeactive();
-			ProcessManager.removeAnimatedObject(this);
-		}
 		public function onFrame(deltaTime:Number):void
 		{
 			

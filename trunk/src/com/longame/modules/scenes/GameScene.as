@@ -3,6 +3,7 @@ package com.longame.modules.scenes
 	import com.longame.core.long_internal;
 	import com.longame.display.Camera;
 	import com.longame.display.graphics.SolidColorFill;
+	import com.longame.managers.ProcessManager;
 	import com.longame.modules.core.EntityTile;
 	import com.longame.modules.core.IComponent;
 	import com.longame.modules.core.IEntity;
@@ -55,6 +56,20 @@ package com.longame.modules.scenes
 			view.addChild(this.container);
 			_camera=new Camera(this.container,lensRect);
 			this.createMask();
+		}
+		public function onFrame(deltaTime:Number):void
+		{
+			this.render();
+		}
+		override protected function doWhenActive():void
+		{
+			super.doWhenActive();
+			ProcessManager.addAnimatedObject(this);
+		}
+		override protected function doWhenDeactive():void
+		{
+			super.doWhenDeactive();
+			ProcessManager.removeAnimatedObject(this);
 		}
 		private var _origin:SceneOrigin;
 		public function setOriginVisible(value:Boolean):void

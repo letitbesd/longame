@@ -189,7 +189,6 @@
     <classEntry path="com.longame.modules.entities.IMovableEntity"/>
     <classEntry path="com.longame.modules.entities.OnceClipEntity"/>
     <classEntry path="com.longame.modules.entities.Pet"/>
-    <classEntry path="com.longame.modules.entities.SpriteEntity"/>
     <classEntry path="com.longame.modules.entities.display.primitive.AbstractPrimitive"/>
     <classEntry path="com.longame.modules.entities.display.primitive.IPrimitive"/>
     <classEntry path="com.longame.modules.entities.display.primitive.LGBox"/>

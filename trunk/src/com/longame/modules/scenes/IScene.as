@@ -1,5 +1,6 @@
 package com.longame.modules.scenes
 {
+	import com.longame.core.IAnimatedObject;
 	import com.longame.display.Camera;
 	import com.longame.modules.groups.DisplayGroup;
 	import com.longame.modules.groups.IDisplayGroup;
@@ -10,7 +11,7 @@ package com.longame.modules.scenes
     /**
 	 * 场景接口，场景建立需要scene.setup(...);，然后用camera控制场景
 	 * */
-	public interface IScene extends IDisplayGroup
+	public interface IScene extends IDisplayGroup, IAnimatedObject
 	{
 		/**
 		 * 创建场景，只有执行这个之后，场景才正式运转

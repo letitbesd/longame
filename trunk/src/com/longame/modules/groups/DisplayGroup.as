@@ -146,16 +146,6 @@ package com.longame.modules.groups
 				doFillBlankArea(nx,ny,itemSpec);
 			}
 		}
-		override protected function doWhenActive():void
-		{
-			super.doWhenActive();
-			ProcessManager.addAnimatedObject(this);
-		}
-		override protected function doWhenDeactive():void
-		{
-			super.doWhenDeactive();
-			ProcessManager.removeAnimatedObject(this);
-		}
         override long_internal function activeChild(child:IComponent, refresh:Boolean=true):void
 		{
 			if(child is IDisplayGroup){
@@ -212,14 +202,13 @@ package com.longame.modules.groups
 			super.validateSize();
 //			this.updateGrid();
 		}
-		public function onFrame(deltaTime:Number):void
+		override protected function doRender():void
 		{
-			if(!this._actived) return;
-			this.render();
 			for each(var display:IDisplayEntity in this._displayChildren){
 				display.render();
 			}
 			this.updateLayouter();
+			super.doRender();
 		}
 		override long_internal function notifyTileMove(delta:Point):void
 		{
@@ -407,11 +396,10 @@ package com.longame.modules.groups
 		}
 		public function set autoLayout(value:Boolean):void
 		{
+			if(_autoLayout==value) return;
 			_autoLayout=value;
+//			this.updateLayouter();
 		}
-		
-		
-		
 		override protected function checkChildValidation(child:IComponent):Boolean
 		{
 			return !(child is IScene);
