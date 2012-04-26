@@ -12,9 +12,9 @@
 package com.bumpslide.ui
 {
 
-	import flash.display.DisplayObject;
 	import com.bumpslide.util.Delegate;
-
+	
+	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.geom.Rectangle;
@@ -36,6 +36,7 @@ package com.bumpslide.ui
 		// background placed on the stage
 		public var background:DisplayObject;
 
+		[Child]
 		// dynamic text field place on the stage
 		public var label_txt:TextField;
 
@@ -77,7 +78,7 @@ package com.bumpslide.ui
 				displayMethod.call( this );
 			} catch (e:Error) {
 				try {
-					gotoAndStop( skinState );
+					(skin as MovieClip).gotoAndStop( skinState );
 				} catch (e:ArgumentError) {
 					log('missing button state ' + skinState );
 				}

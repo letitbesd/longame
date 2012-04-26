@@ -438,6 +438,26 @@
     <classEntry path="com.longame.display.StarlingShape"/>
     <classEntry path="com.longame.ui.SkinInjector"/>
     <classEntry path="com.bumpslide.ui.BaseClip"/>
+    <classEntry path="com.bumpslide.ui.VBox"/>
+    <classEntry path="com.bumpslide.ui.Wrapper"/>
+    <classEntry path="com.bumpslide.ui.ThumbnailItem"/>
+    <classEntry path="com.bumpslide.ui.ScrollPanel"/>
+    <classEntry path="com.bumpslide.ui.Button"/>
+    <classEntry path="com.bumpslide.ui.TextInput"/>
+    <classEntry path="com.bumpslide.ui.Box"/>
+    <classEntry path="com.bumpslide.ui.Reflection"/>
+    <classEntry path="com.bumpslide.ui.HBox"/>
+    <classEntry path="com.bumpslide.ui.Label"/>
+    <classEntry path="com.bumpslide.ui.ISelectable"/>
+    <classEntry path="com.bumpslide.ui.Application"/>
+    <classEntry path="com.bumpslide.ui.CheckBox"/>
+    <classEntry path="com.bumpslide.ui.DatePicker"/>
+    <classEntry path="com.bumpslide.ui.Lightbox"/>
+    <classEntry path="com.bumpslide.ui.Calendar"/>
+    <classEntry path="com.bumpslide.ui.Image"/>
+    <classEntry path="com.bumpslide.ui.TextPanel"/>
+    <classEntry path="com.bumpslide.ui.MovieClipButton"/>
+    <classEntry path="com.longame.utils.Align"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

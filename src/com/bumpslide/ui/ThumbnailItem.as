@@ -75,12 +75,12 @@ package com.bumpslide.ui
 		/**
 		 * Always unload images in your destroy method
 		 */
-		override public function dispose():void
+		override protected function doDispose():void
 		{
 			// removeEventListener( Event.ENTER_FRAME, doLoad );
 			cancelCall( _pendingLoad );
 			image.unload();
-			super.dispose();
+			super.doDispose();
 		}
 
 
