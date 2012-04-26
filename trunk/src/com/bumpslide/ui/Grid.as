@@ -56,6 +56,9 @@ package com.bumpslide.ui
 			_holder.cacheAsBitmap = false;		}
 				override protected function doDispose():void {
 			layout.destroy();
+			layout=null;
+			_itemRenderer=null;
+			_itemProps=null;
 			super.doDispose();		}
 
 		override protected function initScrollTarget():void {

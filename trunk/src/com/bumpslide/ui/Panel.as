@@ -21,7 +21,8 @@ package com.bumpslide.ui {	import com.bumpslide.view.IView;	import com.bumps
 		private var _contentVisible:Boolean = true;
 		
 		private var _title:String;
-				function Panel( content:DisplayObject = null, padding:*=  null, background_color:uint = NaN, background_alpha:Number = NaN):void 		{
+		
+		function Panel( content:DisplayObject = null, padding:*=  null, background_color:uint = NaN, background_alpha:Number = NaN):void 		{
 			//trace(this+' CTOR');
 			_holder = add( Sprite );			_constructorArgs = arguments;			super();		}				override protected function postConstruct():void 		{
 			super.postConstruct();						// apply constructor arguments			if(_constructorArgs!=null) {				if(content==null) content = _constructorArgs[0];				if(_constructorArgs[1]!=null) padding = _constructorArgs[1];				if(backgroundBox != null && !isNaN( _constructorArgs[2])) backgroundBox.backgroundColor = _constructorArgs[2];				if(background != null && !isNaN( _constructorArgs[3])) background.alpha = _constructorArgs[3];			}
@@ -68,7 +69,12 @@ package com.bumpslide.ui {	import com.bumpslide.view.IView;	import com.bumps
 				//updateNow();
 			}
 		}
-						override protected function doDispose():void 		{			destroyChild(content);			super.doDispose();		}				/**		 * Uses viewrect on stage to determine appropriate padding		 * By default, the _defaultPadding value is used		 */		protected function initPadding():void 		{			// define padding using viewrect component on stage 			if(viewrect != null) {				var b:Rectangle = viewrect.getBounds(this);								_padding = new Padding(b.y, width - b.right, height - b.bottom, b.x);				removeChild(viewrect);			}		}				override public function layoutChildren():void 		{
+						override protected function doDispose():void 		{			destroyChild(content);			super.doDispose();
+			background=null;
+			viewrect=null;
+			_content=null;
+			_holder=null;
+			_padding=null;		}				/**		 * Uses viewrect on stage to determine appropriate padding		 * By default, the _defaultPadding value is used		 */		protected function initPadding():void 		{			// define padding using viewrect component on stage 			if(viewrect != null) {				var b:Rectangle = viewrect.getBounds(this);								_padding = new Padding(b.y, width - b.right, height - b.bottom, b.x);				removeChild(viewrect);			}		}				override public function layoutChildren():void 		{
 			super.layoutChildren();			drawBackground();			positionContent();
 		}
 				/**		 * Draws the background (default now handled by skin)		 */		protected function drawBackground():void 		{
