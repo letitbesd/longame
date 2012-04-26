@@ -53,7 +53,7 @@ package com.longame.ui
 			_skinMetas=Reflection.getMetaInfos(this._target,PART_META_NAME);
 			if(skin) this.inject(skin);
 		}
-		public function inject(skin:MovieClip):void
+		public function inject(skin:MovieClip):Boolean
 		{
 			if(skin==null){
 				throw new Error("Skin MovieClip should'nt be null!");
@@ -63,9 +63,11 @@ package com.longame.ui
 			}
 			this._skin=skin;
 			this._skin.stop();
-			if(_skinMetas.length){
+//			if(_skinMetas.length)
+			{
 				this.parseSkin();
 			}
+			return _skinMetas.length>0;
 		}
 		/**
 		 * 根据MovieClip皮肤和Child标签信息来解析
@@ -99,6 +101,7 @@ package com.longame.ui
 			}
 			//然后将skinMC添加到this中，如此则skinMC保证了位置和层次的一致性
 			this._target.addChildAt(_skin,0);
+//			this._target.addChild(_skin);
 			var type:Class;
 			for each(var skinInfo:* in _skinMetas){
 				if(skinInfo.state){

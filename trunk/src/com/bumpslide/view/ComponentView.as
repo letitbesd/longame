@@ -67,9 +67,9 @@ package com.bumpslide.view
 		}
 
 		
-		override public function dispose():void 
+		override protected function doDispose():void 
 		{
-			super.dispose();
+			super.doDispose();
 			destroyChild( content );
 		}
 
