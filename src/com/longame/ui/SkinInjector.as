@@ -49,6 +49,8 @@ package com.longame.ui
 		public function SkinInjector(target:DisplayObjectContainer,skin:MovieClip=null)
 		{
 			this._target=target;
+			//解析Skin标签
+			_skinMetas=Reflection.getMetaInfos(this._target,PART_META_NAME);
 			if(skin) this.inject(skin);
 		}
 		public function inject(skin:MovieClip):void
@@ -61,7 +63,9 @@ package com.longame.ui
 			}
 			this._skin=skin;
 			this._skin.stop();
-			this.parseSkin();
+			if(_skinMetas.length){
+				this.parseSkin();
+			}
 		}
 		/**
 		 * 根据MovieClip皮肤和Child标签信息来解析
@@ -94,9 +98,7 @@ package com.longame.ui
 				this._skin.parent.addChildAt(this._target,index);
 			}
 			//然后将skinMC添加到this中，如此则skinMC保证了位置和层次的一致性
-			this._target.addChild(_skin);
-			//解析Skin标签
-			_skinMetas=Reflection.getMetaInfos(this,PART_META_NAME);
+			this._target.addChildAt(_skin,0);
 			var type:Class;
 			for each(var skinInfo:* in _skinMetas){
 				if(skinInfo.state){
@@ -112,7 +114,7 @@ package com.longame.ui
 				//根据childSkin创建对于的child组件
 				this.createSkinChild(skinInfo,childSkin);
 				//可能的话，将data配置给对应状态的child
-				if(_data&&skinInfo.state&&(_state==skinInfo.state)) this[skinInfo.varName].data=_data;
+				if(_data&&skinInfo.state&&(_state==skinInfo.state)) _target[skinInfo.varName].data=_data;
 			}
 			this.whenSkinned();
 		}
@@ -188,7 +190,6 @@ package com.longame.ui
 				if(_target[skinInfo.varName] is IDisposable) (_target[skinInfo.varName] as IDisposable).dispose();
 				_target[skinInfo.varName]=null;
 			}
-			this._skinMetas=null;
 			this._skin=null;
 		}
 		final public function dispose():void
@@ -200,6 +201,7 @@ package com.longame.ui
 				_skin=null;
 			}
 			_target=null;
+			_skinMetas=null;
 		}
 		private var _disposed:Boolean;
 		public function get disposed():Boolean

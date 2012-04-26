@@ -17,6 +17,9 @@
 			_disposed=true;
 			this.doDispose();		}		protected function doDispose():void
 		{
+			while(this.numChildren){
+				this.destroyChild(this.getChildAt(0));
+			}
 			//to be inherited
 		}
 		protected var _disposed:Boolean;		public function get disposed():Boolean
