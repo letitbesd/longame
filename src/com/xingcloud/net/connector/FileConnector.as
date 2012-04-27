@@ -1,11 +1,9 @@
 package com.xingcloud.net.connector
 {
 	import com.adobe.serialization.json.JSON;
-	import com.adobe.serialization.json.JSONDecoder;
 	import com.xingcloud.core.XingCloud;
 	import com.xingcloud.util.Util;
 	import com.xingcloud.util.objectencoder.ObjectEncoder;
-	
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
@@ -55,7 +53,7 @@ package com.xingcloud.net.connector
 				uncompress=_urlLoader.data;
 			try
 			{
-				var result:Object=new JSONDecoder(uncompress as String, true ).getValue();
+				var result:Object=JSON.decode(uncompress as String);
 				_data=MessageResult.createResult(result);
 				notifyError(this);
 			}

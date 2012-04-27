@@ -64,6 +64,7 @@ package com.longame.managers
 			if(_loader==null) _loader=new Loader();
 			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(evt:Event):void{if(onLoaded!=null) onLoaded()},false,0,true);
 			_loader.loadBytes(bytes);
+			
 		}
 	}
 }

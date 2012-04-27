@@ -1,8 +1,6 @@
 package com.xingcloud.util
 {
-	import com.longame.utils.debug.Logger;
-	import com.xingcloud.model.DBObject;
-	
+	import com.xingcloud.model.ModelBase;
 	import flash.display.LoaderInfo;
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
@@ -137,11 +135,11 @@ package com.xingcloud.util
 							{
 								target[prop]=source[prop];
 							}
-							else if (checkBaseClass(varType, DBObject))
+							else if (checkBaseClass(varType, ModelBase))
 							{
 								if (!target[prop])
 									target[prop]=new varType();
-								(target[prop] as DBObject).parseFromObject(source[prop]);
+								(target[prop] as ModelBase).parseFromObject(source[prop]);
 							}
 							else
 							{
@@ -151,7 +149,6 @@ package com.xingcloud.util
 					}
 					catch (e:Error)
 					{
-						Logger.error("Reflection","cloneProperties",e.message);
 						continue;
 					}
 				}
@@ -349,6 +346,141 @@ package com.xingcloud.util
 			_domains.push(d);
 		}
 
+
+//TODO metadata获取
+//		
+//		/**
+//		 * 获取object里meta名为metaName，并且有一个变量key,其值为value的变量名列表,包括get方法
+//		 * 如果key,value没有被指定，则返回全部标签名为metaName的变量名
+//		 * @param object: 对象
+//		 * @param metaName:     metaData的标签名
+//		 * @param key:          标签变量名，如果后面两个指定，则返回特定的
+//		 * @param value:        变量名对应的值
+//		 * */
+//		public static function getVariableNamesWithMeta(object:*, metaName:String, key:String=null, value:*=null):Array
+//		{
+//			var description:XML=getTypeDescription(object);
+//			if (!description)
+//				return [];
+//			return _getVariableNamesWithMeta(description, metaName, key, value);
+//		}
+//
+//		/**
+//		 * 获取对象object里具有metaName元标签的变量信息，格式：[{varName:变量名,varClass:变量的类名,metaKey:metaValue,...},...]
+//		 * @param object:     对象
+//		 * @param metaName    指定的元标签名
+//		 * */
+//		public static function getMetaInfos(object:*, metaName:String):Array
+//		{
+//			var description:XML=getTypeDescription(object);
+//			if (!description)
+//				return [];
+//			var metas:Array=[];
+//			for each (var variable:XML in description.*)
+//			{
+//				// Only check variables/accessors.
+//				if (variable.name() != "variable" && variable.name() != "accessor")
+//					continue;
+//				// Scan for  metadata with name metaName
+//				for each (var metadataXML:XML in variable.*)
+//				{
+//					if (metadataXML.@name != metaName)
+//						continue;
+//					var meta:Object=_getMeta(metadataXML, variable);
+//					if (meta)
+//					{
+//						metas.push(meta);
+//					}
+//				}
+//			}
+//			return metas;
+//		}
+//
+//		/**
+//		 * 获取object中字段为field的元标签信息
+//		 * @param object:要解析的class实例
+//		 * @param field: 实例的变量名
+//		 * Exmaple:
+//		 *    1. public class testClass1{
+//		 *         [MetaTest(type="special",sex="girl")]
+//		 *         public var testVar:SomeClass;
+//		 *       }
+//		 *    用getMeta(testClass1Instance,"testVar")
+//		 *    返回 Object: {varName:"testVar",varClass:"SomeClass",type:"special",sex:"girl"}
+//		 *    注意：如果是个纯标签[MetaTest]，返回的是一个{cls:theClassName}
+//		 * */
+//		public static function getMeta(object:*, field:String):*
+//		{
+//			var description:XML=getTypeDescription(object);
+//			if (!description)
+//				return null;
+//			for each (var variable:XML in description.*)
+//			{
+//				// Skip if it's not the field we want.
+//				if (variable.@name != field)
+//					continue;
+//
+//				// Only check variables/accessors.
+//				if (variable.name() != "variable" && variable.name() != "accessor")
+//					continue;
+//				// Scan for TypeHint metadata.
+//				for each (var metadataXML:XML in variable.*)
+//				{
+//					var meta:Object=_getMeta(metadataXML, variable);
+//					if (meta)
+//						return meta;
+//				}
+//
+//			}
+//			return null;
+//		}
+//
+//		/**
+//		 * Determines if an object is an instance of a dynamic class.
+//		 *
+//		 * @param object The object to check.
+//		 *
+//		 * @return True if the object is dynamic, false otherwise.
+//		 */
+//		public static function isDynamic(object:*):Boolean
+//		{
+//			if (object is Class)
+//			{
+//				trace("Reflection", "isDynamic", "The object is a Class type, which is always dynamic");
+//				return true;
+//			}
+//
+//			var typeXml:XML=getTypeDescription(object);
+//			return typeXml.@isDynamic == "true";
+//		}
+//TODO 缓存类描述
+//		public static function getTypeDescription(object:*):XML
+//		{
+//			var className:String=getClassName(object);
+//			if (!_typeDescriptions[className])
+//				_typeDescriptions[className]=describeType(object);
+//
+//			return _typeDescriptions[className];
+//		}
+//
+//		public static function getClassDescription(className:String):XML
+//		{
+//			if (!_typeDescriptions[className])
+//			{
+//				try
+//				{
+//					_typeDescriptions[className]=describeType(getDefinitionByName(className));
+//				}
+//				catch (error:Error)
+//				{
+//					return null;
+//				}
+//			}
+//
+//			return _typeDescriptions[className];
+//		}
+
+
 		/**
 		 * Return an array of class names in LoaderInfo object.
 		 *
@@ -384,6 +516,61 @@ package com.xingcloud.util
 			bytes.position=position;
 			return finder.getDefinitionNames(extended, linkedOnly);
 		}
+//		private static function _getVariableNamesWithMeta(description:XML,
+//			metaName:String,
+//			key:String=null,
+//			value:*=null):Array
+//		{
+//			var vars:Array=[];
+//			for each (var variable:XML in description.*)
+//			{
+//				// Only check variables/accessors.
+//				if (variable.name() != "variable" && variable.name() != "accessor")
+//					continue;
+//				// Scan for  metadata with name metaName
+//				for each (var metadataXML:XML in variable.*)
+//				{
+//					if (metadataXML.@name == metaName)
+//					{
+//						var varName:String=variable.@name.toString();
+//						//如果key,vlaue都有，那么只返回key=value的那个
+//						if (key && value)
+//						{
+//							//这种表达方式xml是否可以接受？todo
+//							if (metadataXML.arg.((@key == key) && (@value == value)).length)
+//								vars.push(varName);
+//						}
+//						else
+//							vars.push(varName);
+//					}
+//				}
+//			}
+//			return vars;
+//		}
+//
+//		private static function _getMeta(metadataXML:XML, variable:XML):*
+//		{
+//			//这个标签每个属性都有，系统的，滤掉
+//			if (metadataXML.@name == "__go_to_definition_help")
+//				return null;
+//			/**
+//			 * metadataXML.arg是一个XMLList
+//			 * metadataXML.arg=<arg key="type" value="special"/>
+//			 *                  <arg key="sex" value="girl"/>
+//			 * 对应[MetaTest(type="special",sex="girl")]
+//			 * */
+//			//"longame.components::AbstractComp"
+//			var className:String=variable.@type.toString();
+//			className=className.replace("::", ".");
+//			var meta:Object={varName: variable.@name.toString(), varClass: className};
+//			for each (var arg:XML in metadataXML.arg)
+//			{
+//				var key:String=arg.@key.toString();
+//				var value:String=arg.@value.toString();
+//				meta[key]=value;
+//			}
+//			return meta;
+//		}
 	}
 }
 

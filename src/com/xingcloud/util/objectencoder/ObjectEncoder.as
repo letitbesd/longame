@@ -1,5 +1,7 @@
 package com.xingcloud.util.objectencoder
 {
+	import com.smartfoxserver.v2.entities.data.SFSDataWrapper;
+	import com.smartfoxserver.v2.entities.data.SFSObject;
 	import flash.utils.describeType;
 	import mx.utils.ObjectUtil;
 
@@ -40,7 +42,7 @@ package com.xingcloud.util.objectencoder
 					_compositor=new JSONComposite(this);
 					break;
 				case SFS:
-//					_compositor=new SFSComposite(this);
+					_compositor=new SFSComposite(this);
 					break;
 				case AMF:
 					_compositor=new AMFComposite(this);
@@ -75,10 +77,10 @@ package com.xingcloud.util.objectencoder
 		/**
 		 *获取SFS对象
 		 */
-//		public function get SfsObject():SFSObject
-//		{
-//			return (_result as SFSDataWrapper).data;
-//		}
+		public function get SfsObject():SFSObject
+		{
+			return (_result as SFSDataWrapper).data;
+		}
 
 
 		/**

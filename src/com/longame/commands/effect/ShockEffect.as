@@ -99,7 +99,7 @@
             };
         }
         public function get isShocking():Boolean{
-            return this._isShocking;
+            return (this._isShocking);
         }
 		override protected function complete():void
 		{
@@ -114,7 +114,7 @@
                 shocks[i] = this.createShock();
                 i++;
             };
-            return shocks;
+            return (shocks);
         }
         private function createShock():Vector.<Vector.<Number>>{
             var xx:Number;
@@ -149,7 +149,7 @@
                 angle = (angle + ((PI - HALF_VARIATION) + (Math.random() * VARIATION)));
                 i++;
             };
-            return shock;
+            return (shock);
         }
     }
 }

@@ -1,15 +1,13 @@
 package com.longame.utils
 {
-    import com.adobe.utils.DateUtil;
-    import com.longame.model.consts.Colors;
-    import com.longame.utils.debug.Logger;
-    
     import flash.geom.Point;
     import flash.geom.Rectangle;
     import flash.geom.Vector3D;
     import flash.net.URLRequest;
     import flash.text.StyleSheet;
     import flash.utils.Dictionary;
+    
+    import com.longame.model.consts.Colors;
     
     public class StringParser
     {
@@ -260,45 +258,6 @@ package com.longame.utils
         {
             return new URLRequest(value);//splitTypeFromSource(value).source);
         }
-		public static function toDate(value:String):Date
-		{
-			return DateUtil.parseW3CDTF(value);
-		}
-		/**
-		 * 将字符串解析到taret的key属性上，会自动根据target的key属性类型类进行解析
-		 * */
-		public static function toTarget(target:*,key:String,val:String):void
-		{
-			try{
-				var p:* = target[key];
-				if(p is int)
-					target[key] =parseInt(val);
-				else if(p is uint)
-					target[key]= StringParser.toUint(val);
-				else if (p is Number)
-					target[key] =Number(val);
-				else if (p is Boolean)
-					target[key] =StringParser.toBoolean(val);
-				else if (p is Array)
-					target[key] = StringParser.toArray(val);
-				else if(p is Point)
-					target[key] = StringParser.toPoint(val);
-				else if(p is Vector3D)
-					target[key]= StringParser.toVector3D(val);
-				else if (p is Dictionary)
-					target[key]=StringParser.toDictionary(val);
-				else if(p is Rectangle)
-					target[key]=StringParser.toRectangle(val);
-				else if(p is Date)
-					target[key]=StringParser.toDate(val);
-				else if((p is Object)&& !(p is String))
-					target[key] =StringParser.toObject(val);
-				else
-					target[key]=val;
-			}catch(e:Error){
-//				Logger.warn("StringParser","toTarget","error when parse property"+key+","+e.message);
-			}
-		} 
     }
 }
 

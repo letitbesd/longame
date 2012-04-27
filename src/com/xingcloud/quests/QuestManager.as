@@ -80,7 +80,7 @@ package  com.xingcloud.quests
 			}
 		}
 		private static var inited:Boolean;
-		xingcloud_internal static function init(quests:Object):void
+		public static function init(quests:Object):void
 		{
 			if(inited||(quests==null)) return;
 //			if(XingCloud.userprofile&&XingCloud.userprofile.quests)

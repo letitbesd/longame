@@ -5,7 +5,7 @@ package com.xingcloud.net.connector
 	import com.adobe.crypto.SHA1;
 	import com.xingcloud.util.Debug;
 	import com.xingcloud.core.Config;
-	import com.xingcloud.model.DBObject;
+	import com.xingcloud.model.ModelBase;
 	import com.xingcloud.tasks.Task;
 	import com.xingcloud.util.Util;
 	import com.xingcloud.util.objectencoder.ObjectEncoder;
@@ -121,14 +121,13 @@ package com.xingcloud.net.connector
 			var paramString:String="";
 			if (params)
 			{
-				paramString=new ObjectEncoder(params, ObjectEncoder.JSON, true, [DBObject]).JsonString;
+				paramString=new ObjectEncoder(params, ObjectEncoder.JSON, true, [ModelBase]).JsonString;
 			}
 			var base:String='POST&' + encodeURIComponent(_url) + '&' + encodeURIComponent(authString);
 			if (paramString)
 				base+=('&' + encodeURIComponent(paramString));
 			Debug.log("Authorization Base String:" + base, this);
-			//TODO
-			var signature:String="";//HMAC.hashToBase64(Config.getConfig("secret_key"), base, SHA1);
+			var signature:String=HMAC.hashToBase64(Config.getConfig("secret_key"), base, SHA1);
 			oauth.oauth_signature=signature;
 			var headerString:String="";
 			for (key in oauth)

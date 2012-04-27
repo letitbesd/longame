@@ -229,9 +229,7 @@ package com.xingcloud.core
 		 * */
 		public static function get languageType():String
 		{
-			var lang:String=getConfig("lang");
-			if(lang) return lang;
-			return "cn";
+			return getConfig("lang");
 		}
 
 		/**

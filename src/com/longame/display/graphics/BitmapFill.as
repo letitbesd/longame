@@ -10,7 +10,7 @@ package com.longame.display.graphics
 	import flash.utils.getQualifiedSuperclassName;
 	
 	import com.longame.model.consts.AxisOrientation;
-	import com.longame.game.scene.util.DrawingUtil;
+	import com.longame.modules.scenes.utils.DrawingUtil;
 
 	public class BitmapFill implements IBitmapFill
 	{

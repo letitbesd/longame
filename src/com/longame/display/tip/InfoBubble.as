@@ -21,23 +21,19 @@ package com.longame.display.tip
 	public class InfoBubble extends Sprite
 	{
 		/**
-		 * 出现或消失的时间，0表示立即
-		 * */
-		public var tweenDuration:Number=0;
-		/**
 		 * 箭头的方向，-1,0,1,2,3，分别表示不显示箭头/上/下/左/右,默认箭头在下边
 		 * 取值见：Direction.LEFT,Direction.RIGHT...
 		 * */
 		public var direction:int=0;
 		//defaults
-		protected var _defaultWidth:Number =180;
+		protected var _defaultWidth:Number =160;
 		//showTime
 		protected var _stayTime:int;
 		//文字与边框的间距
 		protected var _buffer:Number =6;
 		protected var _cornerRadius:Number = 12;
 		protected var _bgColors:Array = [0xFFFFFF, 0x9C9C9C];
-		protected var _autoSize:Boolean = true;
+		protected var _autoSize:Boolean = false;
 		protected var _hookSize:Number = 10;
 		
 		//offsets
@@ -58,7 +54,7 @@ package com.longame.display.tip
 			this.mouseEnabled = false;
 			this.buttonMode = false;
 			this.mouseChildren = false;
-//			this.cacheAsBitmap=true;
+			this.cacheAsBitmap=true;
 			this.initTextFormat();
 		}
 		/**
@@ -136,8 +132,7 @@ package com.longame.display.tip
 			if(this._stayTime>0){
 				ProcessManager.schedule(this._stayTime,this,hide);
 			}
-			if(tweenDuration>0) var gt:GTween=GTweener.to(this,tweenDuration,{alpha:1});
-			else this.alpha=1;
+			var gt:GTween=GTweener.to(this,0.5,{alpha:1});
 		}
 		private var hidingTween:GTween;
 		public function hide():void
@@ -146,15 +141,10 @@ package com.longame.display.tip
 			inShowing=false;
 			if(inHiding) return;
 			inHiding=true;
-			if(tweenDuration>0) {
-				hidingTween=GTweener.to(this,tweenDuration,{alpha:0});
-				hidingTween.onComplete=this.doHide;
-			}else{
-				this.alpha=0;
-				this.doHide();
-			}
+			hidingTween=GTweener.to(this,0.5,{alpha:0});
+			hidingTween.onComplete=this.doHide;
 		}
-		protected function doHide(g:GTween=null):void
+		protected function doHide(g:GTween):void
 		{
 			inHiding=false;
 			if(this.parent) this.parent.removeChild(this);
@@ -390,10 +380,6 @@ package com.longame.display.tip
 		 * */
 		public function set autoSize( value:Boolean ):void {
 			this._autoSize = value;
-		}
-		public function get autoSize():Boolean
-		{
-			return _autoSize;
 		}
 		
 		protected function get bounds():Rectangle

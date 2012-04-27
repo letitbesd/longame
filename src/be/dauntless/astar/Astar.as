@@ -63,7 +63,7 @@ package be.dauntless.astar
 {
 	import be.dauntless.astar.IPositionTile;
 	
-	import com.longame.game.group.component.TileMap;
+	import com.longame.modules.groups.components.TileMap;
 	
 	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;

@@ -1,7 +1,6 @@
 package com.longame.display.tip
 {
 	import flash.display.InteractiveObject;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 
@@ -10,8 +9,8 @@ package com.longame.display.tip
 		private static var targets:Vector.<InteractiveObject>=new Vector.<InteractiveObject>();
 		private static var msgs:Vector.<String>=new Vector.<String>();
 		private static var directions:Vector.<int>=new Vector.<int>();
+		private static var tip:InfoBubble;
 		
-		private static var _tip:InfoBubble;
 		private static var currentTarget:InteractiveObject;
 		
 		public function ToolTip()
@@ -19,18 +18,10 @@ package com.longame.display.tip
 			super();
 		}
 		/**
-		 * 显示的气泡，可设置样式
-		 * */
-		public static function get tip():InfoBubble
-		{
-			if(_tip==null) _tip=new InfoBubble();
-			return _tip;
-		}
-		/**
-		 * 注册一个对象的tooltip事件，注册完一般不用手动调unregister,target从舞台删除时会自动unrigister
+		 * 注册一个对象的tooltip事件
 		 * @param target:目标对象
 		 * @param msg:要显示的信息
-		 * @param direction:显示的方向，详见Direction
+		 * @param direction:显示的方向
 		 * */
 		public static function register(target:InteractiveObject,msg:String,direction:int=1):void
 		{
@@ -40,11 +31,6 @@ package com.longame.display.tip
 			directions.push(direction);
 			target.addEventListener(MouseEvent.ROLL_OVER,onMouseOver,false,0,true);
 			target.addEventListener(MouseEvent.ROLL_OUT,onMouseOut,false,0,true);
-			target.addEventListener(Event.REMOVED_FROM_STAGE,onTargetRemoved);
-		}
-		protected static function onTargetRemoved(event:Event):void
-		{
-			unregister(event.currentTarget as  InteractiveObject);
 		}
 		/**
 		 *  取消tooltip注册，原则上是要在对象销毁前调用，因为weakreference=true，影响应该不大
@@ -56,13 +42,8 @@ package com.longame.display.tip
 			targets.splice(i,1);
 			msgs.splice(i,1);
 			directions.splice(i,1);
-			if(currentTarget==target){
-				 _tip.hide();
-				 currentTarget=null;
-			}
 			target.removeEventListener(MouseEvent.ROLL_OVER,onMouseOver);
 			target.removeEventListener(MouseEvent.ROLL_OUT,onMouseOut);
-			target.removeEventListener(Event.REMOVED_FROM_STAGE,onTargetRemoved);
 		}
 		protected static function onMouseOver(event:MouseEvent):void
 		{
@@ -70,6 +51,9 @@ package com.longame.display.tip
 			var t:InteractiveObject=event.currentTarget as InteractiveObject;
 			var i:int=targets.indexOf(t);
 			if(i==-1) return;
+			if(tip==null) {
+				tip=new InfoBubble();
+			}
 			tip.direction=directions[i];
 			tip.show(msgs[i]);
 			t.stage.addChild(tip);
@@ -80,7 +64,7 @@ package com.longame.display.tip
 		{
 			var t:InteractiveObject=event.currentTarget as InteractiveObject;
 			currentTarget=null;
-			_tip.hide();
+			tip.hide();
 		}
 	}
 }

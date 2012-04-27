@@ -236,7 +236,7 @@ package com.longame.utils
 		
 		public static function getSkewXDegrees(mat:Matrix):Number
 		{
-			return Math.atan2(-mat.c, mat.d) / 0.017453292519943294444;
+			return Math.atan2(-mat.c, mat.d) * 0.017453292519943294444;
 		}
 		
 	   	public static function setSkewXDegrees(mat:Matrix, skewX:Number):void
@@ -246,7 +246,7 @@ package com.longame.utils
 		
 		public static function getSkewYDegrees(mat:Matrix):Number
 		{
-			return Math.atan2(mat.b, mat.a) / 0.017453292519943294444;
+			return Math.atan2(mat.b, mat.a) * 0.017453292519943294444;
 		}
 		
 		public static function setSkewYDegrees(mat:Matrix, skewY:Number):void
@@ -272,7 +272,7 @@ package com.longame.utils
 		
 		public static function getRotationDegrees(mat:Matrix):Number
 		{
-			return getRotation(mat) / 0.017453292519943294444;
+			return getRotation(mat) * 0.017453292519943294444;
 		}
 		
 		public static function setRotationDegrees(mat:Matrix, rotation:Number):void

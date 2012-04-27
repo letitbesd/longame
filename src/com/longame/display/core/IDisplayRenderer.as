@@ -1,17 +1,17 @@
 package com.longame.display.core
 {
-	import com.longame.game.core.EntityTile;
-	import com.longame.game.core.bounds.IBounds;
-	import com.longame.game.core.bounds.TileBounds;
-	import com.longame.game.group.IDisplayGroup;
-	import com.longame.game.scene.IScene;
-	
+	import flash.display.Sprite;
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
 	
-	import org.osflash.signals.Signal;
+	import com.longame.modules.core.IMouseObject;
+	import com.longame.modules.core.EntityTile;
+	import com.longame.modules.scenes.IScene;
+	import com.longame.modules.groups.IDisplayGroup;
+	import com.longame.modules.core.bounds.IBounds;
+	import com.longame.modules.core.bounds.TileBounds;
 	
-	import starling.display.Sprite;
+	import org.osflash.signals.Signal;
 
     /**
 	 * 定义一个具有图形渲染的接口
@@ -50,10 +50,5 @@ package com.longame.display.core
 		 * */
 		function get registration():String;
 		function set registration(value:String):void;
-		/**
-		 * 对象的可见性
-		 * */
-		function get visible():Boolean;
-		function set visible(value:Boolean):void;
 	}
 }

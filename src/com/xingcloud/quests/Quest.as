@@ -1,6 +1,7 @@
 package  com.xingcloud.quests
 {
 	import com.longame.commands.base.Command;
+	import com.longame.commands.net.Remoting;
 	import com.longame.utils.StringParser;
 	import com.xingcloud.action.Action;
 	import com.xingcloud.action.QuestAcceptAction;

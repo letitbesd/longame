@@ -1,6 +1,7 @@
 package com.xingcloud.tutorial
 {
 	import com.longame.commands.base.SerialCommand;
+	import com.longame.commands.net.Remoting;
 	import com.xingcloud.core.Config;
 	import com.xingcloud.core.XingCloud;
 	import com.xingcloud.core.xingcloud_internal;
@@ -16,27 +17,22 @@ package com.xingcloud.tutorial
 	import flash.display.DisplayObject;
 	
 	use namespace xingcloud_internal;
-	/**
-	 * <Tutorial   id="" name="" description="" award="">
-	 * 				<Step>
-	 *              </Step>
-	 * </Tutorial>
-	 * */
+	
 	[DefaultProperty("steps")]
 	final public class Tutorial extends SerialCommand
 	{
 		protected var _id:String;	
 		protected var _name:String;
 		protected var _description:String="";
-		protected  var _target:*;
+		protected  var _target:DisplayObject;
 		protected var _awardId:String;
 		
 		protected var _steps:Array=[];
 		/**
 		 * 属于哪个TutorialGroup，初始化时通过setOwner()自动赋值
 		 * */
-		xingcloud_internal var _owner:TutorialGroup;
-		xingcloud_internal var currentStep:int=0;
+		protected var _owner:TutorialGroup;
+		private var currentStep:int=-1;
 		
 		public function Tutorial()
 		{
@@ -48,7 +44,9 @@ package com.xingcloud.tutorial
 			tu._id=xml.@id;
 			tu._name=xml.@name;
 			tu._description=xml.@description;
-			var stepList:XMLList=xml.children();
+//			tu._target=xml.@target;
+			if(!xml.hasOwnProperty("Steps")) throw new Error("Tutorial shoud has 'Steps' node!");
+			var stepList:XMLList=xml.Steps[0].children();
 			var len:uint=stepList.length();
 			var stepXml:XML;
 			var step:TutorialStep;
@@ -59,8 +57,8 @@ package com.xingcloud.tutorial
 				if(stepCls==null) throw new Error("The class : "+stepXml.localName().toString()+" does not exist!");
 				step=new stepCls() as TutorialStep;
 				step.parseFromXML(stepXml);
-				step._index=i+1;
-				step._owner=tu;
+				step.setIndex(i+1);
+				step.setOwner(tu);
 				tu._steps.push(step);
 			}
 			if(xml.hasOwnProperty("@award")){
@@ -70,29 +68,40 @@ package com.xingcloud.tutorial
 		}
 		override protected function enqueueCommands():void
 		{
-			if(this.isCompleted) return;
-			//从currentStep开始，可能会有问题,所以不太可能从某一步开始执行向导
+			if(this.hasCompleted) return;
 			for(var i:int=0;i<steps.length;i++){
 				var step:TutorialStep=steps[i];
+//				step.setIndex(i+1);
+//				step.setOwner(this);
 				this.enqueue(step,step.name);
 			}
 		}
 		override protected function doExecute():void
 		{
-			Engine.inTutorial=true;
-			super.doExecute();
+			if(TutorialManager.testMode){
+				currentStep=0;
+				super.doExecute();
+				return;
+			}
+			//先从服务器拿向导数据
+			if(currentStep<0){
+				var amf:AMFConnector=new AMFConnector(Config.TUTORIAL_GET_SERVICE,{user_uid:XingCloud.userprofile.uid,tutorial:this.name});
+				amf.addEventListener(TaskEvent.TASK_COMPLETE,onGotTutorialSuccess);
+				amf.addEventListener(TaskEvent.TASK_ERROR,onGotTutorialFailed);
+				amf.execute();		
+			}else{
+				super.doExecute();
+			}
 		}
 		override protected function complete():void
 		{
 			steps.splice(0,steps.length);
-			Engine.inTutorial=false;
+			//向后台提交
+			if((!hasCompleted)&&(!TutorialManager.testMode)){
+				var amf:AMFConnector=new AMFConnector(Config.TUTORIAL_COMPLETE_SERVICE,{user_uid:XingCloud.userprofile.uid,name:this.name});
+				amf.execute();	
+			}
 			super.complete();
-			_target=null;
-		}
-		override public function abort():void
-		{
-			super.abort();
-			_target=null;
 		}
 		/**
 		 * name是唯一的标志，之所以不用id，是因为和mxml的id标签发生冲突
@@ -112,14 +121,14 @@ package com.xingcloud.tutorial
 		{
 			return _description;
 		}
-		public function set target(value:*):void
+		public function set target(value:DisplayObject):void
 		{
 			_target=value;
 		}
 		/**
 		 *跟向导系统相联系的界面或场景，必须
 		 */
-		public function get target():*
+		public function get target():DisplayObject
 		{
 			if(_target) return _target;
 			if(_owner&&_owner.target) return _owner.target;
@@ -138,34 +147,31 @@ package com.xingcloud.tutorial
 		{
 			return _owner;
 		}
-//		xingcloud_internal function setOwner(owner:TutorialGroup):void
-//		{
-//			_owner=owner;
-//		}
-//		private function onGotTutorialFailed(event:TaskEvent):void
-//		{
-//			currentStep=0;
-//			this.doExecute();
-//		}
-//		private function onGotTutorialSuccess(event:TaskEvent):void
-//		{
-//			var result:Object=(event.task as Connector).data.data;
-//			//从某一步开始执行时不可行的
-//			if(result==null){
-//				currentStep=0;
-//			}else{
-//				//读取存储了的开始步骤
-//                currentStep=result.index;
-//			}
-//			this.doExecute();
-//		}
-		override public function get isCompleted():Boolean
+		xingcloud_internal function setOwner(owner:TutorialGroup):void
 		{
-			return _isCompleted||(currentStep>_steps.length-1);
+			_owner=owner;
 		}
-//		public function get hasCompleted():Boolean
-//		{
-//			return currentStep>_steps.length-1;
-//		}
+		private function onGotTutorialFailed(event:TaskEvent):void
+		{
+			currentStep=0;
+			this.doExecute();
+		}
+		private function onGotTutorialSuccess(event:TaskEvent):void
+		{
+			var result:Object=(event.task as Connector).data.data;
+//			var result:Object=data.data;
+			//从某一步开始执行时不可行的
+			if(result==null){
+				currentStep=0;
+			}else{
+				//读取存储了的开始步骤
+                currentStep=result.index;
+			}
+			this.doExecute();
+		}
+		public function get hasCompleted():Boolean
+		{
+			return currentStep>_steps.length-1;
+		}
 	}
 }

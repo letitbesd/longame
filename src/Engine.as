@@ -2,6 +2,7 @@ package
 {
 	import com.longame.commands.base.Command;
 	import com.longame.display.screen.ScreenManager;
+	import com.longame.managers.CursorManager;
 	import com.longame.managers.InputManager;
 	import com.longame.managers.ProcessManager;
 	import com.longame.managers.SoundManager;
@@ -14,40 +15,28 @@ package
 	import flash.display.SimpleButton;
 	import flash.display.Sprite;
 	import flash.display.Stage;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.system.ApplicationDomain;
 	import flash.system.Security;
-	import flash.text.TextField;
-	import flash.text.TextFormat;
+	
+	import mx.controls.Button;
+	import mx.events.FlexEvent;
 	
 	import org.osflash.signals.Signal;
 	
-	import starling.core.Starling;
-	import starling.display.Sprite;
-	import starling.display.Stage;
-	import starling.events.Event;
-	
-	public class Engine extends flash.display.Sprite
+	public class Engine extends Sprite
 	{
 		/**
-		 * 是否在本地存储数据
+		 * singals
 		 * */
-		public static var saveInLocal:Boolean;
-		/**
-		 * 游戏名，可用于存储本地数据时的local name
-		 * */
-		public static var appName:String="longames_app";
-	    /**
-		 * 当前是否在运行向导系统
-		 * */
-		public static var inTutorial:Boolean;
+//		public var onInited:Signal=new Signal();
+//		public var onFailed:Signal=new Signal(String);
 		
+        protected var _screenContainer:Sprite;
 		protected var _screenManager:ScreenManager;
 		
 		private static var _instance:Engine;
-		private static var _nativeStage:flash.display.Stage;
+		private static var _stage:Stage;
 		
 		public function Engine()
 		{
@@ -55,19 +44,15 @@ package
 			if(_instance!=null) throw new Error("Engine should be sington!");
 			_instance=this;
 			if(this.stage) onAdded();
-			else this.addEventListener(flash.events.Event.ADDED_TO_STAGE,onAdded);
+			else this.addEventListener(Event.ADDED_TO_STAGE,onAdded);
 		}
 		public static function get instance():Engine
 		{
 			return _instance;
 		}
-		public static function get nativeStage():flash.display.Stage
+		public static function get stage():Stage
 		{
-			return _nativeStage;
-		}
-		public static function get gpuStage():starling.display.Stage
-		{
-			return Starling.current.stage;
+			return _stage;
 		}
 		public static function registerClass(cls:Class):void
 		{
@@ -78,52 +63,36 @@ package
             return Security.sandboxType==Security.REMOTE;
 		}
 		private var _inited:Boolean;
-		private function onAdded(e:flash.events.Event=null):void
+		protected function onAdded(e:Event=null):void
 		{
 			if(_inited) return;
 			_inited=true;
-			Logger.startup();
-			_nativeStage=this.stage;
-			_nativeStage.scaleMode=StageScaleMode.NO_SCALE;
-			_nativeStage.align=StageAlign.TOP_LEFT;
-			new Starling(null,_nativeStage,null,null,"auto");
-			Starling.current.addEventListener(starling.events.Event.CONTEXT3D_CREATE,onStage3dReady);
-			Logger.info(this,"onAdded","Engine added to stage ok!");
-			this.removeEventListener(flash.events.Event.ADDED_TO_STAGE,onAdded);
-		}
-		private  function onStage3dReady(evt:starling.events.Event):void
-		{
 			this.init();
+			Logger.info(this,"onAdded","Engine added to stage ok!");
+			this.removeEventListener(Event.ADDED_TO_STAGE,onAdded);
 		}
 		protected function init():void
 		{
-//			InputManager.init(this);
+			Logger.startup();
+			_stage=_instance.stage;
+			InputManager.init(this);
 			SoundManager.init();
-//			CursorManager.init(this.stage);
-			var screenContainer:starling.display.Sprite=new starling.display.Sprite();
-			gpuStage.addChild(screenContainer);
-			this._screenManager=new ScreenManager(screenContainer,0.1,0,0);	
-			Engine.start();
-			Logger.info(this,"onStage3dReady","Stage 3d ready!");
-		}
-		public static function showScreen(screenClass:Class,para:*=null):void
-		{
-			_instance._screenManager.openScreen(screenClass,para);
-		}
-		private static var _started:Boolean;
-		public static function start():void
-		{
-			if(_started) return;
-			_started=true;
 			ProcessManager.start();
-			Starling.current.start();
+			CursorManager.init(this.stage);
+			this._screenManager=new ScreenManager(this.screenContainer,0.1,0,0);	
+			Logger.info(this,"init","Engine begin init!");
 		}
-		public static function stop():void
+		public static function showScreen(screenClass:Class, autoStart:Boolean = false,para:*=null):void
 		{
-			if(!_started) return;
-			_started=false;
-			ProcessManager.stop();
-			Starling.current.stop();
+			_instance._screenManager.openScreen(screenClass, autoStart,para);
+		}
+		private function get screenContainer():DisplayObjectContainer
+		{
+			if(_screenContainer==null){
+				_screenContainer=new Sprite();
+				this.addChild(_screenContainer);				
+			}
+			return this._screenContainer;
 		}
 		public static function get screenManager():ScreenManager
 		{

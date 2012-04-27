@@ -23,6 +23,8 @@ package com.longame.resource
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	
+	import mx.events.StyleEvent;
+	
 	import org.osflash.signals.Signal;
 	
 	use namespace long_internal;
@@ -82,14 +84,9 @@ package com.longame.resource
 			r=new Resource(url,type,isBynary);
 			this._resources[url]=r;
 			this.enqueue(r.loader);
+//			r.reference++;
 			r.reference=oldRefrence+1;
 			return r;
-		}
-		long_internal function addResource(r:Resource):void
-		{
-			this._resources[r.src]=r;
-			r.reference=1;
-			this.handleResult(r);
 		}
 		public function getResource(url:String):Resource
 		{
@@ -157,14 +154,10 @@ package com.longame.resource
 		}
 		private function handleResult(r:Resource):void
 		{
-			var rawContent:*=r.rawContent;
-			if(rawContent==null) {
-				r.failed=true;
-				r.loaded=false;
-				return;
-			}
 			r.loaded=true;
 			r.failed=false;
+			var rawContent:*=r.rawContent;
+			if(rawContent==null) return;
 			//如果是二进制数据，自动尝试解压之
 			if(rawContent is ByteArray){
 				try{
@@ -175,23 +168,15 @@ package com.longame.resource
 			}
 			switch(r.type){
 				case "xml":
+				case "items":
+				case "language":
+				case "quest":
+				case "tutorial":
 					r._content=new XML(rawContent);
-					break;
-				case Resource.ITEMS:
-					r._content=new XML(rawContent);
-					ItemDatabase.addXmlSource(r._content as XML);
-					break;
-				case Resource.LANGUAGE:
-					r._content=new XML(rawContent);
-					LanguageManager.languageSource=r._content as XML;
-					break;
-				case Resource.QUEST:
-					r._content=new XML(rawContent);
-					QuestManager.addXmlDefinition(r._content as XML);
-					break;
-				case Resource.TUTORIAL:
-					r._content=new XML(rawContent);
-					TutorialManager.addXmlDefinition(r._content as XML);
+					if(r.type=="items")    ItemDatabase.addXmlSource(r._content as XML);
+					if(r.type=="language") LanguageManager.languageSource=r._content as XML;
+					if(r.type=="quest")    QuestManager.addXmlDefinition(r._content as XML);
+					if(r.type=="tutorial") TutorialManager.addXmlDefinition(r._content as XML);
 					break;
 				case "css":
 					var s:StyleSheet=new StyleSheet();
@@ -199,7 +184,7 @@ package com.longame.resource
 					r._content=s;
 					LanguageManager.styleSheet=s;
 					break;
-				case Resource.FONT:
+				case "font":
 					this.registerFonts(r.loader as AssetsLoader);
 					break;
 //				case "txt":

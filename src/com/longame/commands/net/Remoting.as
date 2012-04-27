@@ -69,6 +69,8 @@ package com.longame.commands.net
 		private var _dataFormat:String=URLLoaderDataFormat.TEXT;
 		private var  oauth:Object;
 		
+		
+		
 		/**
 		 * @param command_name: 以'.'分割的方法名
 		 * @param command_args: {key:value,key:value}形式的参数
@@ -377,7 +379,6 @@ import com.longame.commands.net.DataLoader;
 import com.adobe.serialization.json.JSONESequenceEncoder;
 import com.adobe.serialization.json.JSON;
 import com.longame.utils.debug.Logger;
-import com.adobe.serialization.json.JSONDecoder;
 
 internal class RESTConnecter extends DataLoader
 {
@@ -437,7 +438,7 @@ internal class RESTConnecter extends DataLoader
 	{
 		try
 		{
-			var result:Object=new JSONDecoder(content, true ).getValue();
+			var result:Object=JSON.decode(content);
 			if(result.hasOwnProperty("code"))
 			{
 				if(parseInt(result.code)!=200)

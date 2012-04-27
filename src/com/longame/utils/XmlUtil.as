@@ -20,13 +20,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 package com.longame.utils {
-	import com.longame.utils.debug.Logger;
-	
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.geom.Vector3D;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
+	
+	import com.longame.utils.debug.Logger;
 
 public class XmlUtil
 {
@@ -36,9 +36,47 @@ public class XmlUtil
 	public static function parseProperties(target:*,define:XML):void
 	{
 		for each(var attr:XML in define.attributes()){
-			StringParser.toTarget(target,attr.localName(),attr.toString());
+			parseProperty(target,attr);
 		}
 	}
+	/**
+	 * 将一个xml属性赋值给对象target
+	 * @param target:任何对象，如果对象具有属性值，则按照类型赋值，否则赋值成string
+	 * @param attr:一个xml属性，如<item type="spec"/> type="spec"是要处理的对象
+	 * */
+	public static function parseProperty(target:*,attr:XML):void
+	{
+		var key:String=attr.localName();
+		var val:String=attr.toString();
+       try{
+			var p:* = target[key];
+			if (p is Number)
+				target[key] =Number(val);
+			else if(p is int)
+				target[key] =parseInt(val);
+			else if(p is uint)
+				target[key]= StringParser.toUint(val);
+			else if (p is Boolean)
+				target[key] =StringParser.toBoolean(val);
+			else if (p is Array)
+				target[key] = StringParser.toArray(val);
+			else if(p is Point)
+				target[key] = StringParser.toPoint(val);
+			else if(p is Vector3D)
+				target[key]= StringParser.toVector3D(val);
+			else if (p is Dictionary)
+				target[key]=StringParser.toDictionary(val);
+			else if(p is Rectangle)
+				target[key]=StringParser.toRectangle(val);
+			else if((p is Object)&& !(p is String))
+				target[key] =StringParser.toObject(val);
+			else
+				target[key]=val;
+		}catch(e:Error){
+//			Logger.warn("XmlUtil","parseProperty","Target "+target+" has no property with name: '"+key+"' or it is not writable!");
+			Logger.warn("XmlUtil","parseProperty->"+key,e.message);
+		}
+	} 	
 		/**
 		 * 搜索指定关键字的xml
 		 * @param _key: 可以是一个以“.”分割的字符串，表示要获取的层级(不用连续)，不用.则搜索第一个匹配项

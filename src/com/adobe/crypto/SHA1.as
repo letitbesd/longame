@@ -33,7 +33,9 @@
 package com.adobe.crypto
 {
 	import com.adobe.utils.IntUtil;
+	
 	import flash.utils.ByteArray;
+	
 	import mx.utils.Base64Encoder;
 	
 	/**
@@ -85,6 +87,13 @@ package com.adobe.crypto
 					+ IntUtil.toHex( byteArray.readInt(), true )
 					+ IntUtil.toHex( byteArray.readInt(), true )
 					+ IntUtil.toHex( byteArray.readInt(), true );
+		}
+		public static function hashBytes1( data:ByteArray ):ByteArray
+		{
+			var blocks:Array = SHA1.createBlocksFromByteArray( data );
+			var byteArray:ByteArray = hashBlocks(blocks);
+			
+			return byteArray;
 		}
 		
 		/**

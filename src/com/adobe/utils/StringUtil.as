@@ -235,5 +235,23 @@ package com.adobe.utils
 			//todo: this needs a unit test
 			return (s != null && s.length > 0);			
 		}
+		/**
+		 * Encode a string into URL format
+		 * 
+		 * @param input The String need to be encoded or decoded in url form
+		 * 
+		 * 
+		 */		
+		public static function UrlEncode(input:String):String
+		{
+			var str:String = replace(input, "%", "%25");
+			str = escape(str);
+			str = replace(str, "/", "%2F");
+			str = replace(str, "+", "%20");
+			str = replace(str, "?", "%3F");
+			str = replace(str, "#", "%23");
+			str = replace(str, "&", "%26");
+			return str;
+		}
 	}
 }

@@ -129,7 +129,7 @@ package com.xingcloud.model.item
 			for each(var attr:XML in parent.xml.attributes()){
 				var attrName:String=attr.localName();
 				if((excludedParentAtrrs.indexOf(attrName)==-1)){
-					StringParser.toTarget(child,attr.localName(),attr.toString());
+					XmlUtil.parseProperty(child,attr);
 				}
 			}
 		}	

@@ -8,10 +8,12 @@ package com.xingcloud.core
 	import com.xingcloud.loader.DataLoader;
 	import com.xingcloud.loader.ResourceType;
 	import com.xingcloud.model.users.AbstractUserProfile;
+	import com.xingcloud.net.SFSManager;
 	import com.xingcloud.net.connector.AMFConnector;
 	import com.xingcloud.net.connector.Connector;
 	import com.xingcloud.net.connector.MessageResult;
 	import com.xingcloud.net.connector.RESTConnector;
+	import com.xingcloud.net.connector.SFSConnector;
 	import com.xingcloud.services.PlatformLoginService;
 	import com.xingcloud.services.ProfileService;
 	import com.xingcloud.services.ServiceManager;
@@ -254,7 +256,7 @@ package com.xingcloud.core
 		private static function onGotFriendSuccess(e:ServiceEvent):void
 		{
 			if(_onFriendInfoGot!=null) _onFriendInfoGot(_currentFriend);
-			_friendInfos1[_currentFriend.id]=_currentFriend;
+			_friendInfos1[_currentFriend.uid]=_currentFriend;
 			_currentFriend=null;
 			_onFriendInfoGot=null;
 		}

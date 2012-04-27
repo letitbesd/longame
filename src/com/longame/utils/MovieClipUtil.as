@@ -121,7 +121,7 @@ package com.longame.utils
 			var index:int=getAllLabels(mc).indexOf(label);
 			if(index==-1) return 0;
 			var frames:Array=getAllFramesWithLabel(mc);
-//			var framePosition:int=frames[index];
+			var framePosition:int=frames[index];
 			if(index>=(frames.length-1)){
 				return mc.totalFrames;
 			}

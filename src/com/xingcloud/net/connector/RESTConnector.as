@@ -1,14 +1,12 @@
 package com.xingcloud.net.connector
 {
 	import com.adobe.serialization.json.JSON;
-	import com.adobe.serialization.json.JSONDecoder;
 	import com.xingcloud.core.Config;
 	import com.xingcloud.core.XingCloud;
-	import com.xingcloud.model.DBObject;
+	import com.xingcloud.model.ModelBase;
 	import com.xingcloud.util.Debug;
 	import com.xingcloud.util.Util;
 	import com.xingcloud.util.objectencoder.ObjectEncoder;
-	
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
@@ -21,7 +19,6 @@ package com.xingcloud.net.connector
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	import flash.utils.ByteArray;
-	
 	import mx.utils.URLUtil;
 
 	/**
@@ -116,8 +113,7 @@ package com.xingcloud.net.connector
 					result=Util.unCompressData(_urlLoader.data as ByteArray);
 				else
 					result=_urlLoader.data as String;
-//				_data=MessageResult.createResult(JSON.decode(result));
-				_data=MessageResult.createResult(new JSONDecoder(result, true ).getValue());
+				_data=MessageResult.createResult(JSON.decode(result));
 				if ((_data as MessageResult).success)
 				{
 					notifyComplete(this);
@@ -182,7 +178,7 @@ package com.xingcloud.net.connector
 			{
 				try
 				{
-					var json:String=new ObjectEncoder(_commandArgs, ObjectEncoder.JSON, true, [DBObject]).JsonString;
+					var json:String=new ObjectEncoder(_commandArgs, ObjectEncoder.JSON, true, [ModelBase]).JsonString;
 					if (XingCloud.needCompress)
 						request.data=Util.compressTextData(json);
 					else

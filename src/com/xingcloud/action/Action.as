@@ -1,37 +1,33 @@
 package com.xingcloud.action
 {
-	import com.longame.commands.base.Command;
-	import com.longame.commands.net.AMFConnecter;
 	import com.longame.display.BusyCursor;
 	import com.longame.managers.ProcessManager;
-	import com.longame.utils.Reflection;
 	import com.longame.utils.debug.Logger;
 	import com.xingcloud.core.Config;
 	import com.xingcloud.core.XingCloud;
+	import com.xingcloud.net.IPackableRequest;
+	import com.xingcloud.util.Reflection;
 	
 	import org.osflash.signals.Signal;
 
 	/**
 	 * Action基类，用于创建相应的动作逻辑和后台进行通信完成相应操作。
+	 *
 	 */
-	public class Action extends Command //implements IPackableRequest
+	public class Action implements IPackableRequest
 	{
-		public static const LOAD_USER:String="LoadUser";
-		public static const LOAD_ITMES:String="LoadItems";
 		/**
 		 * 定义一个一般的action
 		 * @param params  传到后台的参数
+		 * @param name action的名称，如果不设置此参数，则名称默认为此Action类名，如果后台Action进行的分层，Action不在默认的
+		 * 根路径下，则需要设置此参数为Action从其根目录开始完整的子路径，如shop.BuyAction
 		 * */
 		public function Action(params:Object=null,success:Function=null,fail:Function=null,name:String=null)
 		{
-			this._name=name;
 			this._params=params;
-			if(this._params==null) this._params={};
-			this._params.action=this.name;
-			data={name: name, params: params}
+			_name=name;
 			_success=success;
 			_fail=fail;
-			super();
 		}
 
 		protected var _params:Object;
@@ -46,16 +42,26 @@ package com.xingcloud.action
 		{
 			return this._params;
 		}
+
 		/**
 		 *action名称
 		 * @return
 		 *
 		 */
-		override public function get name():String
+		public function get name():String
 		{
-			if (_name==null)
+			if (!_name)
 				_name=Reflection.tinyClassName(this);
 			return _name;
+		}
+		/**
+		 *合法性验证 ,to be inherited
+		 * @return 
+		 * 
+		 */		
+		public function validate():Boolean
+		{
+			return true;
 		}
 		/**
 		 * 本地模拟action数据,子类覆盖
@@ -64,47 +70,59 @@ package com.xingcloud.action
 		{
 			ProcessManager.callLater(this.doWhenSuccess,[localData]);
 		}
-		override protected function doExecute():void
+		public function execute(immediately:Boolean=true):Boolean
 		{
-			super.doExecute();
-			if(Config.localMode){
-				this.simulateInLocal();
-			}else{
-				BusyCursor.show();
-				var amf:AMFConnecter=new AMFConnecter("ActionCenter.execute",this.params);
-				amf.onSuccess=this.onActionBack;
-				amf.onFail=this.onActionError;
-				amf.execute();
+			if(this.validate()) {
+				if(Config.localMode){
+					this.simulateInLocal();
+				}else{
+					this.sendToServer(immediately);
+				}
+				return true;
+			}
+			return false;
+		}
+		public function handleDataBack(result:Object):void
+		{
+			if (result.code == 200)
+			{
+				onSuccess(result);
+			}
+			else
+			{
+				onFail(result);
 			}
 		}
+
+		public function get data():Object
+		{
+			return {name: name, params: params};
+		}
+
 		/**
 		 * 处理成功后回调函数，需覆盖编写具体逻辑
 		 * @param result
 		 *
 		 */
-		private function onActionBack(result:Object):void
+		private function onSuccess(data:Object):void
 		{
-			data=result.data;
-			if(result.success){
-				try{
-					//如果有任务完成，发布之
-					if(data.quest){
-						Action.onQuestStep.dispatch(data.quest);
-					}
-					//如果有奖励，发布之
-					if(data.awards){
-						for each(var award:Object in data.awards){
-							this.awardToUser(award);
-						}
-						Action.onGetAward.dispatch(data.awards);
-					}
-				}catch(e:Error){
-					
+			data=data.data;
+			try{
+				//如果有任务完成，发布之
+				if(data.quest){
+					Action.onQuestStep.dispatch(data.quest);
 				}
-				this.doWhenSuccess(data);
-			}else{
-				this.doWhenFail(result.msg);
+				//如果有奖励，发布之
+				if(data.awards){
+					for each(var award:Object in data.awards){
+						this.awardToUser(award);
+					}
+					Action.onGetAward.dispatch(data.awards);
+				}
+			}catch(e:Error){
+				
 			}
+			this.doWhenSuccess(data);
 		}
 
 		/**
@@ -112,7 +130,7 @@ package com.xingcloud.action
 		 * @param result
 		 *
 		 */
-		private function onActionError(result:Object):void
+		private function onFail(result:Object):void
 		{
 			this.doWhenFail(result);
 		}
@@ -128,12 +146,20 @@ package com.xingcloud.action
 		protected var _success:Function;
 		protected var _fail:Function;
 		
+		protected function sendToServer(immediately:Boolean):void
+		{
+			ActionManager.instance.addAction(this);
+			if(immediately) {
+				ActionManager.instance.send();
+				BusyCursor.show();
+			}
+		}
+		
 		protected function doWhenFail(data:Object):void
 		{
 			if(_fail!=null) _fail(data);
-			var msg:String=(data is String)?String(data):data.message;
-			this.showFailMessage(msg);
-			this.notifyError(msg);
+			this.showFailMessage(((data is String)?String(data):data.message));
+			this._onError.dispatch(this);
 			Action.onError.dispatch(this);
 			BusyCursor.hide();
 		}
@@ -145,7 +171,7 @@ package com.xingcloud.action
 		protected function doWhenSuccess(data:Object):void
 		{
 			if(_success!=null) _success(data);
-			this.complete();
+			this._onComplete.dispatch(this,data);
 			Action.onComplete.dispatch(this,data);
 			BusyCursor.hide();
 		}
@@ -162,6 +188,16 @@ package com.xingcloud.action
 			for(var prop:String in award){
 				XingCloud.userprofile[prop]+=Number(award[prop]);
 			}
+		}
+		protected var _onComplete:Signal=new Signal(Action,Object);
+		protected var _onError:Signal=new Signal(Action);
+		public function get onComplete():Signal
+		{
+			return _onComplete;
+		}
+		public function get onError():Signal
+		{
+			return _onError;
 		}
 	}
 }

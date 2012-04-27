@@ -22,7 +22,7 @@
 
 package com.xingcloud.util
 {
-	import com.xingcloud.model.DBObject;
+	import com.xingcloud.model.ModelBase;
 	import com.xingcloud.util.objectencoder.ObjectEncoder;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -329,7 +329,7 @@ package com.xingcloud.util
 			}
 			else
 			{
-				return timestamp() + targetName(target) + new ObjectEncoder(msg, ObjectEncoder.JSON, false, [DBObject]).JsonString;
+				return timestamp() + targetName(target) + new ObjectEncoder(msg, ObjectEncoder.JSON, false, [ModelBase]).JsonString;
 			}
 		}
 

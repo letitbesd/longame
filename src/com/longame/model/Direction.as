@@ -1,6 +1,6 @@
 package com.longame.model
 {
-	import com.longame.game.scene.SceneManager;
+	import com.longame.modules.scenes.SceneManager;
 	
 	import flash.geom.Point;
 	

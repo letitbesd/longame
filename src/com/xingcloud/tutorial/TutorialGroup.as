@@ -11,12 +11,6 @@ package com.xingcloud.tutorial
     use namespace xingcloud_internal;
 	/**
 	 * Tutorial集合，可以包含很多的Tutorial
-	 * <Group  id="" name="" description="" award="">
-	 *       <Tutorial>
-	 *      </Tutorial>
-	 * 	    <Tutorial>
-	 *      </Tutorial>
-	 * </Group>
 	 * */
 	[DefaultProperty("tutorials")]
 	public class TutorialGroup extends SerialCommand
@@ -24,6 +18,7 @@ package com.xingcloud.tutorial
 		protected var _id:String;	
 		protected var _name:String;
 		protected var _description:String="";
+//		protected var _tutorials:Array=[];
 		protected var _tutorialsMap:Dictionary=new Dictionary();
 		
 		protected var _awardId:String;
@@ -31,7 +26,7 @@ package com.xingcloud.tutorial
 		/**
 		 *跟向导系统相联系的界面或场景
 		 */
-		public  var target:*;
+		public  var target:DisplayObject;
 
 		public function TutorialGroup()
 		{
@@ -40,26 +35,27 @@ package com.xingcloud.tutorial
 		public static function parseFromXML(xml:XML):TutorialGroup
 		{
 			var tg:TutorialGroup=new TutorialGroup();
-			tg._id=xml.@id;
+			tg._id=xml.@tg;
 			tg._name=xml.@name;
 			tg._description=xml.@description;
 			//todo how to do
 //			tg._target=xml.@target;
-//			if(!xml.hasOwnProperty("Tutorials")) throw new Error("TutorialGroup shoud has 'Tutorials' node!");
-//			var tuList:XMLList=xml.Tutorials[0].children();
-			var tuList:XMLList=xml.Tutorial;
+			if(!xml.hasOwnProperty("Tutorials")) throw new Error("TutorialGroup shoud has 'Tutorials' node!");
+			var tuList:XMLList=xml.Tutorials[0].children();
 			var len:uint=tuList.length();
 			var tu:Tutorial;
 			for(var i:int=0;i<len;i++){
 				tu=Tutorial.parseFromXML(tuList[i]);
-				tu._owner=tg;
+				tu.setOwner(tg);
 				tg.enqueue(tu,tu.name);
 				tg._tutorialsMap[tu.id]=tu;
+//				tg._tutorials.push(tu);
 			}
 			
 			if(xml.hasOwnProperty("@award")){
 				tg._awardId=xml.@award;
 			}
+			
 			return tg;
 		}
 		public function getTutorial(id:String):Tutorial
@@ -89,10 +85,12 @@ package com.xingcloud.tutorial
 			if(_awardId==null) return null;
 			return ItemDatabase.getItem(_awardId) as AwardItemSpec;
 		}
-		override protected function complete():void
-		{
-			super.complete();
-			target=null;
-		}
+		/**
+		 * 需要执行的一系列tutorial
+		 * */
+//		public function get tutorials():Array
+//		{
+//			return _tutorials;
+//		}
 	}
 }

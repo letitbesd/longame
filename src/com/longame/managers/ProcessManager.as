@@ -135,7 +135,6 @@ package com.longame.managers
          * Current time reported by getTimer(), updated every frame. Use this to avoid
          * costly calls to getTimer(), or if you want a unique number representing the
          * current frame.
-		 * 不要试图在某个while循环里获取这个值，while循环是在一个frame里完成，这个东西没有被更新，自己使用getTimer()来
          */
         public static function get platformTime():Number
         {
@@ -173,6 +172,7 @@ package com.longame.managers
                 Logger.warn("ProcessManager", "stop", "The ProcessManager isn't started.");
                 return;
             }
+            
             started = false;
 			EnterFrame.instance.removeEventListener(Event.ENTER_FRAME, onFrame);
         }
@@ -246,8 +246,7 @@ package com.longame.managers
             // Assert if this is in the past.
             if(object.nextThinkTime < _virtualTime)
                 throw new Error("Tried to queue something into the past, but no flux capacitor is present!");
-			if (!started)
-				start();
+            
             Profiler.enter("queueObject");
             
             if(object.nextThinkTime >= _virtualTime && thinkHeap.contains(object))
@@ -308,8 +307,6 @@ package com.longame.managers
          */
         public static function callLater(method:Function, args:Array = null):void
         {
-			if (!started)
-				start();
             var dm:DeferredMethod = new DeferredMethod();
             dm.method = method;
             dm.args = args;
@@ -332,7 +329,6 @@ package com.longame.managers
          */
         private static function addObject(object:*, priority:Number, list:Array):void
         {
-			addObjectCallLater=false;
 			//防止频繁add，remove时，add有可能采用callLater，以至于add跑到remove后面去了，造成bug
 			var n:int=objectsToBeRemoved.indexOf(object);
 			if(n>-1){
@@ -342,7 +338,6 @@ package com.longame.managers
             // If we are in a tick, defer the add.
             if(duringAdvance)
             {
-				addObjectCallLater=true;
                 callLater(addObject, [ object, priority, list]);
                 return;
             }
@@ -387,7 +382,7 @@ package com.longame.managers
          */
         private static function removeObject(object:*, list:Array):void
         {
-            if (listenerCount == 1 && thinkHeap.size == 0 &&deferredMethodQueue.length==0)
+            if (listenerCount == 1 && thinkHeap.size == 0)
                 stop();
             
             for (var i:int = 0; i < list.length; i++)
@@ -411,10 +406,8 @@ package com.longame.managers
                 }
             }
 			//防止频繁add，remove时，add跑到remove后面去了，造成bug，objectsToBeRemoved里有的对象将不会被添加到队列中
-			if((objectsToBeRemoved.indexOf(object)==-1)&&addObjectCallLater) {
-				objectsToBeRemoved.push(object);
-				Logger.warn(object, "RemoveProcessObject", "This object has not been added to the process manager.");
-			}
+			objectsToBeRemoved.push(object);
+            Logger.warn(object, "RemoveProcessObject", "This object has not been added to the process manager.");
         }
         
         /**
@@ -433,6 +426,7 @@ package com.longame.managers
                 lastTime = currentTime;
                 return;
             }
+            
             // Calculate time since last frame and advance that much.
             var deltaTime:Number = Number(currentTime - lastTime) * _timeScale;
             advance(deltaTime);
@@ -622,7 +616,6 @@ package com.longame.managers
         protected static var tickedObjects:Array = new Array();
         protected static var needPurgeEmpty:Boolean = false;
 		
-		private static var addObjectCallLater:Boolean;
 		private static var objectsToBeRemoved:Array=[];
         
         protected static var _platformTime:int = 0;

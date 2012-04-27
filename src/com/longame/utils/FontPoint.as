@@ -46,7 +46,7 @@ package com.longame.utils
 		 * @param	obj=null 一个类实例,如果加入这个参数则会自动迭代并加入舞台
 		 * @return
 		 */
-		public static function encode(text:String, format:TextFormat, rate:uint = 1, density:uint = 10, offsetX:Number = 0,offsetY:Number=0,stg:DisplayObjectContainer=null,obj:*=null):Array
+		public static function encode(text:String, format:TextFormat, rate:uint = 1, density:uint = 10, offsetX:Number = 0,offsetY:Number=0,stg:DisplayObjectContainer=null,obj=null):Array
 		{
 			var tf:TextField = new TextField();
 			tf.autoSize = "left";

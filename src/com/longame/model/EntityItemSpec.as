@@ -1,10 +1,10 @@
 package com.longame.model
 {
 	import com.longame.managers.AssetsLibrary;
-	import com.longame.game.entity.AnimatorEntity;
-	import com.longame.game.entity.DisplayEntity;
-	import com.longame.game.entity.SpriteEntity;
-	import com.longame.game.scene.SceneManager;
+	import com.longame.modules.entities.AnimatorEntity;
+	import com.longame.modules.entities.DisplayEntity;
+	import com.longame.modules.entities.SpriteEntity;
+	import com.longame.modules.scenes.SceneManager;
 	import com.longame.utils.DisplayObjectUtil;
 	import com.longame.utils.Reflection;
 	import com.xingcloud.model.item.ItemDatabase;

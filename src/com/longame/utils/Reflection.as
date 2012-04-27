@@ -8,14 +8,14 @@
  ******************************************************************************/
 package  com.longame.utils
 {
-	import com.longame.managers.AssetsLibrary;
-	import com.longame.utils.debug.Logger;
-	
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
+	
+	import com.longame.managers.AssetsLibrary;
+	import com.longame.utils.debug.Logger;
 	
     /**
      * TypeUtility is a static class containing methods that aid in type
@@ -169,7 +169,6 @@ package  com.longame.utils
 		 * 获取对象object里具有metaName元标签的变量信息，格式：[{varName:变量名,varClass:变量的类名,metaKey:metaValue,...},...]
 		 * @param object:     对象
 		 * @param metaName    指定的元标签名
-		 * 注意：没法按照顺序返回
 		 * */
 		public static function getMetaInfos(object:*,metaName:String):Array
 		{
@@ -177,14 +176,10 @@ package  com.longame.utils
 			if (!description)
 				return [];
 			var metas:Array=[];
-			var descriptions:XMLList=description.*;
-			var len:int=descriptions.length();
-			var variable:XML;
-			for(var i:int=0;i<len;i++)
+			for each (var variable:XML in description.*)
 			{
-				variable=descriptions[i];
 				// Only check variables/accessors.
-				if (variable.name() != "variable" && variable.name() != "accessor" &&variable.name() != "constant")
+				if (variable.name() != "variable" && variable.name() != "accessor")
 					continue;
 				// Scan for  metadata with name metaName
 				for each (var metadataXML:XML in variable.*)
@@ -223,7 +218,7 @@ package  com.longame.utils
 					continue;
 				
 				// Only check variables/accessors.
-				if (variable.name() != "variable" && variable.name() != "accessor" &&variable.name() != "constant")
+				if (variable.name() != "variable" && variable.name() != "accessor")
 					continue;
 				// Scan for TypeHint metadata.
 				for each (var metadataXML:XML in variable.*)
@@ -239,7 +234,6 @@ package  com.longame.utils
 		{
 			//这个标签每个属性都有，系统的，滤掉
 			if(metadataXML.@name=="__go_to_definition_help") return null;
-			if(metadataXML.@name=="__go_to_ctor_definition_help") return null;
 			/**
 			 * metadataXML.arg是一个XMLList
 			 * metadataXML.arg=<arg key="type" value="special"/>

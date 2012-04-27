@@ -1,6 +1,6 @@
 package com.xingcloud.model.item
 {
-	import com.longame.core.IDisposable;
+	import com.longame.core.IDestroyable;
 	import com.longame.utils.debug.Logger;
 	import com.xingcloud.model.item.spec.ItemGroup;
 	import com.xingcloud.model.item.spec.ItemSpec;
@@ -59,11 +59,11 @@ package com.xingcloud.model.item
 		/**
 		 * 获取一组name为_name的物品，name属性对所有item来说是可以重复的
 		 * */
-		public static function getItemsByName(name:String,groupId:String="all",groupType:String=null):Array{
+		public static function getItemsByName(id:String,groupId:String="all",groupType:String=null):Array{
 			var groups:Array=getGroups(groupId,groupType);
 			var itms:Array=[];
 			for each(var group:ItemGroup in groups){
-				var itm:ItemSpec=group.getItemByName(name,true);
+				var itm:ItemSpec=group.getItemByName(id,true);
 				if(itm) itms.push(itm);
 			}
 			return itms;

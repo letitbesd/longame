@@ -4,6 +4,8 @@ package com.longame.commands.net
 	import flash.events.Event;
 	import flash.net.FileReference;
 	
+	import mx.rpc.IResponder;
+
 	[Event(name="open",type="flash.events.Event")]
 	public class FileUploader extends AbstractLoader
 	{

@@ -7,7 +7,6 @@ package com.longame.resource
 	import com.longame.core.IPrioritizable;
 	import com.longame.core.long_internal;
 	import com.longame.managers.AssetsLibrary;
-	import com.longame.utils.StringParser;
 	import com.longame.utils.UrlUtil;
 	import com.longame.utils.XmlUtil;
 	import com.longame.utils.getDefinitionNames;
@@ -24,35 +23,22 @@ package com.longame.resource
 	{
 		long_internal var _reference:uint=0;
 		/**
-		 * 默认的资源类型
+		 * 除了以文件后缀来决定类型外，还有些特定的类型，决定他们用特定的加载器
 		 * */
-		public static const DEFAULT:String="default";
-		public static const ITEMS:String="items";
-		public static const LANGUAGE:String="language";
-		public static const QUEST:String="quest";
-		public static const FONT:String="font";
-		public static const TUTORIAL:String="tutorial";
+		public static const SpecialTypes:Array=["items","language","quest","font","tutorial"]
 		/**
 		 * 定义一个资源模型
 		 * @param src: 可以是文件地址，当是二进制资源时，可以是一个唯一的id
-		 * @param type:资源类型，default,items,language,font,quest,tutorial之一,默认是default
+		 * @param type:资源类型，default,items,language,font之一,
 		 * default会根据文件后缀判断，如果文件后缀和文件格式不符，请用以下任何之一：xml,jpg,jpeg,png,swf,css,txt,ini,property
 		 * @param isBynary: 是否以二进制形式加载文件
 		 * */
 		public function Resource(src:String,type:String=null,isBynary:Boolean=false)
 		{
 			this._src=src;
-		    this._type=type;
+		    if(type) this.type=type;
 			this._isBynary=isBynary;
-			if((this._type==null)||(this._type.length==0)||(this._type=="default")){
-				_type=UrlUtil.getExtension(_src);
-			}
-			//如果是excel表，二进制导入,todo
-			if(UrlUtil.getExtension(_src)=="xls") this._isBynary=true;
 		}
-		/**
-		 * 解析url，加上webbase基地址，版本号和语言转换
-		 * */
 		public static function parseURL(src:String):String
 		{
 			var fullPath:String=src;
@@ -85,13 +71,12 @@ package com.longame.resource
 		}
 		private var _isBynary:Boolean;
 		/**
-		 * 原始数据是否二进制数据
+		 * 是否二进制数据
 		 * */
 		public function get isBynary():Boolean
 		{
-			return _isBynary||(this.rawContent&&(this.rawContent is ByteArray));
+			return _isBynary;
 		}
-		protected var _type:String="default";
 		/**
 		 * 设置资源类型，default会根据文件后缀自动判断
 		 * language是语言文件
@@ -100,11 +85,8 @@ package com.longame.resource
 		 * binary是二进制
 		 * cbinary是压缩二进制
 		 * */
-		[Inspectable(enumeration="default,language,items,quest,font,tutorial")]
-		public function get type():String
-		{
-			return _type;
-		}
+		[Inspectable(enumeration="default,language,items,quest,font","tutorial")]
+		public var type:String="default";
 		private var _priority:int=0;
 		public function get priority():int
 		{
@@ -128,7 +110,7 @@ package com.longame.resource
 		 * */
 		public static function fromXml(xml:XML):Resource
 		{
-			return new Resource(xml.@src,xml.@type,StringParser.toBoolean(xml.@isBinary));
+			return new Resource(xml.@src,xml.@type);
 		}
 		
 		/**
@@ -138,6 +120,9 @@ package com.longame.resource
 		public function get loader():AbstractLoader
 		{
 			if(_loader!=null) return _loader;
+			if((this.type==null)||(this.type.length==0)||(this.type=="default")){
+				type=UrlUtil.getExtension(_src);
+			}
 			if(_isBynary){
 				_loader=new DataLoader(src,URLLoaderDataFormat.BINARY);
 			}else{
@@ -147,14 +132,14 @@ package com.longame.resource
 					case "jpeg":
 					case "png":
 					case "gif":
-					case FONT:
+					case "font":
 						_loader=new AssetsLoader(src);
 						break;
 					case "xml":
-					case ITEMS:
-					case LANGUAGE:
-					case QUEST:
-					case TUTORIAL:
+					case "items":
+					case "language":
+					case "quest":
+					case "tutorial":
 					case "txt":
 					case "ini":
 					case "property":
@@ -179,16 +164,13 @@ package com.longame.resource
 			if(_content==null) return this.rawContent;
 			return _content;
 		}
-		long_internal var _rawContent:*;
 		/**
 		 * 加载进来的原始数据
 		 * */
 		public function get rawContent():*
 		{
-			if(_rawContent==null){
-				if(_loader) _rawContent=_loader.content;
-			}
-			return _rawContent;
+			if(_loader==null) return null;
+			return _loader.content;
 		}
 		public var loaded:Boolean;
 		public var failed:Boolean;
@@ -209,11 +191,9 @@ package com.longame.resource
 				failed=false;
 				if(content is Bitmap) (content as Bitmap).bitmapData.dispose();
 				_content=null;
-				_rawContent=null;
-				if(_loader){
-					_loader.dispose();
-					_loader=null;
-				}
+				_loader.dispose();
+				_loader=null;
+				trace("*****Unload resource: "+this.src);
 			}
 		}
 	}

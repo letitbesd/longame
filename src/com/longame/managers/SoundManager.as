@@ -2,7 +2,6 @@ package com.longame.managers
 {
 	import com.gskinner.motion.GTweener;
 	import com.longame.resource.Resource;
-	import com.longame.utils.debug.Logger;
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -65,7 +64,10 @@ package com.longame.managers
 			{
 				if (_sounds[i].name == $name) return false;
 			}
+			
+			var sndObj:Object = new Object();
 			var snd:Sound;
+			
 			if($linkageID is String){
 				var sCls:Class=getDefinitionByName($linkageID) as Class;
 				if(sCls==null) return false;
@@ -75,7 +77,19 @@ package com.longame.managers
 			}else{
 				throw new Error("sound must be String or Class...");
 			}
-			addSound(snd,$name);
+			sndObj.name = $name;
+			sndObj.sound = snd;
+			sndObj.channel = new SoundChannel();
+			sndObj.position = 0;
+			sndObj.paused = true;
+			sndObj.volume = 1;
+			sndObj.startTime = 0;
+			sndObj.loops = 0;
+			sndObj.pausedByAll = false;
+			
+			_soundsDict[$name] = sndObj;
+			_sounds.push(sndObj);
+			
 			return true;
 		}
 		
@@ -95,26 +109,17 @@ package com.longame.managers
 			{
 				if (_sounds[i].name == $name) return false;
 			}
-			$path=Resource.parseURL($path);
-			try{
-				var quest:URLRequest=new URLRequest($path);
-				var context:SoundLoaderContext=new SoundLoaderContext($buffer,$checkPolicyFile);
-				var snd:Sound = new Sound(quest,context);
-			}catch(e:Error){
-				Logger.error("SoundManager","addExternalSound",$path+" does not exist!");
-				return false;
-			}
-			addSound(snd,$name);
-			return true;
-		}
-		public static function addSound(snd:Sound,$name:String):void
-		{
+			
 			var sndObj:Object = new Object();
+			$path=Resource.parseURL($path);
+			var snd:Sound = new Sound(new URLRequest($path), new SoundLoaderContext($buffer, $checkPolicyFile));
+			
 			sndObj.name = $name;
 			sndObj.sound = snd;
 			sndObj.channel = new SoundChannel();
 			sndObj.position = 0;
 			sndObj.paused = true;
+//			sndObj.completed=false;
 			sndObj.volume = 1;
 			sndObj.startTime = 0;
 			sndObj.loops = 0;
@@ -122,7 +127,10 @@ package com.longame.managers
 			
 			_soundsDict[$name] = sndObj;
 			_sounds.push(sndObj);
+			
+			return true;
 		}
+		
 		/**
 		 * Removes a sound from the sound dictionary.  After calling this, the sound will not be available until it is re-added.
 		 * 
@@ -178,9 +186,7 @@ package com.longame.managers
 				addLibrarySound($name,$name);
 				snd = _soundsDict[$name];
 			}
-			if(snd==null){
-				throw new Error("Sound with "+$name+" does not exist!");
-			}
+			
 			snd.volume = $volume;
 			snd.startTime = $startTime;
 			snd.loops = $loops;

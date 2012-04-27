@@ -1,59 +1,76 @@
 package com.xingcloud.model.users
 {
-	import com.longame.managers.ProcessManager;
+	import com.adobe.crypto.MD5;
 	import com.longame.utils.Reflection;
-	import com.longame.utils.debug.Logger;
-	import com.xingcloud.action.Action;
 	import com.xingcloud.core.XingCloud;
 	import com.xingcloud.core.xingcloud_internal;
 	import com.xingcloud.event.ServiceEvent;
-	import com.xingcloud.model.DBObject;
+	import com.xingcloud.model.ModelBase;
 	import com.xingcloud.model.item.owned.ItemsCollection;
 	import com.xingcloud.model.item.owned.OwnedItem;
 	import com.xingcloud.quests.QuestManager;
 	import com.xingcloud.services.ProfileService;
 	import com.xingcloud.services.ServiceManager;
 	import com.xingcloud.tasks.TaskEvent;
-	import com.xingcloud.tutorial.Tutorial;
-	import com.xingcloud.tutorial.TutorialManager;
 	
-	import flash.net.SharedObject;
 	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
+	
+	import mx.utils.UIDUtil;
 	
 	import org.osflash.signals.Signal;
 
 	use namespace xingcloud_internal;
+
+	/**
+	 * 在UserProfile信息成功加载后进行派发。
+	 * @eventType com.xingcloud.core.ServiceEvent
+	 */
+	[Event(name="get_profile_success", type="com.xingcloud.event.ServiceEvent")]
+	/**
+	 * 在UserProfile信息加载出错后进行派发。
+	 * @eventType com.xingcloud.core.ServiceEvent
+	 */
+	[Event(name="get_profile_error", type="com.xingcloud.event.ServiceEvent")]
+	/**
+	 * 物品加载成功后进行派发。
+	 * @eventType com.xingcloud.core.ServiceEvent
+	 */
+	[Event(name="item_load_success", type="com.xingcloud.event.ServiceEvent")]
+	/**
+	 * 物品加载失败后进行派发
+	 * @eventType com.xingcloud.core.ServiceEvent
+	 */
+	[Event(name="item_load_error", type="com.xingcloud.event.ServiceEvent")]
+	[Bindable]
 	/**
 	 * 用户信息基类
 	 */
-	public class AbstractUserProfile extends DBObject
+	public class AbstractUserProfile extends ModelBase
 	{
 		/**
-		 * 当前本机用户
+		 * 某个属性发生了变化
 		 * */
-		public static var ownerUser:AbstractUserProfile;
+		public var onChange:Signal=new Signal(String);
 		/**
 		 *是否在登录成功后自动加载用户物品的详情。
 		 * @see com.xingcloud.model.item.owned.ItemsCollection#load()
 		 * @default true
 		 */
 		public static var autoLoadItems:Boolean=true;
+
 		/**
 		 *用户信息
 		 * @param isOwner 是否是用户本身
+		 * @param autoLogin 是否自动登录，缺省为是
+		 * @param changeMode 是否打开auditChange模式，缺省为是
+		 *
 		 */
-		public function AbstractUserProfile(isOwner:Boolean=false)
+		public function AbstractUserProfile()
 		{
-			this._isOwner=isOwner;
-			if(this._isOwner){
-				ownerUser=this;
-			}
 			createItemCollection();
-			this.updateWhenLevelUp();
 		}
-		protected var _name:String;
-		protected var _coins:int=0;
+		protected var _coins:int=10000;
 		protected var _money:int=0;
 		protected var _exp:int=0;
 		protected var _level:int=1;
@@ -61,56 +78,23 @@ package com.xingcloud.model.users
 		{
 			return _coins;
 		}
-		/**
-		 * 数据模型用于本地存储时的名称
-		 * */
-		public function get localName():String
-		{
-			if(!Engine.saveInLocal) return null;
-			return Engine.appName;
-		}
-		/**
-		 * 当一个属性被改变时
-		 * */
-		override protected function whenChange(prop:String,delta:*=null):void
-		{
-			if(localName){
-				//将所有的改变存储到本地
-				var sb:SharedObject=SharedObject.getLocal(localName);
-				sb.data[prop]=this[prop];
-				sb.flush();
-			}
-			super.whenChange(prop,delta);
-		}
-		public function set name(value:String):void
-		{
-			if(_name==value) return;
-			_name=value;
-			this.whenChange("name");
-		}
-		public function get name():String
-		{
-			return _name;
-		}
 		public function set coins(value:int):void
 		{
 			value=Math.max(0,value);
 			if(_coins==value) return;
-			var old:int=_coins;
 			_coins=value;
-			this.whenChange("coins",_coins-old);
+			onChange.dispatch("coins");
 		}
 		public function get money():int
 		{
 			return _money;
 		}
-		public function set money(value:int):void
+		override public function set money(value:int):void
 		{
 			value=Math.max(0,value);
 			if(_money==value) return;
-			var old:int=_money;
 			_money=value;
-			this.whenChange("money",_money-old);
+			onChange.dispatch("money");
 		}
 		public function get exp():int
 		{
@@ -120,21 +104,8 @@ package com.xingcloud.model.users
 		{
 			value=Math.max(0,value);
 			if(_exp==value) return;
-			var old:int=_exp;
 			_exp=value;
-			this.whenChange("exp",_exp-old);
-			var newLevel:int=_level;
-			var nextExp:int=this.getExpWithLevel(_level+1);
-			while(_exp>=nextExp){
-				newLevel++;
-				nextExp=this.getExpWithLevel(newLevel+1);
-			}
-			if(newLevel!=_level){
-				old=_level;
-				_level=newLevel;
-				this.updateWhenLevelUp();
-				this.whenChange("level",_level-old);
-			}
+			onChange.dispatch("exp");
 		}
 		public function get level():int
 		{
@@ -144,21 +115,8 @@ package com.xingcloud.model.users
 		{
 			value=Math.max(0,value);
 			if(_level==value) return;
-			this.exp=this.getExpWithLevel(value);
-		}
-		/**
-		 * 当级别发生变化时，更新级别相关的属性
-		 * */
-		protected function updateWhenLevelUp():void
-		{
-			
-		}
-		/**
-		 * 获取level级别所需的经验值，这个需要覆盖
-		 * */
-		public function getExpWithLevel(level:int):int
-		{
-			return int.MAX_VALUE;
+			_level=value;
+			onChange.dispatch("level");
 		}
 		/**
 		 * 一个UserProfile可能包含多种ownedItem
@@ -177,68 +135,51 @@ package com.xingcloud.model.users
 		 */
 		public var platformUserId:String;
 
-		public var creationDate:Date;
-		public var lastActive:Date;
-		public var online:Boolean=true;
 		/**
 		 *物品实例字段名
 		 */
 		protected var itemFields:Array=[];
 		private var loadedNum:int;
 		private var needLoadNum:int;
-        private var _isOwner:Boolean;
+
 		public function get isOwner():Boolean
 		{
-			return _isOwner;
+			return uid == XingCloud.uid;
 		}
+
 		/**
 		 * 加载用户信息。如果操作当前用户。
 		 */
-		public function load(fromLocal:Boolean=false):void
+		public function load():void
 		{
-			if(fromLocal){
-				var sb:SharedObject=SharedObject.getLocal(Engine.appName);
-				if(sb.data){
-					this.parseFromObject(sb.data);
-					ProcessManager.callLater(onProfileLoaded,[sb.data]);
-				}
-			}else{
-				var act:Action=new Action({loadItems:false,ids:[this.id]},onProfileLoaded,null,Action.LOAD_USER);
-				act.execute();
-			}
+			ServiceManager.instance.send(new ProfileService([this], onProfileLoaded, onProfileError));
 		}
 
 		override public function parseFromObject(data:Object, excluded:Array=null):void
 		{
-//			super.parseFromObject(data, itemFields);
-			super.parseFromObject(data, excluded);
+			super.parseFromObject(data, itemFields);
 			for each (var key:String in itemFields)
 			{
 				(this[key] as ItemsCollection).needLoad=(data[key] != null);
 			}
-			if(this.isOwner){
-				QuestManager.init(this.quests);
-				TutorialManager.init(this.tutorials);
-			}
+			QuestManager.init(this.quests);
 		}
 
 		/**
-		 *加载全部物品详情
+		 *加载物品详情
 		 * @return 是否需要加载，true则需要，false则不需要
 		 *
 		 */
-		public function loadItems():Boolean
+		public function loadItemDetail():Boolean
 		{
 			needLoadNum=0;
 			loadedNum=0;
-//			var act:Action=new Action({user:this.id,types:this.itemFields},onItemsLoaded,onItemsLoadedError,Action.LOAD_ITMES);
-//			act.execute();
 			for each (var items:ItemsCollection in itemsBulk)
 			{
 				if (items.load())
 				{
-					items.onLoaded.addOnce(onItemsLoaded);
-					items.onLoadedError.addOnce(onItemsLoadedError);
+					items.addEventListener(ServiceEvent.ITEM_LOAD_SUCCESS, onItemsLoaded);
+					items.addEventListener(ServiceEvent.ITEM_LOAD_ERROR, onItemsLoadedError);
 					needLoadNum++;
 				}
 			}
@@ -254,12 +195,12 @@ package com.xingcloud.model.users
 			collection.addItem(item);
 		}
 
-//		public function updateItem(item:OwnedItem):void
-//		{
-//			var className:String=Reflection.getClassName(item);
-//			var collection:ItemsCollection=this[itemToItems[className]] as ItemsCollection;
-//			collection.updateItem(item);
-//		}
+		public function updateItem(item:OwnedItem):void
+		{
+			var className:String=Reflection.getClassName(item);
+			var collection:ItemsCollection=this[itemToItems[className]] as ItemsCollection;
+			collection.updateItem(item);
+		}
 
 		public function removeItem(item:OwnedItem):void
 		{
@@ -292,62 +233,51 @@ package com.xingcloud.model.users
 			itemFields.push(name);
 			var items:ItemsCollection=this[name] as ItemsCollection;
 			items.itemType=itemType;
+			var dex:int=itemType.lastIndexOf(".");
+			items.itemClassName=itemType.substring(dex + 1);
 			items.OwnerProperty=name;
 			items.owner=this;
 			itemsBulk.push(items);
 			itemToItems[itemType]=name;
 		}
-		protected function onProfileLoaded(data:*):void
+		protected function onProfileLoaded(s:ProfileService):void
 		{
-			this.parseFromObject(data[0]);
-			Logger.info(this,"onProfileLoaded","UserProfile base info loaded!");
+			this.dispatchEvent(new ServiceEvent(ServiceEvent.PROFILE_LOADED, s));
 			if (autoLoadItems)
 			{
-				if (!loadItems()){
-					if(this._onLoaded) this._onLoaded.dispatch();
-				}
+				if (!loadItemDetail())
+					dispatchEvent(new ServiceEvent(ServiceEvent.ITEM_LOAD_SUCCESS, null));
 			}
 		}
-		protected function onItemsLoaded(items:ItemsCollection):void
+
+		protected function onProfileError(s:ProfileService):void
+		{
+			this.dispatchEvent(new ServiceEvent(ServiceEvent.PROFILE_ERROR, s));
+		}
+
+		protected function onItemsLoaded(evt:ServiceEvent):void
 		{
 			loadedNum++;
 			if (loadedNum == needLoadNum)
 			{
-				if(this._onLoaded) this._onLoaded.dispatch();
+				dispatchEvent(new ServiceEvent(ServiceEvent.ITEM_LOAD_SUCCESS, null));
 			}
 		}
 
-		protected function onItemsLoadedError(items:ItemsCollection):void
+		protected function onItemsLoadedError(evt:ServiceEvent):void
 		{
-			if(this._onLoadedError) this._onLoadedError.dispatch();
+			dispatchEvent(new ServiceEvent(ServiceEvent.ITEM_LOAD_ERROR, null));
 		}
 		
 		/*****************************************************************************************************/
 		/**
 		 * 任务完成情况
 		 *  =>id
-		 *    =>steps=[2,3]  //任务有两个行为，分别完成了多少次
-		 *    =>isCompleted=true  //是否完成
+		 *    =>steps=[2,3]
+		 *    =>isCompleted=true
 		 *  =>id1
 		 * */
 		public var quests:Object={};
-		/**
-		 * 向导完成情况
-		 * =>id
-		 *    =>index=2            //完成了第几步
-		 * =>id1
-		 * */
-		public var tutorials:Object={};
-		/**
-		 * 更新向导完成到了第几步
-		 * @param tutorialId 向导id
-		 * @param step 完成到第几步
-		 * */
-		public function updateTutorial(tutorialId:String,step:int):void
-		{
-			this.tutorials[tutorialId]={index:step};
-			this.whenChange("tutorials",null);
-		}
 		/**
 		 * 根据服务器返回的itemObj数据来创建一个本地对应的OwnedItem
 		 * */
@@ -412,9 +342,8 @@ package com.xingcloud.model.users
 		{
 			var cls:Class=getDefinitionByName(type) as Class;
 			if(cls==null) return null;
-			var item:OwnedItem=new cls() as OwnedItem;
-			item.itemId=itemID;
-			if(uid) item.id=uid;
+			var item:OwnedItem=new cls(itemID) as OwnedItem;
+			if(uid) item.uid=uid;
 			else    item.autoUID();
 			return item;
 		}

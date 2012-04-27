@@ -1,9 +1,7 @@
 package com.xingcloud.loader
 {
 	import com.adobe.serialization.json.JSON;
-	import com.adobe.serialization.json.JSONDecoder;
 	import com.xingcloud.util.Debug;
-	
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
@@ -68,7 +66,7 @@ package com.xingcloud.loader
 						_content=new XML(_loader.data);
 						break;
 					case ResourceType.JSON_DATA_FORMAT:
-						_content=new JSONDecoder(_loader.data,true).getValue();
+						_content=JSON.decode(_loader.data);
 						break;
 					case ResourceType.BINARY_DATA_FORMAT:
 						_content=_loader.data;
