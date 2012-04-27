@@ -10,6 +10,7 @@ package com.longame.ui
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Loader;
 	import flash.display.MovieClip;
+	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
 	
 	import org.swiftsuspenders.Reflector;
@@ -35,6 +36,10 @@ package com.longame.ui
 		 * 以[Child(source="ch.ch1.item" state="normal")]为形式的元数据标签
 		 * */
 		protected var _skinMetas:Array;
+		/**
+		 * 解析成功的skinPar
+		 * */
+		protected var _skinParts:Dictionary=new Dictionary();
 		//TODO
 		protected var _data:*;
 		//TODO
@@ -63,11 +68,12 @@ package com.longame.ui
 			}
 			this._skin=skin;
 			this._skin.stop();
-//			if(_skinMetas.length)
-			{
-				this.parseSkin();
-			}
+			this.parseSkin();
 			return _skinMetas.length>0;
+		}
+		public function getSkinPart(name:String):DisplayObject
+		{
+			return _skinParts[name];
 		}
 		/**
 		 * 根据MovieClip皮肤和Child标签信息来解析
@@ -102,6 +108,7 @@ package com.longame.ui
 			//然后将skinMC添加到this中，如此则skinMC保证了位置和层次的一致性
 			this._target.addChildAt(_skin,0);
 //			this._target.addChild(_skin);
+			_skinParts=new Dictionary();
 			var type:Class;
 			for each(var skinInfo:* in _skinMetas){
 				if(skinInfo.state){
@@ -119,7 +126,6 @@ package com.longame.ui
 				//可能的话，将data配置给对应状态的child
 				if(_data&&skinInfo.state&&(_state==skinInfo.state)) _target[skinInfo.varName].data=_data;
 			}
-			this.whenSkinned();
 		}
 		private function createSkinChild(skinInfo:*,childSkin:DisplayObject):void
 		{
@@ -136,7 +142,8 @@ package com.longame.ui
 			}
 			//解析可能的预定义属性,source和state几个属性除外
 			ObjectUtil.cloneProperties(skinInfo,_target[skinInfo.varName],["source","state","skin","skinClass"]);
-			this.whenSkinChildCreated(_target[skinInfo.varName]);
+			_skinParts[skinInfo.varName]=_target[skinInfo.varName];
+//			this.whenSkinChildCreated(_target[skinInfo.varName]);
 //			Logger.info(this,"createSkinChild","Create skin child: "+skinInfo.varName);
 		}
 		/**
@@ -155,20 +162,6 @@ package com.longame.ui
 				source=source[sarr[i]];
 			}
 			return source;
-		}
-		/**
-		 * skin解析完毕，子类覆盖处理
-		 * */
-		protected function whenSkinned():void
-		{
-			
-		}
-		/**
-		 * 当某个标签child创建
-		 * */
-		protected function whenSkinChildCreated(child:DisplayObject):void
-		{
-			
 		}
 		/**
 		 * If the skin MovieClip is in a loader
@@ -194,6 +187,7 @@ package com.longame.ui
 				_target[skinInfo.varName]=null;
 			}
 			this._skin=null;
+			this._skinParts=null;
 		}
 		final public function dispose():void
 		{

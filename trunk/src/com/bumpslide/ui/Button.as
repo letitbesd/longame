@@ -22,11 +22,7 @@ package com.bumpslide.ui {	import com.bumpslide.data.constant.Position;	impo
 			
 			if(width!=-1) this.width = width;
 			if(height!=-1) this.height = height;
-						if(x!=0) this.x = x;			if(y!=0) this.y = y;			if(lbl!="") label = lbl;			if(defaultClickHandler!=null) {				addEventListener( MouseEvent.CLICK, defaultClickHandler );			}		}				/**		 * Component initialization (provides initButton hook)		 */		override protected function init():void {			stop();			initButton();							super.init();		}		override public function set skin(s:DisplayObject):void
-		{
-			super.skin=s;
-			this.initButton();
-		}		/**		 * Define default skin in postConstruct so that we don't override 		 * properties set in MXML		 */		override protected function postConstruct():void 		{
+						if(x!=0) this.x = x;			if(y!=0) this.y = y;			if(lbl!="") label = lbl;			if(defaultClickHandler!=null) {				addEventListener( MouseEvent.CLICK, defaultClickHandler );			}		}				/**		 * Component initialization (provides initButton hook)		 */		override protected function init():void {			stop();			initButton();							super.init();		}		/**		 * Define default skin in postConstruct so that we don't override 		 * properties set in MXML		 */		override protected function postConstruct():void 		{
 			super.postConstruct();						initDefaultSkin();
 		}
 		
