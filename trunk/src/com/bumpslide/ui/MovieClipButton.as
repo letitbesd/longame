@@ -36,8 +36,8 @@ package com.bumpslide.ui
 		// background placed on the stage
 		public var background:DisplayObject;
 
-		[Child]
 		// dynamic text field place on the stage
+		[Child]
 		public var label_txt:TextField;
 
 		private var _autoSize:Boolean = false;
@@ -79,6 +79,7 @@ package com.bumpslide.ui
 			} catch (e:Error) {
 				try {
 					(skin as MovieClip).gotoAndStop( skinState );
+					trace(name+" state: "+skinState+",label: "+(skin as MovieClip).currentLabel);
 				} catch (e:ArgumentError) {
 					log('missing button state ' + skinState );
 				}
