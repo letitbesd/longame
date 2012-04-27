@@ -51,7 +51,7 @@ package com.longame.game.entity
 		}
 		final public function setState(value:String,param:*=null):void
 		{
-			if(this.disposed){
+			if(this.destroyed){
 				throw new Error("Entity has been destroyed!");
 			}
 			if((value==_state)&&(_stateParam==param)) return;
@@ -182,19 +182,19 @@ package com.longame.game.entity
 			setChildrenActive(false);
 			this._stateParam=null;
 		}
-		override protected function whenDispose():void
+		override protected function whenDestroy():void
 		{
 			var child:IComponent;
 			//销毁被删除，但是目前没有被添加到其他容器中的元素
 			while(removedChildren.length){
 				child=removedChildren[0];
-				if(child.owner==this) child.dispose();
+				if(child.owner==this) child.destroy();
 				removedChildren.splice(0,1);
 			}
 			//销毁所有add进来的元素
 			while(allChildren.length){
 				child=allChildren[0];
-				child.dispose();
+				child.destroy();
 				allChildren.splice(0,1);
 			}
 			_activedChildren = null;
@@ -206,37 +206,37 @@ package com.longame.game.entity
 			_onChildRemoved=null;
 			_onChildActived=null;
 			_onChildDeactived=null;
-			super.whenDispose();
+			super.whenDestroy();
 		}
 		/**signals*/
 		protected var _onStateChange:Signal;
 		public function get onStateChange():Signal
 		{
-			if((_onStateChange==null)&&!disposed) _onStateChange=new Signal();
+			if((_onStateChange==null)&&!destroyed) _onStateChange=new Signal();
 			return this._onStateChange;
 		}
 		protected var _onChildAdded:Signal;
 		public function get onChildAdded():Signal
 		{
-			if((_onChildAdded==null)&&!disposed) _onChildAdded=new Signal(IComponent);
+			if((_onChildAdded==null)&&!destroyed) _onChildAdded=new Signal(IComponent);
 			return this._onChildAdded;
 		}
 		protected var _onChildRemoved:Signal;
 		public function get onChildRemoved():Signal
 		{
-			if((_onChildRemoved==null)&&!disposed) _onChildRemoved=new Signal(IComponent);
+			if((_onChildRemoved==null)&&!destroyed) _onChildRemoved=new Signal(IComponent);
 			return this._onChildRemoved;
 		}	
 		protected var _onChildActived:Signal;
 		public function get onChildActived():Signal
 		{
-			if((_onChildActived==null)&&!disposed) _onChildActived=new Signal(IComponent);
+			if((_onChildActived==null)&&!destroyed) _onChildActived=new Signal(IComponent);
 			return this._onChildActived;
 		}
 		protected var _onChildDeactived:Signal;
 		public function get onChildDeactived():Signal
 		{
-			if((_onChildDeactived==null)&&!disposed) _onChildDeactived=new Signal(IComponent);
+			if((_onChildDeactived==null)&&!destroyed) _onChildDeactived=new Signal(IComponent);
 			return this._onChildDeactived;
 		}
 		/***private functions***/

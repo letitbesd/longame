@@ -1,6 +1,6 @@
 package com.xingcloud.model.item
 {
-	import com.longame.core.IDisposable;
+	import com.longame.core.IDestroyable;
 	import com.longame.utils.debug.Logger;
 	import com.xingcloud.model.item.spec.ItemGroup;
 	import com.xingcloud.model.item.spec.ItemSpec;

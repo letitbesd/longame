@@ -9,6 +9,7 @@
 package com.longame.managers
 {
     import com.longame.core.ITickedObject;
+    import com.longame.game.core.IMouseObject;
     
     import flash.display.Bitmap;
     import flash.display.DisplayObject;

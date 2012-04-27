@@ -1,15 +1,13 @@
 /**
- * This code is part of the Bumpslide Library maintained by David Knape
- * Fork me at http://github.com/tkdave/bumpslide_as3
+ * This code is part of the Bumpslide Library by David Knape
+ * http://bumpslide.com/
  * 
- * Copyright (c) 2010 by Bumpslide, Inc. 
- * http://www.bumpslide.com/
- *
- * This code is released under the open-source MIT license.
- * See LICENSE.txt for full license terms.
- * More info at http://www.opensource.org/licenses/mit-license.php
- */
-
+ * Copyright (c) 2006, 2007, 2008 by Bumpslide, Inc.
+ * 
+ * Released under the open-source MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ * see LICENSE.txt for full license terms
+ */ 
 package com.bumpslide.data {
 	
 	import com.bumpslide.data.IPrioritizable;	
@@ -21,7 +19,7 @@ package com.bumpslide.data {
 	 */
 	public class PriorityQueue {
 		
-		protected var _q:Array;
+		private var _q:Array;
 		
 		/**
 		 * Initializes a Queue
@@ -46,7 +44,7 @@ package com.bumpslide.data {
 		public function enqueue(obj:IPrioritizable):void
 		{
 			_q.push( obj );
-			_q.sortOn( ['priority','creationIndex'], [Array.DESCENDING|Array.NUMERIC, Array.NUMERIC]);
+			_q.sortOn( ['priority','creationIndex'], [Array.NUMERIC, Array.NUMERIC]);
 		}
 
 		/**

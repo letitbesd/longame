@@ -1,6 +1,6 @@
 package com.xingcloud.tutorial.steps
 {
-	import com.longame.model.signals.GlobalSignals;
+	import com.longame.signals.GlobalSignals;
 
 	/**
 	 * 某个信号触发这个步骤完成，比如让角色拿到某个东西，GlobalSignals.IDSignal.dispatch("gotSomething")时，这个步骤完成

@@ -4,6 +4,7 @@ package com.longame.game.entity
 	import com.longame.display.core.IDisplayRenderer;
 	import com.longame.game.core.EntityTile;
 	import com.longame.game.core.IEntity;
+	import com.longame.game.core.IMouseObject;
 	import com.longame.game.core.bounds.IBounds;
 	import com.longame.game.core.bounds.TileBounds;
 	import com.longame.game.group.IDisplayGroup;
@@ -13,22 +14,15 @@ package com.longame.game.entity
 	import flash.geom.Vector3D;
 	
 	import org.osflash.signals.Signal;
-	
-	import starling.display.Stage;
-
 	/**
 	 * 显示对象，其鼠标是禁止了的，如果启用，请用mouseEnabled=true
 	 * */
-	public interface IDisplayEntity extends IEntity, IDisplayRenderer, IParallax
+	public interface IDisplayEntity extends IEntity, IDisplayRenderer, IMouseObject, IParallax
 	{
 		/**
 		 * 此对象的可视化容器
 		 * */
 		function get parent():IDisplayGroup;
-		/**
-		 * 舞台
-		 * */
-		function get stage():Stage;
 		/**
 		 * 此对象加入的场景
 		 * */

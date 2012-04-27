@@ -1,6 +1,7 @@
 package com.longame.game.group
 {
 	import com.longame.core.long_internal;
+	import com.longame.display.GameAnimator;
 	import com.longame.display.core.IDisplayRenderer;
 	import com.longame.display.graphics.SolidColorFill;
 	import com.longame.game.core.EntityTile;
@@ -9,6 +10,7 @@ package com.longame.game.group
 	import com.longame.game.core.bounds.GroupBounds;
 	import com.longame.game.core.bounds.IBounds;
 	import com.longame.game.core.bounds.TileBounds;
+	import com.longame.signals.MouseSignals;
 	import com.longame.game.entity.AnimatorEntity;
 	import com.longame.game.entity.DisplayEntity;
 	import com.longame.game.entity.IDisplayEntity;
@@ -282,25 +284,25 @@ package com.longame.game.group
 //			_groupChildren=null;
 //			_displayChildren=null;
 //		}
-		override protected function whenDispose():void
+		override protected function whenDestroy():void
 		{
 			if(_bounds) {
 				(_bounds as GroupBounds).destroy();
 				_bounds=null;
 			}
 			if(this._entityMap){
-				this._entityMap.dispose();
+				this._entityMap.destroy();
 				_entityMap=null;
 			}
 			if(this._layouter){
-				_layouter.dispose();
+				_layouter.destroy();
 				_layouter=null;
 			}
 			if(_grid){
-				_grid.dispose();
+				_grid.destroy();
 				_grid=null;
 			}
-			super.whenDispose();
+			super.whenDestroy();
 			_groupChildren=null;
 			_displayChildren=null;
 		}
@@ -474,7 +476,7 @@ package com.longame.game.group
 		 * */
 		public function get onBuild():Signal
 		{
-			if((_onBuild==null)&&!disposed) _onBuild=new Signal(DisplayGroup);
+			if((_onBuild==null)&&!destroyed) _onBuild=new Signal(DisplayGroup);
 			return _onBuild;
 		}
 		/**

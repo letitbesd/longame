@@ -1,7 +1,7 @@
 package com.longame.game.core
 {
 	import com.longame.core.IAnimatedObject;
-	import com.longame.core.IDisposable;
+	import com.longame.core.IDestroyable;
 
 	/**
 	 * Entity的集合，可以添加很多的entity形成一个集合，像场景这种特殊的IGroup，

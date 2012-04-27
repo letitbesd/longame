@@ -2,7 +2,7 @@ package com.longame.game.core
 {
 	import be.dauntless.astar.BasicTile;
 	
-	import com.longame.core.IDisposable;
+	import com.longame.core.IDestroyable;
 	import com.longame.core.long_internal;
 	import com.longame.model.Direction;
 	import com.longame.game.entity.IDisplayEntity;
@@ -19,7 +19,7 @@ package com.longame.game.core
 	/**
 	 * 场景的一个单元格，除了寻路，也是优化场景管理的一个很好的方法
 	 * */
-	public class EntityTile extends BasicTile implements IDisposable
+	public class EntityTile extends BasicTile implements IDestroyable
 	{
 		/**这个tile上面的场景元素，IsoDisplayObject**/
 		protected var _children:Vector.<IDisplayEntity>=new Vector.<IDisplayEntity>();
@@ -73,14 +73,14 @@ package com.longame.game.core
 			}
 			return ns;
 		}
-		public function get disposed():Boolean
+		public function get destroyed():Boolean
 		{
 			return _owner==null;
 		}
 		/**
 		 * 将此单元格销毁，让单元格内物品全从场景消失
 		 * */
-		public function dispose():void
+		public function destroy():void
 		{
 			_children=null;
 			_owner=null;
@@ -93,7 +93,7 @@ package com.longame.game.core
 		{
 			for each(var ch:IDisplayEntity in _children){
 				if(excludedType&&(ch is excludedType)) continue;
-				ch.dispose();
+				ch.destroy();
 			}
 		}
 		public function get children():Vector.<IDisplayEntity>

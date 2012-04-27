@@ -45,7 +45,7 @@ package com.longame.utils.env
 	 */
 	public function getPath(location:DisplayObject = null):String
 	{
-		if (!location) location = Engine.nativeStage;
+		if (!location) location = Engine.stage;
 		var s:String = location.loaderInfo.url;
 		return s.substr(0, s.lastIndexOf("/") + 1);
 	}

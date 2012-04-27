@@ -28,6 +28,7 @@ package com.xingcloud.action
 			this._params=params;
 			if(this._params==null) this._params={};
 			this._params.action=this.name;
+			trace(JSON.stringify(this._params));
 			data={name: name, params: params}
 			_success=success;
 			_fail=fail;

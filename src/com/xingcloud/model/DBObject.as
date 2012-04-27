@@ -1,6 +1,6 @@
 package com.xingcloud.model
 {
-	import com.longame.core.IDisposable;
+	import com.longame.core.IDestroyable;
 	import com.longame.utils.ObjectUtil;
 	import com.longame.utils.Reflection;
 	
@@ -11,7 +11,7 @@ package com.xingcloud.model
 	/**
 	 *可存储数据库的基础类
 	 */
-	public class DBObject implements IDisposable
+	public class DBObject implements IDestroyable
 	{
 		public function DBObject()
 		{
@@ -96,11 +96,11 @@ package com.xingcloud.model
 			return _onLoadedError;
 		}
 		protected var _destroyed:Boolean;
-		public function get disposed():Boolean
+		public function get destroyed():Boolean
 		{
 			return _destroyed;
 		}
-		final public function dispose():void
+		final public function destroy():void
 		{
 			if(this._destroyed) return;
 			this._destroyed=true;

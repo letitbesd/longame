@@ -21,15 +21,13 @@ package com.longame.game.entity
 		}
 		public function showArea():void
 		{
-			//TODO
-//			this.container.graphics.beginFill(0xff0000,0.5);
-//			this.container.graphics.drawRect(0,0,this.width,this.length);
-//			this.container.graphics.endFill();
+			this.container.graphics.beginFill(0xff0000,0.5);
+			this.container.graphics.drawRect(0,0,this.width,this.length);
+			this.container.graphics.endFill();
 		}
 		public function hideArea():void
 		{
-			//TODO
-//			this.container.graphics.clear();
+			this.container.graphics.clear();
 		}
 	}
 }

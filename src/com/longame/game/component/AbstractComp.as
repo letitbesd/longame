@@ -78,13 +78,13 @@ package com.longame.game.component
 			this.refreshLinks();
 			whenRefresh();
 		}
-		final public function dispose():void
+		final public function destroy():void
 		{
-			if(disposed) return;
+			if(destroyed) return;
 			 if(_owner) {
 				 _owner.remove(this);
 			 }
-			 whenDispose();
+			 whenDestroy();
 			if(_onDestroy) {
 				_onDestroy.dispatch(this);
 			}
@@ -130,24 +130,24 @@ package com.longame.game.component
 		{
 			return _statesInParent;
 		}
-		public function get disposed():Boolean
+		public function get destroyed():Boolean
 		{
 			return _id==null;
 		}		
 		/**signals**/
 		public function get onDestroy():Signal
 		{
-			if((_onDestroy==null)&&!disposed) _onDestroy=new Signal(IComponent);
+			if((_onDestroy==null)&&!destroyed) _onDestroy=new Signal(IComponent);
 			return this._onDestroy;
 		}
 		public function get onActive():Signal
 		{
-			if((_onActive==null)&&!disposed) _onActive=new Signal(IComponent);
+			if((_onActive==null)&&!destroyed) _onActive=new Signal(IComponent);
 			return this._onActive;
 		}
 		public function get onDeactive():Signal
 		{
-			if((_onDeactive==null)&&!disposed) _onDeactive=new Signal(IComponent);
+			if((_onDeactive==null)&&!destroyed) _onDeactive=new Signal(IComponent);
 			return this._onDeactive;
 		}
 		
@@ -197,7 +197,7 @@ package com.longame.game.component
 		/**
 		 * 当销毁时，子类覆盖
 		 * */
-		protected function whenDispose():void
+		protected function whenDestroy():void
 		{
 		}
 		/**

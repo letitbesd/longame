@@ -2,10 +2,11 @@ package com.longame.game.entity
 {
 	import com.longame.core.IAnimatedObject;
 	import com.longame.core.long_internal;
+	import com.longame.display.GameAnimator;
 	import com.longame.display.core.RenderManager;
 	import com.longame.model.Direction;
 	import com.longame.model.EntityItemSpec;
-	import com.longame.model.TextureData;
+	import com.longame.model.RenderData;
 	import com.longame.utils.DisplayObjectUtil;
 	import com.longame.utils.MovieClipUtil;
 	import com.longame.utils.ObjectUtil;
@@ -40,9 +41,9 @@ package com.longame.game.entity
 		{
 			super(id);
 		}
-		override protected function whenDispose():void
+		override protected function whenDestroy():void
 		{
-			super.whenDispose();
+			super.whenDestroy();
 			_labels.destroy();
 			_labels=null;
 			labelToLoop=null;
@@ -52,14 +53,14 @@ package com.longame.game.entity
 		}
 		override protected function whenDeactive():void
 		{
-//			if(!this._renderAsBitmap && this.clip) this.clip.stop();
+			if(!this._renderAsBitmap && this.clip) this.clip.stop();
 			super.whenDeactive();
 		}
 		private var forceAnimation:Boolean;
 		override protected function  whenSourceLoaded():void
 		{
-			if(_sourceDisplay){
-				_labels.parse(_sourceDisplay as MovieClip);
+			if(clip){
+				_labels.parse(clip);
 				var cf:String=_labels.getLabel(_currentFrame)
 				if(cf) this._currentLabel=cf;
 			}
@@ -76,10 +77,17 @@ package com.longame.game.entity
 		protected var _oldFrame:int=1;
 		override protected function renderBitmap():void
 		{
-			if((_bitmapInvalidated||(_oldFrame!=this.currentFrame))&&_sourceDisplay){
-				RenderManager.loadTexture(this._currentSource,this.currentFrame,_scaleX,_scaleY,onTextureLoaded);
+			if(_bitmapInvalidated||(_oldFrame!=this.currentFrame)){
+				RenderManager.loadRender(this._currentSource,this.currentFrame,_scaleX,_scaleY,onBitmapLoaded);
 				_bitmapInvalidated=false;
 			}
+		}
+		/**
+		 * animator要显示的影片剪辑，注意：只有非位图渲染情况下，影片剪辑会被加进舞台显示
+		 * */
+		final public function get clip():MovieClip
+		{
+			return this._sprite as MovieClip;
 		}
 		protected var labelToLoop:LoopedLabelFrame=new LoopedLabelFrame();
 		protected var lastClipState:ClipState=new ClipState();
@@ -93,7 +101,7 @@ package com.longame.game.entity
 		{
 			var old:Boolean=lastClipState.init("gotoAndPlay",[frame,loops]);
 			if(old&&!forceAnimation) return false;
-			if(this._sourceDisplay==null) {
+			if(this.clip==null) {
 				return false;
 			}
 			var has:Boolean=this.totalFrames>1;
@@ -101,7 +109,8 @@ package com.longame.game.entity
 			else if(frame is uint)   has&&=(frame as uint)<=this.totalFrames;
 			if (has)
 			{
-			    this.setFrame(frame);
+				if(!this._renderAsBitmap) this.clip.gotoAndPlay(frame);
+				else  this.setFrame(frame);
 				if(frame is String){
 					labelToLoop.init(frame as String,_labels.getFrame(frame as String),loops,_labels.getLabelEnd(frame as String));
 				}else{
@@ -109,6 +118,7 @@ package com.longame.game.entity
 				}
 			}else{
 				Logger.warn(this,"gotoAndPlay","The animator has no label with name: "+frame);
+				if(!this._renderAsBitmap) this.play();
 				labelToLoop.reset();
 			}
 			return true;
@@ -117,46 +127,51 @@ package com.longame.game.entity
 		{
 			var old:Boolean=lastClipState.init("gotoAndStop",[frame]);
 			if(old&&!forceAnimation) return false;
-			if(this._sourceDisplay==null){
+			if(this.clip==null){
 				return false;
 			}
 			labelToLoop.reset();
-			this.setFrame(frame);
+			if(!this._renderAsBitmap) this.clip.gotoAndStop(frame);
+			else this.setFrame(frame);
 			return true;
 		}
 		public function play():Boolean
 		{
 			var old:Boolean=lastClipState.init("play",null);
 			if(old&&!forceAnimation) return false;
-			if(this._sourceDisplay==null){
+			if(this.clip==null){
 				return false;
 			}
 			labelToLoop.reset();
+			if(!this._renderAsBitmap) this.clip.play();
 			return true;
 		}
 		public function stop():Boolean
 		{
 			var old:Boolean=lastClipState.init("stop",null);
 			if(old&&!forceAnimation) return false;
-			if(this._sourceDisplay==null){
+			if(this.clip==null){
 				return false;
 			}
 			labelToLoop.reset();
+			if(!this._renderAsBitmap) this.clip.stop();
 			return true;
 		}
 		public function get totalFrames():int
 		{
-			if(_sourceDisplay) return (this._sourceDisplay as MovieClip).totalFrames;
+			if(clip) return this.clip.totalFrames;
 			return int.MAX_VALUE;
 		}
 		protected var _currentFrame:int=1;
 		public function get currentFrame():int
 		{
+			if(!_renderAsBitmap && clip) return this.clip.currentFrame;
 			return _currentFrame;
 		}
 		protected var _currentLabel:String;
 		public function get currentLabel():String
 		{
+			if(!_renderAsBitmap && clip) return this.clip.currentLabel;
 			return _currentLabel;
 		}
 		public function get currentFrameLabel():String
@@ -167,27 +182,39 @@ package com.longame.game.entity
 		{
 			if(value==_visible) return;
 			super.visible=value;
+			//todo
+			if(!this._renderAsBitmap) {
+				if(_visible){
+					
+				}else{
+					
+				}
+			}
 		}
 		override protected function doRender():void
 		{
-			if(this._sourceDisplay){
-				if(this.lastClipState.has){
-					switch(this.lastClipState.state){
-						case "gotoAndPlay":
-						case "play":
-							this.setFrame(++_currentFrame);
-							break;
-						case "gotoAndStop":
-						case "stop":
-							//do nothing
-							break;
-					}	
+			if(this.clip){
+				if(this._renderAsBitmap){
+					if(this.lastClipState.has){
+						switch(this.lastClipState.state){
+							case "gotoAndPlay":
+							case "play":
+								this.setFrame(++_currentFrame);
+								break;
+							case "gotoAndStop":
+							case "stop":
+								//do nothing
+								break;
+						}	
+					}
+					if(this._currentFrame>this.totalFrames) this.setFrame(1);
 				}
-				if(this._currentFrame>this.totalFrames) this.setFrame(1);
 				if(this.labelToLoop.has()){
 					if((this.currentFrame==this.labelToLoop.endFrame)||(this.currentFrame==this.totalFrames)){
 						if(this.labelToLoop.loopOnce()){
-							this.setFrame(labelToLoop.frame);
+//							this.gotoAndPlay(labelToLoop.label,labelToLoop.loopLeft());
+							if(!this._renderAsBitmap) this.clip.gotoAndPlay(labelToLoop.frame);
+							else  this.setFrame(labelToLoop.frame);
 						}else{
 							this.whenAnimationPlayed(labelToLoop.label);
 						}
@@ -229,7 +256,7 @@ package com.longame.game.entity
 		 * */
 		protected function setLastClipState():Boolean
 		{
-			if(this._sourceDisplay==null) return false;
+			if(this.clip==null) return false;
 			if(this.lastClipState.has){
 				switch(this.lastClipState.state){
 					case "gotoAndPlay":
@@ -280,14 +307,14 @@ package com.longame.game.entity
 		 * */
 		public function get onAnimationPlayed():Signal
 		{
-			if(this.disposed) return null;
+			if(this.destroyed) return null;
 			if(this._onAnimationPlayed==null) this._onAnimationPlayed=new Signal(String);
 			return this._onAnimationPlayed;
 		}
 		protected var _onLastFrame:Signal;
 		public function get onLastFrame():Signal
 		{
-			if(this.disposed) return null;
+			if(this.destroyed) return null;
 			if(_onLastFrame==null) _onLastFrame=new Signal(AnimatorEntity);
 			return _onLastFrame;
 		}

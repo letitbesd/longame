@@ -1,15 +1,3 @@
-/**
- * This code is part of the Bumpslide Library maintained by David Knape
- * Fork me at http://github.com/tkdave/bumpslide_as3
- * 
- * Copyright (c) 2010 by Bumpslide, Inc. 
- * http://www.bumpslide.com/
- *
- * This code is released under the open-source MIT license.
- * See LICENSE.txt for full license terms.
- * More info at http://www.opensource.org/licenses/mit-license.php
- */
-
 package com.bumpslide.ui.behavior 
 {
 	import com.bumpslide.util.GridLayout;
@@ -53,7 +41,7 @@ package com.bumpslide.ui.behavior
 		protected var _stage:Stage;
 
 		/**
-		 * Attaches focus behavior to a GridLayout instance
+		 * Attaches repeater behavior to a button
 		 * 
 		 * @param grid_layout  the grid we are managing
 		 * @param keyboard_scope   where we attach keyboard event listeners (defaults to grid_layout.timeline)

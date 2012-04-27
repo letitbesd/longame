@@ -1,15 +1,13 @@
 /**
- * This code is part of the Bumpslide Library maintained by David Knape
- * Fork me at http://github.com/tkdave/bumpslide_as3
+ * This code is part of the Bumpslide Library by David Knape
+ * http://bumpslide.com/
  * 
- * Copyright (c) 2010 by Bumpslide, Inc. 
- * http://www.bumpslide.com/
- *
- * This code is released under the open-source MIT license.
- * See LICENSE.txt for full license terms.
- * More info at http://www.opensource.org/licenses/mit-license.php
+ * Copyright (c) 2006, 2007, 2008 by Bumpslide, Inc.
+ * 
+ * Released under the open-source MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ * see LICENSE.txt for full license terms
  */
-
 package com.bumpslide.util {
 	import flash.display.Stage;
 	import flash.display.StageAlign;
@@ -58,8 +56,8 @@ package com.bumpslide.util {
             
             _stage = inStage;                                
             
-			// disable scaling and listen for size updates
-			_stage.scaleMode = StageScaleMode.NO_SCALE;
+            // disable scaling and listen for size updates
+            _stage.scaleMode = StageScaleMode.NO_SCALE;
             _stage.align = StageAlign.TOP_LEFT;
             _stage.stageFocusRect = false;
             _stage.addEventListener( Event.RESIZE, update );
@@ -91,7 +89,6 @@ package com.bumpslide.util {
         /**
          * Constrained stage width
          */
-        [Bindable(name='resize')]
         public function get width () : Number {
             return _width;
         }
@@ -99,7 +96,6 @@ package com.bumpslide.util {
         /**
          * Constrained stage height
          */
-        [Bindable(name='resize')]
         public function get height () : Number {
             return _height;
         }

@@ -29,13 +29,13 @@ package com.xingcloud.tutorial.steps
 		{
 			super.doExecute();
 //			Logger.info(this,"doExecute",this.name+" auto play start!");
-			Engine.nativeStage.addEventListener(MouseEvent.CLICK,onStageClicked);
+			Engine.stage.addEventListener(MouseEvent.CLICK,onStageClicked);
 			ProcessManager.schedule(this.stayTime*1000,this,complete);
 		}
 		override protected function complete():void
 		{
 //			Logger.info(this,"complete",this.name+" auto play complete!");
-			Engine.nativeStage.removeEventListener(MouseEvent.CLICK,onStageClicked);
+			Engine.stage.removeEventListener(MouseEvent.CLICK,onStageClicked);
 			super.complete();
 		}
 		protected function onStageClicked(event:MouseEvent):void
@@ -45,7 +45,7 @@ package com.xingcloud.tutorial.steps
 		}
 		override public function abort():void
 		{
-			Engine.nativeStage.removeEventListener(MouseEvent.CLICK,onStageClicked);
+			Engine.stage.removeEventListener(MouseEvent.CLICK,onStageClicked);
 			super.abort();
 		}
 	}

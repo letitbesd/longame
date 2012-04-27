@@ -178,8 +178,7 @@ package com.longame.game.scene.util
 			//get the screen bounds and adjust matrix for negative rect values.
 			var rect:Rectangle = target.container.getBounds(target.container);
 			var bitmapdata:BitmapData = new BitmapData(rect.width, rect.height, true, 0);
-			//TODO
-//			bitmapdata.draw(target.container, new Matrix(1, 0, 0, 1, rect.x * -1, rect.y * -1));
+			bitmapdata.draw(target.container, new Matrix(1, 0, 0, 1, rect.x * -1, rect.y * -1));
 			
 			return bitmapdata;
 		}

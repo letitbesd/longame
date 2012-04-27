@@ -1,7 +1,7 @@
 package com.longame.display.core
 {
 	import com.longame.core.IAnimatedObject;
-	import com.longame.core.IDisposable;
+	import com.longame.core.IDestroyable;
 	import com.longame.managers.ProcessManager;
 	import com.longame.utils.debug.Logger;
 	
@@ -14,7 +14,7 @@ package com.longame.display.core
 	/**
 	 * 播放一次就消失的动画，用于特效等场合，被添加到舞台后就自动播放，播放完自动消失
 	 * */
-	public class OnceClip extends Sprite implements IAnimatedObject, IDisposable
+	public class OnceClip extends Sprite implements IAnimatedObject, IDestroyable
 	{
 		public var onOver:Signal=new Signal(OnceClip);
 		
@@ -77,18 +77,18 @@ package com.longame.display.core
 			}
 			onOver.dispatch(this);
 			if(this.autoDestroy) {
-				this.dispose();
+				this.destroy();
 			}else if(clip){
 				clip.stop();
 				this.removeChild(clip);
 			}
 		}
 		private var _destroyed:Boolean;
-		public function get disposed():Boolean
+		public function get destroyed():Boolean
 		{
 			return _destroyed;
 		}
-		public function dispose():void
+		public function destroy():void
 		{
 			if(_destroyed) return;
 			_destroyed=true;

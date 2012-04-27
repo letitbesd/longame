@@ -58,7 +58,7 @@ package  com.xingcloud.tutorial.tips
 			showing=true;
 			if(_canvas==null){
 				_canvas=new Sprite();
-				Engine.nativeStage.addChild(_canvas);
+				Engine.stage.addChild(_canvas);
 			}
 			this.doShow();
 		}
@@ -72,7 +72,7 @@ package  com.xingcloud.tutorial.tips
 			if(!showing) return;
 			showing=false;
 			this.doHide();
-			Engine.nativeStage.removeChild(_canvas);
+			Engine.stage.removeChild(_canvas);
 			_canvas=null;
 			_target=null;
 			_owner=null;

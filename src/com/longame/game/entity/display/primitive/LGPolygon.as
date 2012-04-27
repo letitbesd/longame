@@ -25,7 +25,7 @@ package  com.longame.game.entity.display.primitive
 		 */
 		override protected function drawGeometry ():void
 		{
-			var g:Graphics =_canvasShape.graphics;
+			var g:Graphics = container.graphics;
 			g.clear();
 			g.moveTo(pts[0].x, pts[0].y);
 			

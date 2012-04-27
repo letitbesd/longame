@@ -6,7 +6,6 @@ package com.longame.game.scene
 	import com.longame.game.scene.util.DrawingUtil;
 	
 	import flash.display.Graphics;
-	import flash.display.Shape;
 	import flash.geom.Vector3D;
 
 	/**
@@ -22,8 +21,8 @@ package com.longame.game.scene
 			var pt0:Vector3D =SceneManager.sceneToScreen(new Vector3D(-1 * axisLength, 0, 0));
 			var ptM:Vector3D;
 			var pt1:Vector3D = SceneManager.sceneToScreen(new Vector3D(axisLength, 0, 0));
-			var canvas:Shape=new Shape();
-			var g:Graphics=canvas.graphics;
+			
+			var g:Graphics = container.graphics;
 			g.clear();
 			
 			//draw x-axis

@@ -1,15 +1,3 @@
-/**
- * This code is part of the Bumpslide Library maintained by David Knape
- * Fork me at http://github.com/tkdave/bumpslide_as3
- * 
- * Copyright (c) 2010 by Bumpslide, Inc. 
- * http://www.bumpslide.com/
- *
- * This code is released under the open-source MIT license.
- * See LICENSE.txt for full license terms.
- * More info at http://www.opensource.org/licenses/mit-license.php
- */
-
 package com.bumpslide.ui {
 	import flash.display.Graphics;
 	import flash.geom.Point;		
@@ -37,8 +25,6 @@ package com.bumpslide.ui {
 			while( n<1 ) {		
 				var p1:Point = Point.interpolate( to, from, n );
 				n+=lStep;
-				// but don't draw past the desired end point
-				if(n>1.0) n=1.0;
 				var p2:Point = Point.interpolate( to, from, n );
 				n+=gStep;
 				graphics.moveTo( p1.x, p1.y );
@@ -47,7 +33,7 @@ package com.bumpslide.ui {
 		} 
 		
 		/**
-		 * Draws a dotted line using drawing API circles for each dot
+		 * Draws a dotted line using draging API circles for each dot
 		 * 
 		 * Use graphics.beginFill to determine color
 		 */

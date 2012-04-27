@@ -1,11 +1,12 @@
 package com.longame.display.screen
 {
 	import com.bumpslide.ui.BaseClip;
-	import com.longame.core.IDisposable;
+	import com.longame.core.IDestroyable;
 	import com.longame.display.core.RenderManager;
 	import com.longame.resource.ResourceManager;
 	import com.longame.utils.DisplayObjectUtil;
 	import com.xingcloud.tutorial.TutorialManager;
+	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	
@@ -36,7 +37,7 @@ package com.longame.display.screen
 		public function get sceneLayer():Sprite{
 			return null;
 		}
-		public function get ui():Sprite{
+		public function get uiLayer():Sprite{
 			return null;	
 		}
 		protected var _onCreate:Signal=new Signal(McScreen);

@@ -1,15 +1,13 @@
 /**
- * This code is part of the Bumpslide Library maintained by David Knape
- * Fork me at http://github.com/tkdave/bumpslide_as3
+ * This code is part of the Bumpslide Library by David Knape
+ * http://bumpslide.com/
  * 
- * Copyright (c) 2010 by Bumpslide, Inc. 
- * http://www.bumpslide.com/
- *
- * This code is released under the open-source MIT license.
- * See LICENSE.txt for full license terms.
- * More info at http://www.opensource.org/licenses/mit-license.php
+ * Copyright (c) 2006, 2007, 2008 by Bumpslide, Inc.
+ * 
+ * Released under the open-source MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ * see LICENSE.txt for full license terms
  */
-
 package com.bumpslide.net {
 	/**
 	 * Like the mx.rpc.responder interface
@@ -20,7 +18,7 @@ package com.bumpslide.net {
 	 * @author David Knape
 	 */
 	public interface IResponder {
-		function fault(info : Error) : void;
+		function fault(info : Object) : void;
 		function result(data : Object) : void;
 	}
 }

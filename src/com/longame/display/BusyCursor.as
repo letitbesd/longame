@@ -34,7 +34,7 @@ package com.longame.display
 			showing=true;
 			if(_instance==null) _instance=new BusyCursor();
 			_instance.masker.visible=!clickable;
-			Engine.nativeStage.addChild(_instance);
+			Engine.stage.addChild(_instance);
 			ProcessManager.addAnimatedObject(_instance);
 		}
 		public static function hide():void
@@ -45,7 +45,7 @@ package com.longame.display
 			if(showCounter<=0){
 				showing=false;
 				if(_instance==null) return;
-				Engine.nativeStage.removeChild(_instance);
+				Engine.stage.removeChild(_instance);
 				ProcessManager.removeAnimatedObject(_instance);
 			}
 		}
@@ -60,7 +60,7 @@ package com.longame.display
 			masker=new Sprite();
 			g=masker.graphics;
 			g.beginFill(0x0,0);
-			g.drawRect(0,0,Engine.nativeStage.stageWidth,Engine.nativeStage.stageHeight);
+			g.drawRect(0,0,Engine.stage.stageWidth,Engine.stage.stageHeight);
 			g.endFill();
 			addChild(masker);
 			
@@ -102,8 +102,8 @@ package com.longame.display
 		{
 			minuteHand.rotation += 12;
 			hourHand.rotation += 1;
-			cursorHolder.x=Engine.nativeStage.mouseX+15;
-			cursorHolder.y=Engine.nativeStage.mouseY;
+			cursorHolder.x=Engine.stage.mouseX+15;
+			cursorHolder.y=Engine.stage.mouseY;
 		}
 	}
 }

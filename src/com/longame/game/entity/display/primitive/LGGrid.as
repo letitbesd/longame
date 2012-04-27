@@ -118,12 +118,26 @@ package com.longame.game.entity.display.primitive
 			this._includeInBounds=false;
 //			this._walkable=true;
 		}
+		protected var gridLineHided:Boolean=true;
+		
+		public function hideGridLine():void
+		{
+			if(this.gridLineHided) return 
+			container.graphics.clear()
+			this.gridLineHided=true
+		}
+		public function showGridLine():void
+		{
+			if(!this.gridLineHided) return
+			this.drawGeometry()
+			this.gridLineHided=false			
+		}
 		/**
 		 * @inheritDoc
 		 */
 		override protected function drawGeometry ():void
 		{
-			var g:Graphics =_canvasShape.graphics;
+			var g:Graphics = container.graphics;
 			g.clear();
 			
 			var stroke:IStroke = IStroke(strokes[0]);
@@ -176,7 +190,6 @@ package com.longame.game.entity.display.primitive
 			pt = SceneManager.sceneToScreen(new Vector3D(0, 0));
 			g.lineTo(pt.x, pt.y);
 			g.endFill();
-			
 		}
 		
 		protected var tileMap:Array
