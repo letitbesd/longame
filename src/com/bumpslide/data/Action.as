@@ -1,15 +1,12 @@
 /**
- * This code is part of the Bumpslide Library maintained by David Knape
- * Fork me at http://github.com/tkdave/bumpslide_as3
+ * This code is part of the Bumpslide Library by David Knape
+ * http://bcom.bumpslide.data.Action (c) 2006, 2007, 2008 by Bumpslide, Inc.
  * 
- * Copyright (c) 2010 by Bumpslide, Inc. 
- * http://www.bumpslide.com/
- *
- * This code is released under the open-source MIT license.
- * See LICENSE.txt for full license terms.
- * More info at http://www.opensource.org/licenses/mit-license.php
- */
-
+ * Released under the open-source MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ * see LICENSE.txt for full license terms
+ */ 
+ 
 package com.bumpslide.data {
 	
 	import com.bumpslide.data.IPrioritizable;	
@@ -27,13 +24,11 @@ package com.bumpslide.data {
 		private var _action:Function;
 		private var _priority:int;
 		private var _creationIndex:int;
-		private var _name:String="";
 		
-		public function Action(action:Function, priority:int=-1, name:String="") {
+		public function Action(action:Function, priority:int=-1) {
 			_priority = priority;
 			_action = action;
 			_creationIndex = lastNum++;
-			_name = name;
 		}
 		
 		public function get action():Function {
@@ -57,21 +52,11 @@ package com.bumpslide.data {
 		}
 		
 		public function toString() : String {
-			return "[Action "+_creationIndex + " "+name+"]";
+			return "[Action "+_creationIndex + "]";
 		}
 		
 		public function get creationIndex():int {
 			return _creationIndex;
-		}
-
-
-		public function get name():String {
-			return _name;
-		}
-
-
-		public function set name( name:String ):void {
-			_name = name;
 		}
 	}
 }

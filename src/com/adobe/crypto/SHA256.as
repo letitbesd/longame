@@ -34,7 +34,7 @@ package com.adobe.crypto
 {
 	import com.adobe.utils.IntUtil;
 	import flash.utils.ByteArray;
-	import mx.utils.Base64Encoder;
+	import com.adobe.utils.Base64Encoder;
 	
 	/**
 	 * The SHA-256 algorithm

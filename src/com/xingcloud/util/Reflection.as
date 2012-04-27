@@ -1,7 +1,7 @@
 package com.xingcloud.util
 {
 	import com.longame.utils.debug.Logger;
-	import com.xingcloud.model.DBObject;
+	import com.xingcloud.model.ModelBase;
 	
 	import flash.display.LoaderInfo;
 	import flash.system.ApplicationDomain;
@@ -137,11 +137,11 @@ package com.xingcloud.util
 							{
 								target[prop]=source[prop];
 							}
-							else if (checkBaseClass(varType, DBObject))
+							else if (checkBaseClass(varType, ModelBase))
 							{
 								if (!target[prop])
 									target[prop]=new varType();
-								(target[prop] as DBObject).parseFromObject(source[prop]);
+								(target[prop] as ModelBase).parseFromObject(source[prop]);
 							}
 							else
 							{

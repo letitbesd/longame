@@ -1,15 +1,14 @@
 /**
- * This code is part of the Bumpslide Library maintained by David Knape
- * Fork me at http://github.com/tkdave/bumpslide_as3
+ * This code is part of the Bumpslide Library by David Knape
+ * http://bumpslide.com/
  * 
- * Copyright (c) 2010 by Bumpslide, Inc. 
- * http://www.bumpslide.com/
- *
- * This code is released under the open-source MIT license.
- * See LICENSE.txt for full license terms.
- * More info at http://www.opensource.org/licenses/mit-license.php
- */
-
+ * Copyright (c) 2006, 2007, 2008 by Bumpslide, Inc.
+ * 
+ * Released under the open-source MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ * see LICENSE.txt for full license terms
+ */ 
+ 
 package com.bumpslide.ui {
 	import com.bumpslide.ui.Component;
 
@@ -31,13 +30,7 @@ package com.bumpslide.ui {
 		protected var _zoom:Number = 1;
 		protected var _panX:Number = 0;
 		protected var _panY:Number = 0;
-
 		private var viewPort:Rectangle;
-
-		private var useScrollRect:Boolean = false;		
-		
-		
-		
 
 		/**
 		 * Cache as bitmap to improve performance with scrollRect
@@ -60,15 +53,13 @@ package com.bumpslide.ui {
 		 * Since content is behind a scrollRect, we can't get it's actual size.
 		 * This function yanks it off the display list, measures it, and puts it back
 		 */
-		public function refreshContentSize(event:Event=null):void {
+		public function refreshContentSize():void {
 			if(content) {				
-				
 				if(contains(content)) removeChild(content);
 				content.visible = true;
 				content.scaleX = content.scaleY = 1;
-				var b:Rectangle = content.getBounds(this);
-				_contentWidth = b.width;
-				_contentHeight = b.height;
+				_contentWidth = content.width;
+				_contentHeight = content.height;
 				//trace('_contentWidth: ' + (_contentWidth));
 				
 				addChild(content);
@@ -87,20 +78,7 @@ package com.bumpslide.ui {
 			
 			viewPort.width = width;
 			viewPort.height = height;
-			
-			if(useScrollRect) {
-				scrollRect = viewPort;
-				destroyChild( mask );
-				mask = null;
-			} else {
-				scrollRect = null;
-				if(mask==null) {
-					mask = add( Box );
-				}
-				(mask as Box).setSize( viewPort.width, viewPort.height );
-				content.x = -viewPort.x;
-				content.y = -viewPort.y;
-			}
+			scrollRect = viewPort;
 			
 			super.draw();		
 		}
@@ -111,28 +89,13 @@ package com.bumpslide.ui {
 		}
 
 		public function set content(content:DisplayObject):void {
-			
-			var loader:Loader;
-			var img:Image;
-			
-			if(_content) {
-				loader = _content as Loader;
-				img = _content as Image;
-				if(loader) loader.contentLoaderInfo.removeEventListener(Event.INIT, refreshContentSize);
-				if(img) img.removeEventListener(Image.EVENT_LOADED, refreshContentSize);
-				destroyChild( mask );
-				mask = null;
-				destroyChild(_content);
-			}
+			if(_content) destroyChild(_content);
 			_content = content;
-			
 			reset();
 			
-			loader = _content as Loader;
-			img = _content as Image;
-			if(loader) loader.contentLoaderInfo.addEventListener(Event.INIT, refreshContentSize);
-			if(img) img.addEventListener(Image.EVENT_LOADED, refreshContentSize);
-				
+			if(content != null && (content is Loader)) {
+				(content as Loader).contentLoaderInfo.addEventListener(Event.INIT, eventDelegate(refreshContentSize));
+			}
 			refreshContentSize();
 		}
 

@@ -57,7 +57,7 @@ package com.xingcloud.tutorial.tips
 			}
 			//下面这个方法可以画出一个矩形填充
 			_canvas.graphics.beginFill(0x0,FILL_ALPHA);
-			_canvas.graphics.drawRect(0,0,Engine.nativeStage.stageWidth,Engine.nativeStage.stageHeight);
+			_canvas.graphics.drawRect(0,0,Engine.stage.stageWidth,Engine.stage.stageHeight);
 			if(strokeColor>=0) _canvas.graphics.lineStyle(strokeWeight,strokeColor);
 			//中间挖空一个矩形
 			_canvas.graphics.drawRect(_rect.x,_rect.y,_rect.width,_rect.height);

@@ -74,11 +74,11 @@ package com.longame.game.entity
 			}
 			return pet;
 		}
-		override protected function whenDispose():void
+		override protected function whenDestroy():void
 		{
-			super.whenDispose();
+			super.whenDestroy();
 			for each(var pet:Pet in _pets){
-				pet.dispose();
+				pet.destroy();
 			}
 			_pets=null;
 		}

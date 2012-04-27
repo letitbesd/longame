@@ -1,7 +1,7 @@
 package com.xingcloud.net.connector
 {
 	import com.xingcloud.core.Config;
-	import com.xingcloud.model.DBObject;
+	import com.xingcloud.model.ModelBase;
 	import com.xingcloud.util.Debug;
 	import com.xingcloud.util.objectencoder.ObjectEncoder;
 	import flash.events.AsyncErrorEvent;
@@ -68,7 +68,7 @@ package com.xingcloud.net.connector
 			_netConnection.objectEncoding=_objectEncoding;
 			var _amfResponder:Responder=new Responder(onCallSuccess, onCallError);
 			var args:Array=[_commandName, _amfResponder];
-			args.push(new ObjectEncoder(_commandArgs, ObjectEncoder.AMF, false, [DBObject]).AmfObject);
+			args.push(new ObjectEncoder(_commandArgs, ObjectEncoder.AMF, false, [ModelBase]).AmfObject);
 			if (_needAuth)
 				_netConnection.addHeader("Authorization", false, _header);
 			_netConnection.call.apply(_netConnection, args);

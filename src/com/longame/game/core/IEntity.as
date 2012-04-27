@@ -1,6 +1,6 @@
 ﻿package  com.longame.game.core
 {
-	import com.longame.core.IDisposable;
+	import com.longame.core.IDestroyable;
 	import com.longame.core.IState;
 	
 	import org.osflash.signals.Signal;

@@ -1,6 +1,7 @@
 package com.longame.game.entity
 {
 	import com.longame.core.long_internal;
+	import com.longame.display.GameAnimator;
 	import com.longame.display.core.IAnimatorRenderer;
 	import com.longame.display.core.IDisplayRenderer;
 	import com.longame.game.core.EntityTile;
@@ -10,24 +11,23 @@ package com.longame.game.entity
 	import com.longame.game.core.bounds.EntityBounds;
 	import com.longame.game.core.bounds.IBounds;
 	import com.longame.game.core.bounds.TileBounds;
+	import com.longame.signals.MouseSignals;
+	import com.longame.game.entity.display.primitive.TileHilighter;
 	import com.longame.game.group.DisplayGroup;
 	import com.longame.game.group.IDisplayGroup;
-	import com.longame.game.scene.BaseScene;
 	import com.longame.game.scene.IScene;
+	import com.longame.game.scene.BaseScene;
 	import com.longame.game.scene.SceneManager;
 	import com.longame.managers.InputManager;
 	import com.longame.model.consts.Registration;
 	import com.longame.utils.StringParser;
 	import com.longame.utils.debug.Logger;
 	
+	import flash.display.Sprite;
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
 	
 	import org.osflash.signals.Signal;
-	
-	import starling.core.Starling;
-	import starling.display.Sprite;
-	import starling.display.Stage;
 	
 	use namespace long_internal;
 
@@ -49,6 +49,9 @@ package com.longame.game.entity
 		{
 			super(id);
 			_container=new Sprite();
+			/**不依靠自身的mouseEnable来响应鼠标事件，禁止之，用inputManager来统一管理，提高效率**/
+			_container.mouseEnabled=_container.mouseChildren=false;		
+			_container.tabEnabled=false;
 		}
 		final public function render():void
 		{
@@ -154,6 +157,8 @@ package com.longame.game.entity
 			if((_owner is IDisplayRenderer)){//&&(!(_owner as IDisplayRenderer).container.contains(this.container))){
 				(_owner as IDisplayRenderer).container.addChild(container);
 			} 
+			if(this._mouseEnabled) this.verifyMouseState();
+			verifyParentMouseState();
 			//如果发现物体尺寸为-1，自动给默认的尺寸为场景的tile大小
 			if(this._width==-1)  this.width=SceneManager.tileSize;
 			if(this._length==-1) this.length=SceneManager.tileSize;
@@ -177,15 +182,16 @@ package com.longame.game.entity
 			}
 			super.whenDeactive();
 		}
-		override protected function whenDispose():void
+		override protected function whenDestroy():void
 		{
-			super.whenDispose();
-			this._container.dispose();
+			super.whenDestroy();
+			this.mouseEnabled=false;
 			this._container=null;
 			if(this._tileBounds) {
 				this._tileBounds.destroy();
 				this._tileBounds=null;
 			}
+			_onMouse=null;
 			_onRotate=null;
 			_onScale=null;
 			_onMove=null;
@@ -238,10 +244,6 @@ package com.longame.game.entity
 		public function get parent():IDisplayGroup
 		{
 			return _owner as IDisplayGroup;
-		}
-		public function get stage():Stage
-		{
-			return _container.stage;
 		}
 		public function get x():Number
 		{
@@ -513,55 +515,91 @@ package com.longame.game.entity
 			_parallax=value;
 			if(this.parent is BaseScene) (this.parent as BaseScene).updateParallaxChild(this);
 		}
+		protected var _onMouse:MouseSignals;
+		public function get onMouse():MouseSignals
+		{
+			if((_onMouse==null)&&!destroyed) _onMouse=new MouseSignals(this);
+			return _onMouse;
+		}
+		protected var _mouseEnabled:Boolean;
+		public function get mouseEnabled():Boolean
+		{
+			return _mouseEnabled;
+		}
+		public function set mouseEnabled(value:Boolean):void
+		{
+			if(_mouseEnabled==value) return;
+			_mouseEnabled=value;
+            this.verifyMouseState();
+		}
 		public function get mouseTile():Point
 		{
-			//TODO
-			return null;
-//			var mx:Number=this.container.mouseX;
-//			var my:Number=this.container.mouseY;
-//			var pt:Vector3D=SceneManager.screenToScene(new Vector3D(mx,my,0));
-//			return SceneManager.getTileIndex(pt.x,pt.y);
+			var mx:Number=this.container.mouseX;
+			var my:Number=this.container.mouseY;
+			var pt:Vector3D=SceneManager.screenToScene(new Vector3D(mx,my,0));
+			return SceneManager.getTileIndex(pt.x,pt.y);
+		}
+		protected function verifyMouseState():void
+		{
+			if(this.container){
+				this.container.mouseEnabled=_mouseEnabled;
+				this.container.mouseChildren=_mouseEnabled;
+				this.verifyParentMouseState();
+			}
+		}
+		/**
+		 * 如果本实体要用鼠标事件，将所有父容器的鼠标打开方可
+		 * */
+		protected function verifyParentMouseState():void
+		{
+			if(!this.mouseEnabled) return;
+			var p:IDisplayGroup=this.parent;
+			while(p){
+//				p.mouseEnabled=true;
+				p.container.mouseChildren=true;
+				p=p.parent;
+			}
 		}
 		protected var _onMove:Signal;
 		public function get onMove():Signal
 		{
-			if((_onMove==null)&&!disposed) _onMove=new Signal(IDisplayEntity);
+			if((_onMove==null)&&!destroyed) _onMove=new Signal(IDisplayEntity);
 			return _onMove;
 		}
 		protected var _onTileMove:Signal;
 		public function get onTileMove():Signal
 		{
-			if((_onTileMove==null)&&!disposed) _onTileMove=new Signal(IDisplayEntity,Point);
+			if((_onTileMove==null)&&!destroyed) _onTileMove=new Signal(IDisplayEntity,Point);
 			return _onTileMove;
 		}
 		protected var _onRotate:Signal;
 		public function get onRotate():Signal
 		{
-			if((_onRotate==null)&&!disposed) _onRotate=new Signal(IDisplayEntity);
+			if((_onRotate==null)&&!destroyed) _onRotate=new Signal(IDisplayEntity);
 			return _onRotate;
 		}
 		protected var _onScale:Signal;
 		public function get onScale():Signal
 		{
-			if((_onScale==null)&&!disposed) _onScale=new Signal(IDisplayEntity);
+			if((_onScale==null)&&!destroyed) _onScale=new Signal(IDisplayEntity);
 			return _onScale;
 		}
 		protected var _onResize:Signal;
 		public function get onResize():Signal
 		{
-			if((_onResize==null)&&!disposed) _onResize=new Signal(IDisplayEntity);
+			if((_onResize==null)&&!destroyed) _onResize=new Signal(IDisplayEntity);
 			return _onResize;
 		}
 		protected var _onTileBoundsChange:Signal;
 		public function get onTileBoundsChange():Signal
 		{
-			if((_onTileBoundsChange==null)&&!disposed) _onTileBoundsChange=new Signal(IDisplayEntity);
+			if((_onTileBoundsChange==null)&&!destroyed) _onTileBoundsChange=new Signal(IDisplayEntity);
 			return _onTileBoundsChange;
 		}
 		protected var _onDepthChanged:Signal;
 		public function get onDepthChanged():Signal
 		{
-			if((_onDepthChanged==null)&&!disposed) _onDepthChanged=new Signal(IDisplayEntity,int,int);
+			if((_onDepthChanged==null)&&!destroyed) _onDepthChanged=new Signal(IDisplayEntity,int,int);
 			return _onDepthChanged;
 		}
 		/**private functions*/

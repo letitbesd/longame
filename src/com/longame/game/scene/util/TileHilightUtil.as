@@ -56,7 +56,7 @@ package com.longame.game.scene.util
 		{
 			for(var key:String in _hilightsMap[target]){
 				var t:TileHilighter=_hilightsMap[target][key];
-				t.dispose();
+				t.destroy();
 				delete _hilightsMap[target][key];
 			}
 		}

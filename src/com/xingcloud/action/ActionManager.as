@@ -61,7 +61,7 @@ package com.xingcloud.action
 		 */
 		public function addAction(action:Action):void
 		{
-//			packer.addRequest(action);
+			packer.addRequest(action);
 		}
 
 		/**
@@ -71,7 +71,7 @@ package com.xingcloud.action
 		 */
 		public function removeAction(action:Action):void
 		{
-//			packer.removeRequest(action);
+			packer.removeRequest(action);
 		}
 
 		/**

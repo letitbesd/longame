@@ -3,11 +3,10 @@ package com.xingcloud.model.users
 	import com.longame.managers.ProcessManager;
 	import com.longame.utils.Reflection;
 	import com.longame.utils.debug.Logger;
-	import com.xingcloud.action.Action;
 	import com.xingcloud.core.XingCloud;
 	import com.xingcloud.core.xingcloud_internal;
 	import com.xingcloud.event.ServiceEvent;
-	import com.xingcloud.model.DBObject;
+	import com.xingcloud.model.ModelBase;
 	import com.xingcloud.model.item.owned.ItemsCollection;
 	import com.xingcloud.model.item.owned.OwnedItem;
 	import com.xingcloud.quests.QuestManager;
@@ -24,10 +23,32 @@ package com.xingcloud.model.users
 	import org.osflash.signals.Signal;
 
 	use namespace xingcloud_internal;
+
+	/**
+	 * 在UserProfile信息成功加载后进行派发。
+	 * @eventType com.xingcloud.core.ServiceEvent
+	 */
+	[Event(name="get_profile_success", type="com.xingcloud.event.ServiceEvent")]
+	/**
+	 * 在UserProfile信息加载出错后进行派发。
+	 * @eventType com.xingcloud.core.ServiceEvent
+	 */
+	[Event(name="get_profile_error", type="com.xingcloud.event.ServiceEvent")]
+	/**
+	 * 物品加载成功后进行派发。
+	 * @eventType com.xingcloud.core.ServiceEvent
+	 */
+	[Event(name="item_load_success", type="com.xingcloud.event.ServiceEvent")]
+	/**
+	 * 物品加载失败后进行派发
+	 * @eventType com.xingcloud.core.ServiceEvent
+	 */
+	[Event(name="item_load_error", type="com.xingcloud.event.ServiceEvent")]
+//	[Bindable]
 	/**
 	 * 用户信息基类
 	 */
-	public class AbstractUserProfile extends DBObject
+	public class AbstractUserProfile extends ModelBase
 	{
 		/**
 		 * 当前本机用户
@@ -42,6 +63,8 @@ package com.xingcloud.model.users
 		/**
 		 *用户信息
 		 * @param isOwner 是否是用户本身
+		 * @param localName 本地名称，如果设定，将自动存储到本地缓存
+		 *
 		 */
 		public function AbstractUserProfile(isOwner:Boolean=false)
 		{
@@ -80,6 +103,7 @@ package com.xingcloud.model.users
 				sb.data[prop]=this[prop];
 				sb.flush();
 			}
+			//todo, to server...
 			super.whenChange(prop,delta);
 		}
 		public function set name(value:String):void
@@ -177,9 +201,6 @@ package com.xingcloud.model.users
 		 */
 		public var platformUserId:String;
 
-		public var creationDate:Date;
-		public var lastActive:Date;
-		public var online:Boolean=true;
 		/**
 		 *物品实例字段名
 		 */
@@ -203,15 +224,14 @@ package com.xingcloud.model.users
 					ProcessManager.callLater(onProfileLoaded,[sb.data]);
 				}
 			}else{
-				var act:Action=new Action({loadItems:false,ids:[this.id]},onProfileLoaded,null,Action.LOAD_USER);
-				act.execute();
+				//todo
+//				ServiceManager.instance.send(new ProfileService([this], onProfileLoaded, onProfileError));
 			}
 		}
 
 		override public function parseFromObject(data:Object, excluded:Array=null):void
 		{
-//			super.parseFromObject(data, itemFields);
-			super.parseFromObject(data, excluded);
+			super.parseFromObject(data, itemFields);
 			for each (var key:String in itemFields)
 			{
 				(this[key] as ItemsCollection).needLoad=(data[key] != null);
@@ -223,16 +243,14 @@ package com.xingcloud.model.users
 		}
 
 		/**
-		 *加载全部物品详情
+		 *加载物品详情
 		 * @return 是否需要加载，true则需要，false则不需要
 		 *
 		 */
-		public function loadItems():Boolean
+		public function loadItemDetail():Boolean
 		{
 			needLoadNum=0;
 			loadedNum=0;
-//			var act:Action=new Action({user:this.id,types:this.itemFields},onItemsLoaded,onItemsLoadedError,Action.LOAD_ITMES);
-//			act.execute();
 			for each (var items:ItemsCollection in itemsBulk)
 			{
 				if (items.load())
@@ -299,27 +317,34 @@ package com.xingcloud.model.users
 		}
 		protected function onProfileLoaded(data:*):void
 		{
-			this.parseFromObject(data[0]);
+			this.parseFromObject(data);
+//			this.dispatchEvent(new ServiceEvent(ServiceEvent.PROFILE_LOADED, s));
 			Logger.info(this,"onProfileLoaded","UserProfile base info loaded!");
 			if (autoLoadItems)
 			{
-				if (!loadItems()){
-					if(this._onLoaded) this._onLoaded.dispatch();
-				}
+				if (!loadItemDetail())
+					dispatchEvent(new ServiceEvent(ServiceEvent.ITEM_LOAD_SUCCESS, null));
 			}
 		}
+
+		protected function onProfileError():void
+		{
+			Logger.error(this,"onProfileError","Profile loaded error!");
+//			this.dispatchEvent(new ServiceEvent(ServiceEvent.PROFILE_ERROR, s));
+		}
+
 		protected function onItemsLoaded(items:ItemsCollection):void
 		{
 			loadedNum++;
 			if (loadedNum == needLoadNum)
 			{
-				if(this._onLoaded) this._onLoaded.dispatch();
+				dispatchEvent(new ServiceEvent(ServiceEvent.ITEM_LOAD_SUCCESS, null));
 			}
 		}
 
 		protected function onItemsLoadedError(items:ItemsCollection):void
 		{
-			if(this._onLoadedError) this._onLoadedError.dispatch();
+			dispatchEvent(new ServiceEvent(ServiceEvent.ITEM_LOAD_ERROR, null));
 		}
 		
 		/*****************************************************************************************************/
@@ -414,7 +439,7 @@ package com.xingcloud.model.users
 			if(cls==null) return null;
 			var item:OwnedItem=new cls() as OwnedItem;
 			item.itemId=itemID;
-			if(uid) item.id=uid;
+			if(uid) item.uid=uid;
 			else    item.autoUID();
 			return item;
 		}

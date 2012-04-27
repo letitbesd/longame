@@ -3,7 +3,7 @@ package com.longame.game.group.component
 	import be.dauntless.astar.IMap;
 	import be.dauntless.astar.IPositionTile;
 	
-	import com.longame.core.IDisposable;
+	import com.longame.core.IDestroyable;
 	import com.longame.core.long_internal;
 	import com.longame.model.Direction;
 	import com.longame.game.component.AbstractComp;
@@ -46,18 +46,18 @@ package com.longame.game.group.component
 		{
 			for (var key:String in _tilesMap){
 				var t:EntityTile=_tilesMap[key] as EntityTile;
-				t.dispose();
+				t.destroy();
 				delete _tilesMap[key];
 			}
 			super.whenDeactive();
 		}
-		override protected function whenDispose():void
+		override protected function whenDestroy():void
 		{
 			_tileMovedChildren=null;
 			_alwaysInTopChildren=null;
 			_tilesMap==null;
 			_childMap=null;
-			super.whenDispose();
+			super.whenDestroy();
 		}
 		/**
 		 * 获取位于x和y索引出的tile
@@ -134,7 +134,7 @@ package com.longame.game.group.component
 				if(tile) {
 					tile.removeChild(ch);
 					if(tile.isEmpty()){
-						tile.dispose();
+						tile.destroy();
 						delete _tilesMap[getUniqueKey(tile.x,tile.y)];
 					}
 				}

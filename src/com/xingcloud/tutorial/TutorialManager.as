@@ -109,14 +109,6 @@ package com.xingcloud.tutorial
 //			tutorialsInRunning.length=0;
 //		}
 //		private static var tutorialsInRunning:Vector.<Tutorial>=new Vector.<Tutorial>();
-		public static function tutorialExcutable(id:String):Boolean
-		{
-			var tu:Tutorial=getTutorial(id);
-			if(tu&&!tu.isCompleted&& tu.paused) {
-				return true;
-			}
-			return false;
-		}
 		public static function startTutorial(id:String,target:*):Tutorial
 		{
 			var tu:Tutorial=getTutorial(id);

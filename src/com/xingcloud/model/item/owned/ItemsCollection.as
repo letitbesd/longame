@@ -2,12 +2,13 @@ package com.xingcloud.model.item.owned
 {
 	import com.longame.managers.ProcessManager;
 	import com.longame.utils.ObjectUtil;
-	import com.longame.utils.Reflection;
 	import com.longame.utils.debug.Logger;
-	import com.xingcloud.action.Action;
 	import com.xingcloud.core.xingcloud_internal;
 	import com.xingcloud.event.ServiceEvent;
 	import com.xingcloud.model.users.AbstractUserProfile;
+	import com.xingcloud.services.ItemsCollectionService;
+	import com.xingcloud.services.ServiceManager;
+	import com.xingcloud.util.Reflection;
 	
 	import flash.events.EventDispatcher;
 	import flash.net.SharedObject;
@@ -67,11 +68,9 @@ package com.xingcloud.model.item.owned
 			this._onLoadCallBack=onSuccess;
 			//是否从本地缓存加载
 			if(owner.localName){
-				ProcessManager.callLater(updateFromObject,[getLocal().data]);
+				ProcessManager.callLater(onDataUpdated,[getLocal().data]);
 			}else{
-				var act:Action=new Action({user:this.owner.id,types:[this.OwnerProperty]},updateFromObject,onDataUpdateFail,Action.LOAD_ITMES);
-				act.execute();
-//				ServiceManager.instance.send(new ItemsCollectionService(this, updateFromObject, onDataUpdateFail));
+				ServiceManager.instance.send(new ItemsCollectionService(this, onDataUpdated, onDataUpdateFail));
 			}
 			return true;
 		}
@@ -100,7 +99,7 @@ package com.xingcloud.model.item.owned
 		public function getItemByUID(uid:String):OwnedItem
 		{
 			for each(var item:OwnedItem in this){
-				if(item.id==uid) return item;
+				if(item.uid==uid) return item;
 			}
 			return null;
 		}
@@ -122,13 +121,13 @@ package com.xingcloud.model.item.owned
 		 */
 		public function addItem(item:OwnedItem):OwnedItem
 		{
-			if(item.id==null) {
+			if(item.uid==null) {
 				if(owner.localName==null) throw new Error("Owned item must has uid!");
-				else item.id=item.autoUID();
+				else item.uid=item.autoUID();
 			}
 			this.checkType(item);
 			//如果uid的item存在，只更新数量
-			var oldItem:OwnedItem=this.getItemByUID(item.id);
+			var oldItem:OwnedItem=this.getItemByUID(item.uid);
 			if(oldItem){
 				oldItem.count+=item.count;
 				Logger.info(this,"addItem","Adding item count: "+oldItem.count);
@@ -141,7 +140,7 @@ package com.xingcloud.model.item.owned
 			item.owner=this;
 			var local:SharedObject=this.getLocal();
 			if(local){
-				local.data[item.id]=item.parseToObject();
+				local.data[item.uid]=item.parseToObject();
 				local.flush();
 			}
 			return item
@@ -166,7 +165,7 @@ package com.xingcloud.model.item.owned
 				var local:SharedObject=this.getLocal();
 				if(local){
 					//如果有本地缓存，删除之
-					delete local.data[item.id];
+					delete local.data[item.uid];
 					local.flush();
 				}
 				return item;
@@ -183,12 +182,12 @@ package com.xingcloud.model.item.owned
 				this.removeItem(item);
 				return;
 			}
-			var newItem:Boolean=(getItemByUID(item.id)==null);
+			var newItem:Boolean=(getItemByUID(item.uid)==null);
 			if (!newItem)
 			{
 				if(prop){
 					var local:SharedObject=this.getLocal();
-					if(local) local.data[item.id][prop]=item[prop];
+					if(local) local.data[item.uid][prop]=item[prop];
 				}else {
 					newItem=true;
 					removeItem(item);
@@ -199,25 +198,21 @@ package com.xingcloud.model.item.owned
 			}
 		}
 		private var noSave:Boolean;
-		public function updateFromObject(result:Object):void
+		protected function onDataUpdated(result:Object):void
 		{
 			noSave=true;
 			this.removeAll();
-			result=result[0];
 			for each (var itemData:Object in result)
 			{
 				var item:OwnedItem=new itemClass();
 				item.itemId=itemData.itemId;
-				item.id=itemData.id;
+				item.uid=itemData.uid;
 				item.parseFromObject(itemData);
 				this.addItem(item);
 			}
 			needLoad=false;
 			noSave=false;
-			if(this._onLoadCallBack!=null) {
-				_onLoadCallBack();
-				_onLoadCallBack=null;
-			}
+			if(this._onLoadCallBack!=null) _onLoadCallBack();
 			this.onLoaded.dispatch(this);
 		}
 
@@ -244,7 +239,7 @@ package com.xingcloud.model.item.owned
 		/**严格检查元素类型**/
 		protected function checkType(item:Object):void
 		{
-			var className:String=Reflection.getClassName(item);
+			var className:String=Reflection.fullClassName(item);
 			if (className != itemType)
 			{
 				throw new Error("The itemType must be " + this.itemType + " only, the inherited class is not permitted!");

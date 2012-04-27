@@ -1,7 +1,7 @@
 package com.longame.game.entity
 {
 	import com.longame.core.long_internal;
-	import com.longame.display.effects.bitmapEffect.BitmapEffect;
+	import com.longame.display.bitmapEffect.BitmapEffect;
 	import com.longame.display.core.OnceClip;
 	import com.longame.game.scene.BaseScene;
 	import com.longame.game.scene.SceneManager;
@@ -52,7 +52,7 @@ package com.longame.game.entity
 		{
 			super.whenLastFrame();
 			if(doWhenOver==OnceClipEntity.AUTO_DESTROY) {
-				this.dispose();
+				this.destroy();
 			}
 			else if(doWhenOver==OnceClipEntity.AUTO_REMOVE){
 				if(this.parent) this.parent.remove(this);

@@ -1,5 +1,6 @@
 package com.longame.game.component
 {
+	import com.longame.game.core.IMouseObject;
 	import com.longame.game.entity.IDisplayEntity;
 	import com.longame.game.entity.SpriteEntity;
 	
@@ -35,25 +36,23 @@ package com.longame.game.component
 		override protected function whenActive():void
 		{
 			if(!(_owner is SpriteEntity)) throw new Error("SpriteEntity needed!");
-			//TODO
-//			theOwner.onMouse.over.add(onMouseOver);
-//			theOwner.onMouse.out.add(onMouseOut);
-			theOwner.container.useHandCursor=true;
+			theOwner.onMouse.over.add(onMouseOver);
+			theOwner.onMouse.out.add(onMouseOut);
+			theOwner.container.buttonMode=true;
 		}
 		override protected function whenDeactive():void
 		{
-			//TODO
-//			theOwner.onMouse.over.remove(onMouseOver);
-//			theOwner.onMouse.out.remove(onMouseOut);
-//			if(this.oldFilters) theOwner.container.filters=this.oldFilters;
-			theOwner.container.useHandCursor=false;
+			theOwner.onMouse.over.remove(onMouseOver);
+			theOwner.onMouse.out.remove(onMouseOut);
+			theOwner.container.buttonMode=false;
+			if(this.oldFilters) theOwner.container.filters=this.oldFilters;
 			if(this.oldScale){
 				theOwner.scaleX=this.oldScale.x;
 				theOwner.scaleY=this.oldScale.y;
 			}
 			this.theOwner.alwaysInTop=false;
 		}
-		override protected  function whenDispose():void
+		override protected  function whenDestroy():void
 		{
 			overFilter=null;
 			this.onOver.removeAll();
@@ -63,12 +62,10 @@ package com.longame.game.component
 		{
 			this.oldScale=new Point(theOwner.scaleX,theOwner.scaleY);
 			theOwner.scaleX=theOwner.scaleY=this.overScale;
-			//TODO
-//			this.oldFilters=theOwner.container.filters;
+			this.oldFilters=theOwner.container.filters;
 			var newFilters:Array=this.oldFilters.concat();
 			newFilters.push(this.overFilter);
-			//TODO
-//			theOwner.container.filters=newFilters;
+			theOwner.container.filters=newFilters;
 			this.onOver.dispatch();
 			this.theOwner.alwaysInTop=this.bringToTop;
 		}
@@ -79,9 +76,7 @@ package com.longame.game.component
 //			var i:int=filters.indexOf(this.overFilter);
 //			if(i==-1) return;
 //			filters.splice(i,1);
-			
-			//TODO
-//			theOwner.container.filters=this.oldFilters;
+			theOwner.container.filters=this.oldFilters;
 			theOwner.scaleX=this.oldScale.x;
 			theOwner.scaleY=this.oldScale.y;
 			this.onOut.dispatch();

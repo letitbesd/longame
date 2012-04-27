@@ -34,6 +34,8 @@ package com.adobe.crypto {
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	import flash.utils.describeType;
+	
+	import com.adobe.utils.Base64Encoder;
 	/**
 	 * Keyed-Hashing for Message Authentication
 	 * Implementation based on algorithm description at 
@@ -61,6 +63,26 @@ package com.adobe.crypto {
 			k_secret.writeUTFBytes(secret);
 			
 			return hashBytes(k_secret, text, algorithm);
+		}
+		public static function hashToBase64( secret:String, message:String, algorithm:Object = null ):String
+		{
+			var text:ByteArray = new ByteArray();
+			var k_secret:ByteArray = new ByteArray();
+			
+			text.writeUTFBytes(message);
+			k_secret.writeUTFBytes(secret);
+			var byteArray:ByteArray=hashBytes1(k_secret, text, algorithm);
+			var charsInByteArray:String = "";
+			byteArray.position = 0;
+			for (var j:int = 0; j < byteArray.length; j++)
+			{
+				var byte:uint = byteArray.readUnsignedByte();
+				charsInByteArray += String.fromCharCode(byte);
+			}
+			
+			var encoder:Base64Encoder = new Base64Encoder();
+			encoder.encode(charsInByteArray);
+			return encoder.flush();
 		}
 		
 		/**
@@ -120,6 +142,53 @@ package com.adobe.crypto {
 				opad.writeByte(tmp.readUnsignedByte());
 			}
 			return algorithm.hashBytes( opad );
+		}
+		private static function hashBytes1( secret:ByteArray, message:ByteArray, algorithm:Object = null ):ByteArray
+		{
+			var ipad:ByteArray = new ByteArray();
+			var opad:ByteArray = new ByteArray();
+			var endian:String = Endian.BIG_ENDIAN;
+			
+			if(algorithm == null){
+				algorithm = MD5;
+			}
+			
+			if ( describeType(algorithm).@name.toString() == "com.adobe.crypto::MD5" ) {
+				endian = Endian.LITTLE_ENDIAN;
+			}
+			
+			if ( secret.length > 64 ) {
+				algorithm.hashBytes(secret);
+				secret = new ByteArray();
+				secret.endian = endian;
+				
+				while ( algorithm.digest.bytesAvailable != 0 ) {
+					secret.writeInt(algorithm.digest.readInt());
+				}
+			}
+			
+			secret.length = 64
+			secret.position = 0;
+			for ( var x:int = 0; x < 64; x++ ) {
+				var byte:int = secret.readByte();
+				ipad.writeByte(0x36 ^ byte);
+				opad.writeByte(0x5c ^ byte);
+			}
+			
+			ipad.writeBytes(message);
+			algorithm.hashBytes(ipad);
+			var tmp:ByteArray = new ByteArray();
+			tmp.endian = endian;	
+			
+			while ( algorithm.digest.bytesAvailable != 0 ) {
+				tmp.writeInt(algorithm.digest.readInt());
+			}
+			tmp.position = 0;
+			
+			while ( tmp.bytesAvailable != 0 ) {
+				opad.writeByte(tmp.readUnsignedByte());
+			}
+			return algorithm.hashBytes1( opad );
 		}
 		
 	}

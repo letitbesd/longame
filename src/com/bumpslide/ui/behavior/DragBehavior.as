@@ -1,21 +1,18 @@
 /**
- * This code is part of the Bumpslide Library maintained by David Knape
- * Fork me at http://github.com/tkdave/bumpslide_as3
+ * This code is part of the Bumpslide Library by David Knape
+ * http://bumpslide.com/
  * 
- * Copyright (c) 2010 by Bumpslide, Inc. 
- * http://www.bumpslide.com/
- *
- * This code is released under the open-source MIT license.
- * See LICENSE.txt for full license terms.
- * More info at http://www.opensource.org/licenses/mit-license.php
- */
-
+ * Copyright (c) 2006, 2007, 2008 by Bumpslide, Inc.
+ * 
+ * Released under the open-source MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ * see LICENSE.txt for full license terms
+ */ 
+ 
 package com.bumpslide.ui.behavior 
 {
-	import flash.utils.Timer;
-
-	import com.bumpslide.util.Delegate;
 	import com.bumpslide.events.DragEvent;
+	import com.bumpslide.util.Delegate;
 	
 	import flash.display.DisplayObjectContainer;
 	import flash.display.InteractiveObject;
@@ -24,7 +21,8 @@ package com.bumpslide.ui.behavior
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.utils.Dictionary;	
+	import flash.utils.Dictionary;
+	import flash.utils.Timer;	
 
 	/**
 	 * Draggable Behavior
@@ -36,11 +34,11 @@ package com.bumpslide.ui.behavior
 		// track instances locally to aid in event management
 		static private var _targets:Dictionary = new Dictionary(true);
 		
-		public var dragTarget:InteractiveObject;
-		public var mouseStart:Point;
-		public var spriteStart:Point;
-		public var previousLoc:Point;
-		public var velocity:Point;
+		private var dragTarget:InteractiveObject;
+		private var mouseStart:Point;
+		private var spriteStart:Point;
+		private var previousLoc:Point;
+		private var velocity:Point;
 		
 		protected var _doDrag:Boolean = true;				protected var _isDragging:Boolean=false;
 		protected var _dragBounds:Rectangle;
@@ -50,17 +48,15 @@ package com.bumpslide.ui.behavior
 		protected var _trackVelocity:Boolean = false;
 		protected var _ignoreChildClicks:Boolean = false;
 		
-		protected var velocityCheck:Timer;
-
-		protected var useCapture:Boolean = false;
+		private var velocityCheck:Timer;
 		
 
 		
 		/**
 		 * Attaches behavior to a button
 		 */
-		static public function init( drag_target:InteractiveObject, bounds:Rectangle = null, do_drag:Boolean = true, use_capture:Boolean = false ):DragBehavior {
-			return new DragBehavior(drag_target, bounds, do_drag, use_capture);	
+		static public function init( drag_target:InteractiveObject, bounds:Rectangle = null, do_drag:Boolean = true, ignore_child_clicks:Boolean=false):DragBehavior {
+			return new DragBehavior(drag_target, bounds, do_drag, ignore_child_clicks);	
 		}
 
 		/**
@@ -73,15 +69,15 @@ package com.bumpslide.ui.behavior
 		/**
 		 * Adds drag behavior to an interactive object 
 		 */
-		function DragBehavior( drag_target:InteractiveObject, bounds:Rectangle = null, do_drag:Boolean = true, use_capture:Boolean = false ) 
+		function DragBehavior( drag_target:InteractiveObject, bounds:Rectangle = null, do_drag:Boolean = true, ignore_child_clicks:Boolean=false ) 
 		{		
 			DragBehavior.destroy(drag_target);			
 			dragTarget = drag_target;
-			useCapture = use_capture;
-			// get mouse down events in capture phase so as not to disturb child events
-			dragTarget.addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown, useCapture);
+			dragTarget.addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
+			dragTarget.addEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			_dragBounds = bounds;		
 			_doDrag = do_drag;	
+			_ignoreChildClicks = ignore_child_clicks;
 			_targets[dragTarget] = this;
 		}
 
@@ -89,8 +85,9 @@ package com.bumpslide.ui.behavior
 		 * removes event listeners, thus removing behavior
 		 */
 		public function remove():void {
-			stopDragging( null, false );
-			dragTarget.removeEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown, useCapture);
+//			stopDragging();
+			dragTarget.removeEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown);
+			dragTarget.removeEventListener(MouseEvent.MOUSE_UP, handleMouseUp);
 			delete _targets[dragTarget];
 		}
 
@@ -105,33 +102,33 @@ package com.bumpslide.ui.behavior
 		}
 		
 		protected function handleMouseDown(event:MouseEvent):void {
-			trace(this + ' MOUSE DOWN ' +event.target );
+			//trace(this + ' MOUSE DOWN ' +event.target );
 			if(!enabled) return;
+			if(_ignoreChildClicks && event.target!=event.currentTarget) return;
 			if(event) event.stopPropagation();
 			mouseStart = new Point(event.stageX, event.stageY);
 			spriteStart = new Point(dragTarget.x, dragTarget.y);
 			previousLoc = spriteStart.clone();	
-			_justDragged = false;	
-			_isDragging = true;	
+			_justDragged = false;		
 			dragTarget.stage.addEventListener(MouseEvent.MOUSE_MOVE, whileDragging);
 			dragTarget.stage.addEventListener(MouseEvent.MOUSE_UP, stopDragging);
 			dragTarget.stage.addEventListener(Event.MOUSE_LEAVE, stopDragging);			
 			dragTarget.dispatchEvent(new DragEvent(DragEvent.EVENT_DRAG_START, spriteStart, spriteStart));			
 		}
-
+		protected function handleMouseUp(event:MouseEvent):void
+		{
+			this.stopDragging(event);
+		}
 		protected function whileDragging(event:Event=null, velocityUpdate:Boolean=false):void {		
 			
 			Delegate.cancel( velocityCheck );
 			
-			if(!_isDragging) return;
-			
-			if(event) event.stopPropagation();
-			
 			var delta:Point = getDragDelta();
 			
 			// add delta to the starting location
-			var targetLoc:Point = spriteStart.add(delta);			
+			var targetLoc:Point = spriteStart.add(delta);		
 			
+			_isDragging = true;
 			if(delta.length>_validDragDistance) {
 				_justDragged = true;
 			}
@@ -143,7 +140,7 @@ package com.bumpslide.ui.behavior
 			}
 			velocity = targetLoc.subtract(previousLoc);			
 			dragTarget.dispatchEvent(new DragEvent(DragEvent.EVENT_DRAG_MOVE, spriteStart, targetLoc, velocity));
-			if(dragTarget is DisplayObjectContainer && justDragged) { 
+			if(dragTarget is DisplayObjectContainer) { 
 				(dragTarget as DisplayObjectContainer).mouseChildren=false;
 			}
 			previousLoc = targetLoc.clone();
@@ -151,23 +148,33 @@ package com.bumpslide.ui.behavior
 		}
 		
 		/**
-		 * Returns distance dragged relative to the parent of the drag target
+		 * Returns the distance dragged as a Point representing a vector with x and y
+		 * that have been transformed to account for rotation and scale of both 
+		 * the drag target and any of its containers
 		 */
 		private function getDragDelta():Point
 		{
-			//trace( this + ' whileDragging() ' );		
+			//trace( this + ' whileDragging() ' );	
+			if(mouseStart == null){
+				mouseStart = new Point();
+			}
 			var delta:Point = new Point(dragTarget.stage.mouseX - mouseStart.x, dragTarget.stage.mouseY - mouseStart.y);
 
-			// get concatenated matrix and use it to transform the delta vector
-			// to support dragging inside things that have been rotated
-			var m:Matrix = dragTarget.parent.transform.concatenatedMatrix;
-			m.invert(); // mapping global-to-local, not local-to-global
+			// transform the offset point to account for transformation of the container
+			// concatenated matrix converts local transformation to global/stage coords
+			// we invert this matrix so we can use it to go the other way 
+			// and transform global/stage coords to local coords of the drag target container 
+//			var m:Matrix = dragTarget.transform.concatenatedMatrix;
+//			m.invert();
 			
-			// accomodate SWF's that are stretched in the browser
-			var stretchFactor:Number = dragTarget.root.transform.concatenatedMatrix.a;
-			m.scale( stretchFactor, stretchFactor );
+			// Use deltaTransformPoint to transform the distance vector
+			// while ignoring the tx/ty (offset x and y) of the matrix
+//			delta = m.deltaTransformPoint( delta );
 			
-			return m.deltaTransformPoint( delta ); // ignore tx and ty 
+			// finally, apply a transform that matches the scale and rotation of the drag target
+//			delta = dragTarget.transform.matrix.deltaTransformPoint( delta );
+			
+			return delta; 
 		}
 
 		
@@ -179,22 +186,22 @@ package com.bumpslide.ui.behavior
 		}
 
 		
-		public function stopDragging(event:Event = null, dispatch_event:Boolean=true):void {		
-			if(_isDragging==false) return;
+		public function stopDragging(event:MouseEvent = null):void {		
 			Delegate.cancel( velocityCheck );	
 			if(velocity==null) velocity=new Point();
 			_isDragging = false;
+			mouseStart = new Point(event.stageX, event.stageY);
+			spriteStart = new Point(dragTarget.x, dragTarget.y);
 			dragTarget.stage.removeEventListener(MouseEvent.MOUSE_MOVE, whileDragging);
 			dragTarget.stage.removeEventListener(MouseEvent.MOUSE_UP, stopDragging);
-			dragTarget.stage.removeEventListener(Event.MOUSE_LEAVE, stopDragging);			
-			if(dispatch_event) dragTarget.dispatchEvent(new DragEvent(DragEvent.EVENT_DRAG_STOP, spriteStart, getDragDelta(), velocity));
+			dragTarget.stage.removeEventListener(Event.MOUSE_LEAVE, stopDragging);
+			dragTarget.dispatchEvent(new DragEvent(DragEvent.EVENT_DRAG_STOP, spriteStart, getDragDelta(), velocity));
 			
 			mouseStart = null;
 			spriteStart = null;
 			if(dragTarget is DisplayObjectContainer) { 
 				(dragTarget as DisplayObjectContainer).mouseChildren=true;
 			}
-			
 		}				public function get dragBounds():Rectangle {
 			return _dragBounds;		}				public function set dragBounds(dragBounds:Rectangle):void {
 			_dragBounds = dragBounds;		}

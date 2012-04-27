@@ -5,7 +5,7 @@ package com.longame.commands.other
 	import com.longame.display.core.RenderManager;
 	import com.longame.managers.AssetsLibrary;
 	import com.longame.managers.ProcessManager;
-	import com.longame.model.TextureData;
+	import com.longame.model.RenderData;
 	
 	import flash.display.MovieClip;
 	import flash.utils.getTimer;
@@ -25,7 +25,7 @@ package com.longame.commands.other
 		protected var clip:MovieClip;
 		protected var frameTime:int;
 		protected var frameIndex:int=1;
-		protected var _renders:Vector.<TextureData>=new Vector.<TextureData>();
+		protected var _renders:Vector.<RenderData>=new Vector.<RenderData>();
 		
 		public function AnimaionPreRenderer(source:*,scaleX:Number=1.0,scaleY:Number=1.0,extraParam:*=null)
 		{
@@ -49,7 +49,7 @@ package com.longame.commands.other
 			frameTime=getTimer();
 			while(getTimer()-frameTime<MAX_FRAME_TIME){
 				this.customFrame(frameIndex);
-				_renders.push(RenderManager.loadTexture(source,frameIndex,scaleX,scaleY,null,null,this.getExtraId()));
+				_renders.push(RenderManager.loadRender(source,frameIndex,scaleX,scaleY,null,null,this.getExtraId()));
 				if(frameIndex==clip.totalFrames){
 					this.complete();
 					break;
@@ -80,7 +80,7 @@ package com.longame.commands.other
 			this.clip=null;
 			this._renders=null;
 		}
-		public function get renders():Vector.<TextureData>
+		public function get renders():Vector.<RenderData>
 		{
 			return _renders;
 		}

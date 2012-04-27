@@ -84,9 +84,9 @@ package com.longame.game.component
 			_astar=null;
 			
 		}
-		override protected function whenDispose():void
+		override protected function whenDestroy():void
 		{
-			super.whenDispose();
+			super.whenDestroy();
 			this.onBlocked=null;
 			this.onFound=null;
 			this.onNotFound=null;

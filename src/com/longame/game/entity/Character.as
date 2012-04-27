@@ -6,6 +6,7 @@ package com.longame.game.entity
 	import com.longame.game.component.KeyboardController;
 	import com.longame.game.component.MouseController;
 	import com.longame.game.component.PathComp;
+	import com.longame.game.component.SpeakComp;
 	import com.longame.game.component.ThinkingComp;
 	import com.longame.game.component.fight.FollowComp;
 	import com.longame.game.component.fight.HealthComp;
@@ -37,22 +38,22 @@ package com.longame.game.entity
 			var follower:FollowComp=new FollowComp();
 			this.add(follower,CharacterState.FOLLOW);
 		}
-//		protected var speakComp:SpeakComp;
+		protected var speakComp:SpeakComp;
 		/**
 		 * 说话
 		 * @param title:标题
 		 * @param content:内容
 		 * @param showTime:显示时间，秒
 		 * */
-//		public function speak(title:String,content:String=null,showTime:int=3,offsetX:Number=0,offsetY:Number=0):SpeakComp
-//		{
-//			if(speakComp==null){
-//				speakComp=new SpeakComp();
-//				this.add(speakComp);
-//			}
-//			speakComp.speak(title,content,showTime,offsetX,offsetY);
-//			return speakComp;
-//		}
+		public function speak(title:String,content:String=null,showTime:int=3,offsetX:Number=0,offsetY:Number=0):SpeakComp
+		{
+			if(speakComp==null){
+				speakComp=new SpeakComp();
+				this.add(speakComp);
+			}
+			speakComp.speak(title,content,showTime,offsetX,offsetY);
+			return speakComp;
+		}
 		public var onFollowingChanged:Signal=new Signal(Character);
 		protected var _followingTarget:Character;
 		public function get followingTarget():Character

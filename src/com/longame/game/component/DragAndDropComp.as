@@ -37,7 +37,7 @@ package com.longame.game.component
 			_inDragging=false;
 			theOwner.alwaysInTop=false;
 		}
-		override protected function whenDispose():void
+		override protected function whenDestroy():void
 		{
 		}
 		//鼠标和注册点的偏移，这样不会造成鼠标始终在注册点的情况

@@ -8,19 +8,20 @@ package com.longame.game.scene
 	import com.longame.game.entity.CharactersMap;
 	import com.longame.game.entity.IDisplayEntity;
 	import com.longame.game.entity.IParallax;
+	import com.longame.game.entity.display.primitive.LGRectangle;
 	import com.longame.game.group.DisplayGroup;
 	import com.longame.game.group.IDisplayGroup;
 	import com.longame.managers.ProcessManager;
 	import com.longame.utils.DictionaryUtil;
 	import com.longame.utils.debug.Logger;
 	
+	import flash.display.DisplayObjectContainer;
 	import flash.display.Shape;
+	import flash.display.Sprite;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.geom.Vector3D;
 	import flash.utils.Dictionary;
-	
-	import starling.display.DisplayObjectContainer;
 
 	use namespace long_internal;
 	/**
@@ -60,7 +61,7 @@ package com.longame.game.scene
 			_view=view;
 			view.addChild(this.container);
 			if(lensRect==null){
-				lensRect=new Rectangle(0,0,Engine.nativeStage.stageWidth,Engine.nativeStage.stageHeight);
+				lensRect=new Rectangle(0,0,Engine.stage.stageWidth,Engine.stage.stageHeight);
 			}
 			_camera=new Camera("camera");
 			_camera.initialize(lensRect);
@@ -119,7 +120,7 @@ package com.longame.game.scene
 				}
 			}else{
 				if(_origin){
-					_origin.dispose();
+					_origin.destroy();
 					_origin=null;
 				}
 			}
@@ -139,11 +140,11 @@ package com.longame.game.scene
 //			_parallaxChildren=null;
 //			super.destroy();
 //		}
-		override protected function whenDispose():void
+		override protected function whenDestroy():void
 		{
 			_view.removeChild(this.container);
 			this.deactive();
-			super.whenDispose();
+			super.whenDestroy();
 			_view=null;
 			_camera=null;
 			_parallaxChildren=null;
@@ -161,13 +162,12 @@ package com.longame.game.scene
 		 * */
 		private function createMask():void
 		{
-			//TODO
-//			_mask=new Shape();
-//			_mask.graphics.beginFill(0x0);
-//			_mask.graphics.drawRect(_camera.bounds.x,_camera.bounds.y,_camera.bounds.width,_camera.bounds.height);
-//			_mask.graphics.endFill();
-//			_view.addChild(_mask);
-//			_container.mask=_mask;
+			_mask=new Shape();
+			_mask.graphics.beginFill(0x0);
+			_mask.graphics.drawRect(_camera.bounds.x,_camera.bounds.y,_camera.bounds.width,_camera.bounds.height);
+			_mask.graphics.endFill();
+			_view.addChild(_mask);
+			_container.mask=_mask;
 		}
 		override public function get indexTile():EntityTile
 		{

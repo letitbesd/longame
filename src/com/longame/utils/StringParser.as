@@ -1,6 +1,5 @@
 package com.longame.utils
 {
-    import com.adobe.utils.DateUtil;
     import com.longame.model.consts.Colors;
     import com.longame.utils.debug.Logger;
     
@@ -260,10 +259,6 @@ package com.longame.utils
         {
             return new URLRequest(value);//splitTypeFromSource(value).source);
         }
-		public static function toDate(value:String):Date
-		{
-			return DateUtil.parseW3CDTF(value);
-		}
 		/**
 		 * 将字符串解析到taret的key属性上，会自动根据target的key属性类型类进行解析
 		 * */
@@ -289,14 +284,12 @@ package com.longame.utils
 					target[key]=StringParser.toDictionary(val);
 				else if(p is Rectangle)
 					target[key]=StringParser.toRectangle(val);
-				else if(p is Date)
-					target[key]=StringParser.toDate(val);
 				else if((p is Object)&& !(p is String))
 					target[key] =StringParser.toObject(val);
 				else
 					target[key]=val;
 			}catch(e:Error){
-//				Logger.warn("StringParser","toTarget","error when parse property"+key+","+e.message);
+				Logger.warn("StringParser","toTarget","error when parse property"+key+","+e.message);
 			}
 		} 
     }

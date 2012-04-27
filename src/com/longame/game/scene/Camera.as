@@ -13,6 +13,9 @@ package com.longame.game.scene
 	import com.longame.utils.DisplayObjectUtil;
 	import com.longame.utils.MatrixTransformer;
 	
+	import flash.display.DisplayObject;
+	import flash.display.Sprite;
+	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
@@ -20,9 +23,6 @@ package com.longame.game.scene
 	import flash.geom.Vector3D;
 	
 	import org.osflash.signals.Signal;
-	
-	import starling.display.Sprite;
-	import starling.display.Stage;
 
     /**
 	 * 虚拟镜头
@@ -118,9 +118,9 @@ package com.longame.game.scene
 			this.stopFollow();
 			if(_transformTween) _transformTween.paused=true;
 		}
-		override protected function whenDispose():void
+		override protected function whenDestroy():void
 		{
-			super.whenDispose();
+			super.whenDestroy();
 			this._onStop=null;
 			_transformTween=null;
 		}
@@ -161,7 +161,7 @@ package com.longame.game.scene
 		 * */
 		public function get onStop():Signal
 		{
-			if((_onStop==null)&& !disposed) _onStop=new Signal();
+			if((_onStop==null)&& !destroyed) _onStop=new Signal();
 			return _onStop;
 		}
 		/**
@@ -315,16 +315,13 @@ package com.longame.game.scene
 			var p:Point=this.calPosition();
 			matrix.identity();
 			
-			var lensCenterInTarget:Point=sceneContainer.globalToLocal(lensCenter);		
+			var lensCenterInTarget:Point=sceneContainer.globalToLocal(lensCenter);			
 			MatrixTransformer.scaleToAroundInternalPoint(matrix,lensCenterInTarget.x,lensCenterInTarget.y,_zoom,_zoom);
 			//todo，有点问题滴
 			MatrixTransformer.rotateToAroundInternalPoint(matrix,lensCenterInTarget.x,lensCenterInTarget.y,Math.PI*_rotation/180);
 			
 			matrix.tx=p.x;
 			matrix.ty=p.y;
-			
-			var r:Number=MatrixTransformer.getRotation(matrix);
-			var s:Number=MatrixTransformer.getScaleX(matrix);
 			
 			var time:Number=this.calMoveDuration(new Point(sceneContainer.x,sceneContainer.y),p);
 			if(time>0){
@@ -334,15 +331,11 @@ package com.longame.game.scene
 					_transformTween.onComplete=onCameraStopped;
 				}
 				_transformTween.duration=time;
-//				_transformTween.setValues({a:matrix.a,b:matrix.b,c:matrix.c,d:matrix.d,tx:matrix.tx,ty:matrix.ty});
-				_transformTween.setValues({scaleX:s,scaleY:s,rotation:r,x:p.x,y:p.y});
+				_transformTween.setValues({a:matrix.a,b:matrix.b,c:matrix.c,d:matrix.d,tx:matrix.tx,ty:matrix.ty});
 				_transformTween.paused=false;
 			}else{
-//				sceneContainer.transform.matrix=matrix;
-				sceneContainer.scaleX=sceneContainer.scaleY=s;
-				sceneContainer.rotation=r;
-				sceneContainer.x=x;
-				sceneContainer.y=y;
+				sceneContainer.transform.matrix=matrix;
+				//todo
 				onCameraStopped();
 			}
 		}
@@ -380,7 +373,7 @@ package com.longame.game.scene
 		 * */
 		public function showCenter():void
 		{
-			var targetRect:Rectangle=sceneContainer.getBounds(sceneContainer);
+			var targetRect:Rectangle=sceneContainer.getRect(sceneContainer);
 			this.x=(targetRect.left+targetRect.right)/2;
 			this.y=(targetRect.top+targetRect.bottom)/2;
 		}
@@ -389,7 +382,7 @@ package com.longame.game.scene
 		 * */
 		public function showAll():void
 		{
-			var targetRect:Rectangle=sceneContainer.getBounds(sceneContainer);
+			var targetRect:Rectangle=sceneContainer.getRect(sceneContainer);
 			var wz:Number=lensRect.width/targetRect.width;
 			var hz:Number=lensRect.height/targetRect.height;
 			this.zoom=Math.min(wz,hz);
@@ -446,7 +439,7 @@ package com.longame.game.scene
 		 * */
 		public function stopFollow():void
 		{
-			if(this._followingTarget&&(!this._followingTarget.disposed)){
+			if(this._followingTarget&&(!this._followingTarget.destroyed)){
 				this._followingTarget.onMove.remove(onFollowingTargetMove);
 				this._followingTarget.onDeactive.remove(onFollowingTargetDeactived);
 			}
@@ -516,7 +509,7 @@ package com.longame.game.scene
 		 * */
 		private function calRange():Array
 		{
-			var targetRect:Rectangle=sceneContainer.getBounds(sceneContainer);
+			var targetRect:Rectangle=sceneContainer.getRect(sceneContainer);
 			var targetWidth:Number=(this.explicitTargetWidth<=0)?targetRect.width:explicitTargetWidth;
 			var targetHeight:Number=(this.explicitTargetHeight<=0)?targetRect.height:explicitTargetHeight;
 			

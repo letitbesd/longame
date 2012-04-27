@@ -4,7 +4,7 @@ package com.xingcloud.model.item.owned
 	import com.longame.utils.debug.Logger;
 	import com.xingcloud.core.XingCloud;
 	import com.xingcloud.core.xingcloud_internal;
-	import com.xingcloud.model.DBObject;
+	import com.xingcloud.model.ModelBase;
 	import com.xingcloud.model.item.ItemDatabase;
 	import com.xingcloud.model.item.spec.ItemSpec;
 	import com.xingcloud.model.users.AbstractUserProfile;
@@ -17,7 +17,7 @@ package com.xingcloud.model.item.owned
 	 * 物品实例，用于表示游戏中实际存在的一个物品类。一个物品实例和一个ItemSpec相对应，在构造时使用itemId来标示。
 	 * 所有继承OwnedItem的class，构造函数不要带参数
 	 */
-	public class OwnedItem extends DBObject
+	public class OwnedItem extends ModelBase
 	{
 		private static var _uidPoint:int=1;
 		protected var _owner:ItemsCollection;
@@ -29,9 +29,9 @@ package com.xingcloud.model.item.owned
 		{
 			_uidPoint++;
 		}
-		override 	protected function get propertiesNoSave():Array
+		override 	protected function get propertiesExcluded():Array
 		{
-			return super.propertiesNoSave.concat(["owner","itemSpec","onChange"]);
+			return super.propertiesExcluded.concat(["owner","itemSpec","onChange"]);
 		}
 		override protected function whenChange(prop:String, delta:*=null):void
 		{
@@ -68,9 +68,9 @@ package com.xingcloud.model.item.owned
 		{
 			super.parseFromObject(data, excluded);
 		}
-        override public function set id(value:String):void
+        override public function set uid(uid:String):void
 		{
-			this._id=value;
+			this._uid=uid;
 		}
 		/**
 		 *@private

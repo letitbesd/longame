@@ -1,17 +1,17 @@
 package com.longame.display.core
 {
 	import com.longame.game.core.EntityTile;
+	import com.longame.game.core.IMouseObject;
 	import com.longame.game.core.bounds.IBounds;
 	import com.longame.game.core.bounds.TileBounds;
 	import com.longame.game.group.IDisplayGroup;
 	import com.longame.game.scene.IScene;
 	
+	import flash.display.Sprite;
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
 	
 	import org.osflash.signals.Signal;
-	
-	import starling.display.Sprite;
 
     /**
 	 * 定义一个具有图形渲染的接口

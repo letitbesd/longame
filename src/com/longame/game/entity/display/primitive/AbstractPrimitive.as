@@ -6,17 +6,10 @@ package com.longame.game.entity.display.primitive
 	import com.longame.display.graphics.IStroke;
 	import com.longame.display.graphics.SolidColorFill;
 	import com.longame.display.graphics.Stroke;
-	import com.longame.game.entity.DisplayEntity;
 	import com.longame.model.consts.Registration;
 	import com.longame.model.consts.RenderStyle;
-	import com.longame.utils.DisplayObjectUtil;
+	import com.longame.game.entity.DisplayEntity;
 	import com.longame.utils.debug.Logger;
-	
-	import flash.display.BitmapData;
-	import flash.display.Shape;
-	
-	import starling.display.Image;
-	import starling.textures.Texture;
 
 	/**
 	 * AbstractPrimitive 这是一个画图来展示可视对象的基本类
@@ -189,11 +182,8 @@ package com.longame.game.entity.display.primitive
 					return;
 //					throw new Error("validation of geometry failed.");
 				}
-				if(_canvasShape==null){
-					_canvasShape=new Shape();
-				}
+				
 				drawGeometry();
-				this.updateCanvas();
 				_styleInvalidated = false;
 			}
 			
@@ -213,8 +203,7 @@ package com.longame.game.entity.display.primitive
 			//overridden by subclasses
 			return true;	
 		}
-		protected var _canvasShape:Shape;
-		protected var _canvas:Image;
+		
 		/**
 		 * @inheritDoc
 		 */
@@ -222,16 +211,7 @@ package com.longame.game.entity.display.primitive
 		{
 			//overridden by subclasses
 		}
-		private function updateCanvas():void
-		{
-			var bmd:BitmapData=DisplayObjectUtil.getBitmapData(_canvasShape).bmd;
-			var texture:Texture=Texture.fromBitmapData(bmd);
-			if(_canvas==null){
-				_canvas=new Image(texture);
-				_container.addChild(_canvas);
-			}
-			_canvas.texture=texture;
-		}
+		
 		////////////////////////////////////////////////////////////
 		//	INVALIDATION
 		////////////////////////////////////////////////////////////
@@ -264,12 +244,7 @@ package com.longame.game.entity.display.primitive
 //			
 //			return cloneInstance;
 		}
-		override protected function whenDispose():void
-		{
-			super.whenDispose();
-			_canvasShape=null;
-			_canvas=null;
-		}
+		
 		////////////////////////////////////////////////////////////
 		//	CONSTRUCTOR
 		////////////////////////////////////////////////////////////

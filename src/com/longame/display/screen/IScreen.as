@@ -1,27 +1,25 @@
 package com.longame.display.screen
 {
-	import com.longame.core.IDisposable;
-	import com.longame.game.scene.BaseScene;
+	import com.longame.core.IDestroyable;
+	
+	import flash.display.Sprite;
 	
 	import org.osflash.signals.Signal;
 	
-	import starling.display.Sprite;
-	
-	public interface IScreen extends IDisposable
+	public interface IScreen extends IDestroyable
 	{
 		/**
 		 * 当屏幕创建好
 		 * */
 		function get onCreate():Signal;
-		function get scene():BaseScene;
 		/**
 		 * 场景层
 		 * */
-//		function get sceneLayer():Sprite;
+		function get sceneLayer():Sprite;
 		/**
 		 * UI层
 		 * */
-		function get ui():Sprite;
+		function get uiLayer():Sprite;
 		/**
 		 * Used to load any assets that the display might require. On screens ScreenManager
 		 * calls this method automatically after the screen has been instantiated. If the

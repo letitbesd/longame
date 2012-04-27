@@ -41,7 +41,7 @@ package com.longame.game.entity.display.primitive
 		 */
 		override protected function drawGeometry ():void
 		{
-			var g:Graphics =_canvasShape.graphics;
+			var g:Graphics = container.graphics;
 			g.clear();
 			
 			//all pts are named in following order "x", "y", "z" via rfb = right, front, bottom

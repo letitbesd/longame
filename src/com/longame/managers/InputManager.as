@@ -9,6 +9,7 @@
 package com.longame.managers
 {
     import com.longame.core.ITickedObject;
+    import com.longame.game.core.IMouseObject;
     
     import flash.display.Bitmap;
     import flash.display.DisplayObject;
@@ -110,29 +111,22 @@ package com.longame.managers
                 _keyStateOld[cnt] = _keyState[cnt];
             }
         }
-		private static var keyDownListeners:Dictionary=new Dictionary();
-		private static var keyUpListeners:Dictionary=new Dictionary();
+		private static var boundFuncs:Dictionary=new Dictionary();
 		/**
 		 * 将按键按下和某个函数绑定
 		 * func无参数
 		 * */
-		public static function bindKeyDown(func:Function,...keys):void
+		public static function bindKey(func:Function,...keys):void
 		{
-			if(keyDownListeners[func]==keys) return;
-			keyDownListeners[func]=keys;
-		}
-		public static function bindKeyUp(func:Function,key:uint):void
-		{
-			if(keyUpListeners[func]==key) return;
-			keyUpListeners[func]=key;
+			if(boundFuncs[func]==keys) return;
+			boundFuncs[func]=keys;
 		}
 		/**
-		 * 将按键按下或弹起的侦听函数解开绑定
+		 * 将按键按下和某个函数解开绑定
 		 * */
 		public static function unbindKey(func:Function):void
 		{
-			delete keyDownListeners[func];
-			delete keyUpListeners[func];
+			delete boundFuncs[func];
 		}
         /**
          * Returns whether or not a key was pressed since the last tick.
@@ -249,12 +243,12 @@ package com.longame.managers
             if (_keyState[event.keyCode])
                 return;
             _keyState[event.keyCode] = true;
-			//检查是否触发某个按键按下绑定函数
+			//检查是否触发某个按键绑定函数
 			var triggered:Boolean;
 			var keys:Array;
-			for (var func:* in keyDownListeners){
+			for (var func:* in boundFuncs){
 				triggered=true;
-				keys=keyDownListeners[func];
+				keys=boundFuncs[func];
 				for each(var key:uint in keys){
 					if(_keyState[key]!==true){
 						triggered=false;
@@ -271,13 +265,8 @@ package com.longame.managers
 			if(enabledKeys==null) return;
 			//keyFilter包含了这个按键，屏蔽之
 			if((enabledKeys.length>0)&&(enabledKeys.indexOf(event.keyCode)==-1)) return;
+			
             _keyState[event.keyCode] = false;
-			//检查是否触发某个按键弹起绑定
-			for(var func:* in keyUpListeners){
-				if(keyUpListeners[func]==event.keyCode){
-					(func as Function).apply();
-				}
-			}
             onKeyUp.dispatch(event.keyCode);
         }
 		private static function mouseDownListener(event:MouseEvent):void

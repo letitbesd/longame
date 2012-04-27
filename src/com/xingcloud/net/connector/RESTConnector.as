@@ -4,7 +4,7 @@ package com.xingcloud.net.connector
 	import com.adobe.serialization.json.JSONDecoder;
 	import com.xingcloud.core.Config;
 	import com.xingcloud.core.XingCloud;
-	import com.xingcloud.model.DBObject;
+	import com.xingcloud.model.ModelBase;
 	import com.xingcloud.util.Debug;
 	import com.xingcloud.util.Util;
 	import com.xingcloud.util.objectencoder.ObjectEncoder;
@@ -182,7 +182,7 @@ package com.xingcloud.net.connector
 			{
 				try
 				{
-					var json:String=new ObjectEncoder(_commandArgs, ObjectEncoder.JSON, true, [DBObject]).JsonString;
+					var json:String=new ObjectEncoder(_commandArgs, ObjectEncoder.JSON, true, [ModelBase]).JsonString;
 					if (XingCloud.needCompress)
 						request.data=Util.compressTextData(json);
 					else

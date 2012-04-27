@@ -1,8 +1,8 @@
 package com.longame.display.collision
 {
 	
-	import com.longame.model.geom.Ellipse;
-	import com.longame.model.geom.Line;
+	import com.longame.geom.Ellipse;
+	import com.longame.geom.Line;
 	import com.longame.utils.MathUtil;
 	
 	import flash.display.Bitmap;

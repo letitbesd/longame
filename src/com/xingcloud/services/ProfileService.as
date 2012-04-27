@@ -27,9 +27,9 @@ package com.xingcloud.services
 			var gameIds:Array=[];
 			for each (var user:AbstractUserProfile in profileList)
 			{
-				if (user.id)
+				if (user.uid)
 				{
-					gameIds.push({gameUserId: user.id});
+					gameIds.push({gameUserId: user.uid});
 				}
 				else
 				{
