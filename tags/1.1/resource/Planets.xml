@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<planets packages="model.user.specItems">
+  <group id="planetGroup1" density="1">
+  		<PlanetItemSpec id="planet2" source="planet2"/>
+  		<PlanetItemSpec id="planet3" source="planet3"/>
+  		<PlanetItemSpec id="planet4" source="planet4"/>
+  		<PlanetItemSpec id="planet5" source="planet5"/>
+  		<PlanetItemSpec id="planet6" source="planet6"/>
+  		<PlanetItemSpec id="planet7" source="planet7"/>
+  		<PlanetItemSpec id="planet8" source="planet8"/>
+  		<PlanetItemSpec id="planet9" source="planet9"/>
+  </group>
+</planets>
