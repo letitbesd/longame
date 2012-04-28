@@ -129,7 +129,6 @@
     <classEntry path="com.longame.display.collision.CollisionData"/>
     <classEntry path="com.longame.display.collision.ColorExclusion"/>
     <classEntry path="com.longame.display.collision.ColorExclusionGroup"/>
-    <classEntry path="com.longame.display.core.IAnimatorRenderer"/>
     <classEntry path="com.longame.display.core.IBitmapRenderer"/>
     <classEntry path="com.longame.display.core.IDisplayRenderer"/>
     <classEntry path="com.longame.display.core.ITransformable"/>
@@ -458,6 +457,9 @@
     <classEntry path="com.bumpslide.ui.TextPanel"/>
     <classEntry path="com.bumpslide.ui.MovieClipButton"/>
     <classEntry path="com.longame.utils.Align"/>
+    <classEntry path="com.longame.display.core.AnimationController"/>
+    <classEntry path="com.longame.display.core.AnimationFrames"/>
+    <classEntry path="com.longame.display.core.IFrameAnimator"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
