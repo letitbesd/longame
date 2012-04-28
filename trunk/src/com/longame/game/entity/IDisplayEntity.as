@@ -1,6 +1,5 @@
 package com.longame.game.entity
 {
-	import com.longame.display.core.IAnimatorRenderer;
 	import com.longame.display.core.IDisplayRenderer;
 	import com.longame.game.core.EntityTile;
 	import com.longame.game.core.IEntity;
