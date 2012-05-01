@@ -12,7 +12,7 @@
 
 package com.bumpslide.ui 
 {
-	import com.bumpslide.ui.Component;
+	import com.bumpslide.ui.UIComponent;
 	import com.bumpslide.util.StageProxy;
 
 	import flash.events.Event;	
@@ -21,7 +21,7 @@ package com.bumpslide.ui
 	 * 
 	 * @author Default
 	 */
-	public class Application extends Component 
+	public class Application extends UIComponent 
 	{
 
 		protected var stageProxy:StageProxy;

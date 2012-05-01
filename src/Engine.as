@@ -1,6 +1,8 @@
 package 
 {
 	import com.longame.commands.base.Command;
+	import com.longame.core.long_internal;
+	import com.longame.display.screen.IScreen;
 	import com.longame.display.screen.ScreenManager;
 	import com.longame.managers.InputManager;
 	import com.longame.managers.ProcessManager;
@@ -28,6 +30,8 @@ package
 	import starling.display.Sprite;
 	import starling.display.Stage;
 	import starling.events.Event;
+
+	use namespace long_internal;
 	
 	public class Engine extends flash.display.Sprite
 	{
@@ -100,11 +104,11 @@ package
 //			InputManager.init(this);
 			SoundManager.init();
 //			CursorManager.init(this.stage);
-			var screenContainer:starling.display.Sprite=new starling.display.Sprite();
-			gpuStage.addChild(screenContainer);
-			this._screenManager=new ScreenManager(screenContainer,0.1,0,0);	
+			gpuStage.addChild(gpuScreenContainer);
+			nativeStage.addChild(nativeScreenContainer);
+			this._screenManager=new ScreenManager(null,0.1,0,0);	
 			Engine.start();
-			Logger.info(this,"onStage3dReady","Stage 3d ready!");
+			Logger.info(this,"init","Engine is ready!");
 		}
 		public static function showScreen(screenClass:Class,para:*=null):void
 		{
@@ -128,6 +132,16 @@ package
 		public static function get screenManager():ScreenManager
 		{
 			return _instance._screenManager;
+		}
+		private static var gpuScreenContainer:starling.display.Sprite=new starling.display.Sprite();
+		private static var nativeScreenContainer:flash.display.Sprite=new flash.display.Sprite();
+		long_internal static function addScreen(screen:IScreen):void
+		{
+			try{
+				gpuScreenContainer.addChild(screen as starling.display.Sprite);
+			}catch(e:Error){
+				nativeScreenContainer.addChild(screen as flash.display.Sprite);
+			}
 		}
 	}
 }

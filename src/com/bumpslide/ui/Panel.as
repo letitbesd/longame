@@ -13,7 +13,7 @@
 package com.bumpslide.ui {	import com.bumpslide.view.IView;	import com.bumpslide.data.constant.Direction;	import com.bumpslide.data.type.Padding;	import com.bumpslide.events.UIEvent;	import com.bumpslide.ui.skin.defaults.DefaultPanelSkin;	import com.bumpslide.ui.skin.defaults.Style;	import flash.display.DisplayObject;	import flash.display.Sprite;	import flash.events.Event;	import flash.events.MouseEvent;	import flash.geom.Rectangle;	
 	/**	 * Simple Container with Background box and padding.	 * 	 * This is a core base class for the scroll panels and grids	 * 	 * This component can be instantiated via code, or it can be created 	 * inside a FLA.  Missing pieces will be dynamically added to the 	 * display list. Background is no longer transparent by default.  We still 	 * need it for absorbing certain mouse events in various child components.	 * 
 	 * Update 2010-10: Background is now drawn with skin. 
-	 * 	 * @author David Knape	 */	public class Panel extends Component implements IGridItem	{
+	 * 	 * @author David Knape	 */	public class Panel extends UIComponent implements IGridItem	{
 		static public var DefaultSkinClass:Class = DefaultPanelSkin;		// children		public var background:DisplayObject;		public var viewrect:Sprite; // avatar on stage to determine content padding		protected var _content:DisplayObject;		protected var _holder:Sprite;		// content and scrollbar padding in relationship to background		protected var _padding:Padding; 		protected var _autoSizeHeight:Boolean = false;		protected var _constructorArgs:Array;				private var _backgroundVisible:Boolean = true;
 
 		private var _handlingChildSizeChange:Boolean=false;
@@ -55,7 +55,7 @@ package com.bumpslide.ui {	import com.bumpslide.view.IView;	import com.bumps
 			} );
 		}
 				/**		 * init		 */		override protected function addChildren():void 		{						//debugEnabled = true;									delayUpdate = false;			initPadding();
-			addEventListener( Component.EVENT_SIZE_CHANGED, handleChildSizeChange, true );
+			addEventListener( UIComponent.EVENT_SIZE_CHANGED, handleChildSizeChange, true );
 		}
 
 
@@ -96,8 +96,8 @@ package com.bumpslide.ui {	import com.bumpslide.view.IView;	import com.bumps
 			scrollRectSet('width', contentWidth);
 			scrollRectSet('height', contentHeight);
 						if(autoSizeHeight) {				if(content) content.width = contentWidth;
-				if(content is Component) {
-					(content as Component).updateNow();
+				if(content is UIComponent) {
+					(content as UIComponent).updateNow();
 				}							} else {														if(content is IResizable) {					(content as IResizable).setSize(w, h);				}			}
 			
 							}				protected function scrollRectSet( prop:String, value:Number ):void 		{			if(_holder == null) return;			if(_holder.scrollRect == null) _holder.scrollRect = new Rectangle();			var rect:Rectangle = _holder.scrollRect;			rect[prop] = Math.round(value);			log( rect );
@@ -111,7 +111,7 @@ package com.bumpslide.ui {	import com.bumpslide.view.IView;	import com.bumps
 		public function get contentView():IView {
 			return content as IView;
 		}		[Bindable(name='sizeChanged')]		public function get contentWidth():Number {			return width - padding.width;		}		[Bindable(name='sizeChanged')]		public function get contentHeight():Number {			return height - padding.height;		}				public function set padding( p:* ):void {			_padding = Padding.create( p );			invalidate();		}						public function get padding():Padding {
-			if(_padding==null) _padding = new Padding(Style.PANEL_PADDING);			return _padding;		}				/**		 * If background was not explicitly set or placed on the stage, this is the default background		 */		public function get backgroundBox():Box {			if(background is Box) {				return background as Box;			} else {				return null;			}		}				public function get autoSizeHeight():Boolean {			return _autoSizeHeight;		}				public function set autoSizeHeight(autoSize:Boolean):void {			_autoSizeHeight = autoSize;			invalidate();		}				override public function get height():Number {			// get display object height.  Calls actualHeight getter from component class if found			// this is overriden by TextBox to return the 			var contentheight:Number = content ? (content is Component ? (content as Component).actualHeight : content.height) : 0;
+			if(_padding==null) _padding = new Padding(Style.PANEL_PADDING);			return _padding;		}				/**		 * If background was not explicitly set or placed on the stage, this is the default background		 */		public function get backgroundBox():Box {			if(background is Box) {				return background as Box;			} else {				return null;			}		}				public function get autoSizeHeight():Boolean {			return _autoSizeHeight;		}				public function set autoSizeHeight(autoSize:Boolean):void {			_autoSizeHeight = autoSize;			invalidate();		}				override public function get height():Number {			// get display object height.  Calls actualHeight getter from component class if found			// this is overriden by TextBox to return the 			var contentheight:Number = content ? (content is UIComponent ? (content as UIComponent).actualHeight : content.height) : 0;
 			if(!contentVisible) return padding.height;			else return (autoSizeHeight) ? contentheight + padding.height : super.height;		}						public function get backgroundVisible():Boolean {			return _backgroundVisible;		}						public function set backgroundVisible(backgroundVisible:Boolean):void {			_backgroundVisible = backgroundVisible;			invalidate();		}
 
 		

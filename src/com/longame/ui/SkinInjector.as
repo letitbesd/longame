@@ -105,6 +105,9 @@ package com.longame.ui
 				var index:int=this._skin.parent.getChildIndex(this._skin);
 				this._skin.parent.addChildAt(this._target,index);
 			}
+			this._target.x=this._skin.x;
+			this._target.y=this._skin.y;
+			this._skin.x=this._skin.y=0;
 			//然后将skinMC添加到this中，如此则skinMC保证了位置和层次的一致性
 			this._target.addChildAt(_skin,0);
 //			this._target.addChild(_skin);

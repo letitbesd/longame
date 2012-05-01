@@ -45,7 +45,7 @@ package com.bumpslide.ui
 		override protected function init() : void
 		{
 			super.init();
-			stop();
+//			stop();
 		}
 
 

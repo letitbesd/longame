@@ -11,7 +11,7 @@
  */
 
 package com.bumpslide.ui {
-	import com.bumpslide.ui.Component;
+	import com.bumpslide.ui.UIComponent;
 
 	import flash.display.DisplayObject;
 	import flash.display.Loader;
@@ -21,7 +21,7 @@ package com.bumpslide.ui {
 	/**
 	 * @author David Knape
 	 */
-	public class ZoomableContent extends Component implements IZoomable {
+	public class ZoomableContent extends UIComponent implements IZoomable {
 
 		// the content we are zooming/panning
 		protected var _content:DisplayObject;

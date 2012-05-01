@@ -40,7 +40,7 @@
     <classEntry path="com.bumpslide.preloader.PreloadEvent"/>
     <classEntry path="com.bumpslide.ui.AbstractScrollPanel"/>
     <classEntry path="com.bumpslide.ui.ComboBox"/>
-    <classEntry path="com.bumpslide.ui.Component"/>
+    <classEntry path="com.bumpslide.ui.UIComponent"/>
     <classEntry path="com.bumpslide.ui.Container"/>
     <classEntry path="com.bumpslide.ui.Draw"/>
     <classEntry path="com.bumpslide.ui.FramerateMonitor"/>
@@ -460,6 +460,7 @@
     <classEntry path="com.longame.display.core.AnimationController"/>
     <classEntry path="com.longame.display.core.AnimationFrames"/>
     <classEntry path="com.longame.display.core.IFrameAnimator"/>
+    <classEntry path="com.longame.display.screen.McScreen"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

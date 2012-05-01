@@ -15,7 +15,7 @@ package com.bumpslide.ui.skin.defaults
 	import com.bumpslide.ui.skin.ISkinnable;
 	import com.bumpslide.ui.Label;
 	import com.bumpslide.ui.Box;
-	import com.bumpslide.ui.Component;
+	import com.bumpslide.ui.UIComponent;
 	import com.bumpslide.ui.PixelIcon;
 	import com.bumpslide.util.Align;
 	import com.bumpslide.util.DisplayUtil;
@@ -29,7 +29,7 @@ package com.bumpslide.ui.skin.defaults
 	public class DefaultCheckboxSkin extends DefaultButtonSkin
 	{
 		public var checkBox:Box;
-		public var check:Component;
+		public var check:UIComponent;
 
 		
 		override public function initHostComponent( host_component:ISkinnable ):void

@@ -1,11 +1,14 @@
 package com.longame.display.screen
 {
 	import com.bumpslide.ui.BaseClip;
+	import com.bumpslide.ui.UIComponent;
 	import com.longame.core.IDisposable;
 	import com.longame.display.core.RenderManager;
+	import com.longame.game.scene.BaseScene;
 	import com.longame.resource.ResourceManager;
 	import com.longame.utils.DisplayObjectUtil;
 	import com.xingcloud.tutorial.TutorialManager;
+	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	
@@ -17,27 +20,32 @@ package com.longame.display.screen
 	 * @author Sascha Balkau
 	 * @version 0.9.5
 	 */
-	public class McScreen extends BaseClip implements  IScreen
+	public class McScreen extends UIComponent  implements  IScreen
 	{
 		////////////////////////////////////////////////////////////////////////////////////////
 		// Public Methods                                                                     //
 		////////////////////////////////////////////////////////////////////////////////////////
-		
+		private var source:*;
 		/**
 		 * Creates a new McScreen instance.
 		 */
-		public function McScreen()
+		public function McScreen(source:*)
 		{
 			super();
+			if(source==null){
+				throw new Error("Source is null!");
+			}
+			this.source=source;
 		}
 		////////////////////////////////////////////////////////////////////////////////////////
 		// Getters & Setters                                                                  //
 		////////////////////////////////////////////////////////////////////////////////////////
-		public function get sceneLayer():Sprite{
+		public function get scene():BaseScene
+		{
 			return null;
 		}
-		public function get ui():Sprite{
-			return null;	
+		public function get ui():UIComponent{
+			return this;	
 		}
 		protected var _onCreate:Signal=new Signal(McScreen);
 		public function get onCreate():Signal
@@ -52,8 +60,9 @@ package com.longame.display.screen
 		 */
 		public function load():void
 		{
-			if(ResourceManager.instance.paused) this.setup();
-			else ResourceManager.instance.onComplete.addOnce(this.setup);
+			RenderManager.getDisplayFromSource(source,setup,null,false,true);
+//			if(ResourceManager.instance.paused) this.setup();
+//			else ResourceManager.instance.onComplete.addOnce(this.setup);
 		}
 		/**
 		 * @inheritDoc
@@ -65,12 +74,11 @@ package com.longame.display.screen
 		/**
 		 * @inheritDoc
 		 */
-		override protected function doDestroy():void
+		override protected function doDispose():void
 		{
 			removeEvents();
-			super.doDestroy();
+			super.doDispose();
 			_onCreate=null;
-			RenderManager.dispose();
 		}
 		////////////////////////////////////////////////////////////////////////////////////////
 		// Event Handlers                                                                     //
@@ -83,13 +91,15 @@ package com.longame.display.screen
 		 * 
 		 * @private
 		 */
-		protected function setup(data:*=null):void
+		protected function setup(skin:DisplayObject):void
 		{
-			ResourceManager.instance.onComplete.remove(this.setup);
+//			ResourceManager.instance.onComplete.remove(this.setup);
 			this.onCreate.dispatch(this);
+			this.skin=skin;
 		}
-		override protected function whenSkinned():void
+		override protected function initSkinParts():void
 		{
+			super.initSkinParts();
 			this.addEvents();
 		}
 		/**

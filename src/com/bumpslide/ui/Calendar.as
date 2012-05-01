@@ -27,7 +27,7 @@ package com.bumpslide.ui
 	 *
 	 * @author David Knape
 	 */
-	public class Calendar extends Component 
+	public class Calendar extends UIComponent 
 	{	
 		// the month we are displaying
 		private var _displayDate:Date;
@@ -61,7 +61,7 @@ package com.bumpslide.ui
 			grid.addEventListener( Grid.EVENT_ITEM_CLICK, handleDayClick );
 			grid.skin = null;
 
-			var c:Component = new Component();
+			var c:UIComponent = new UIComponent();
 			monthLabel = c.add( Label, { x:24, selectable:false, alignH:"center" } );
 			leftButton = c.add( Button, { height:16, width:16, onClick:handleClickBack } );
 			rightButton = c.add( Button, { height:16, width:16, onClick:handleClickForward, alignH:"right" } );

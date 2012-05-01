@@ -25,7 +25,7 @@ package com.bumpslide.ui
 	 * 
 	 * @author David Knape
 	 */
-	public class Container extends Component
+	public class Container extends UIComponent
 	{
 
 		protected var _layout:String = Direction.HORIZONTAL;
@@ -49,7 +49,7 @@ package com.bumpslide.ui
 			addEventListener( Event.ADDED, handleChildAddedOrRemoved );
 			addEventListener( Event.REMOVED, handleChildAddedOrRemoved );
 			// addEventListener( Component.EVENT_DRAW, handleRedraw );
-			addEventListener( Component.EVENT_SIZE_CHANGED, handleChildSizeChange );
+			addEventListener( UIComponent.EVENT_SIZE_CHANGED, handleChildSizeChange );
 
 			callLater( 100, invalidate );
 		}

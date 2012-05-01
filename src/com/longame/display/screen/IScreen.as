@@ -1,5 +1,6 @@
 package com.longame.display.screen
 {
+	import com.bumpslide.ui.UIComponent;
 	import com.longame.core.IDisposable;
 	import com.longame.game.scene.BaseScene;
 	
@@ -21,7 +22,7 @@ package com.longame.display.screen
 		/**
 		 * UI层
 		 * */
-		function get ui():Sprite;
+		function get ui():UIComponent;
 		/**
 		 * Used to load any assets that the display might require. On screens ScreenManager
 		 * calls this method automatically after the screen has been instantiated. If the

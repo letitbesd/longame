@@ -13,7 +13,7 @@
 package com.bumpslide.ui.skin 
 {
 
-	import com.bumpslide.ui.Component;
+	import com.bumpslide.ui.UIComponent;
 	import com.bumpslide.ui.IResizable;
 	import com.bumpslide.util.Delegate;
 

@@ -12,7 +12,7 @@
 package com.bumpslide.ui.skin
 {
 
-	import com.bumpslide.ui.Component;
+	import com.bumpslide.ui.UIComponent;
 	import com.bumpslide.ui.IResizable;
 	import com.bumpslide.ui.Slider;
 
@@ -97,8 +97,8 @@ package com.bumpslide.ui.skin
 				handle.x = hostComponent.getCalculatedHandlePosition();
 				handle.y = hostComponent.padding.top;
 			}
-			if (handle is Component) {
-				Component( handle ).updateNow();
+			if (handle is UIComponent) {
+				UIComponent( handle ).updateNow();
 			}
 		}
 	}

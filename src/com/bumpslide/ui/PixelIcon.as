@@ -25,7 +25,7 @@ package com.bumpslide.ui
 	 * 
 	 * @author David Knape
 	 */
-	public class PixelIcon extends Component {
+	public class PixelIcon extends UIComponent {
 
 		private var _data:Array;
 		private var _color:Number;

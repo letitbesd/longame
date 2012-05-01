@@ -8,8 +8,8 @@
  * This code is released under the open-source MIT license.
  * See LICENSE.txt for full license terms.
  * More info at http://www.opensource.org/licenses/mit-license.php
- */package com.bumpslide.ui{	import com.bumpslide.events.UIEvent;	import com.bumpslide.ui.skin.ISkin;	import com.bumpslide.util.Delegate;	import com.bumpslide.util.ObjectUtil;	import com.longame.core.IDisposable;		import flash.display.DisplayObject;	import flash.display.MovieClip;	import flash.utils.getQualifiedClassName;
-	/**	 * Base Class for MovieClips that just want access to the shortcut methods provided here.	 * 	 * If your class is a component that needs a validation model for data and sizing, 	 * you should extend Component instead.	 * 	 * @author David Knape	 */	public class BaseClip extends MovieClip implements IDisposable	{		public var logEnabled:Boolean = false;		private var _initializing:Boolean = false;		function BaseClip()		{			_initializing = true;			init();			_initializing = false;		}		/**		 * Displays object as "[Classname:instanceName]"		 */		override public function toString():String		{			var classname:String = getQualifiedClassName( this ).split( '::' ).pop();			return "[" + classname + ":" + name + "]";		}
+ */package com.bumpslide.ui{	import com.bumpslide.events.UIEvent;	import com.bumpslide.ui.skin.ISkin;	import com.bumpslide.util.Delegate;	import com.bumpslide.util.ObjectUtil;	import com.longame.core.IDisposable;		import flash.display.DisplayObject;	import flash.display.MovieClip;	import flash.display.Sprite;	import flash.utils.getQualifiedClassName;
+	/**	 * Base Class for MovieClips that just want access to the shortcut methods provided here.	 * 	 * If your class is a component that needs a validation model for data and sizing, 	 * you should extend Component instead.	 * 	 * @author David Knape	 */	public class BaseClip extends Sprite implements IDisposable	{		public var logEnabled:Boolean = false;		private var _initializing:Boolean = false;		function BaseClip()		{			_initializing = true;			init();			_initializing = false;		}		/**		 * Displays object as "[Classname:instanceName]"		 */		override public function toString():String		{			var classname:String = getQualifiedClassName( this ).split( '::' ).pop();			return "[" + classname + ":" + name + "]";		}
 		public function get initializing():Boolean {
 			return _initializing;
 		}		/**		 * Initialize		 */		protected function init():void		{		}		/**		 * Destroy		 */		final public function dispose():void		{
@@ -17,6 +17,7 @@
 			_disposed=true;
 			this.doDispose();		}		protected function doDispose():void
 		{
+			if(this.parent) this.parent.removeChild(this);
 			while(this.numChildren){
 				this.destroyChild(this.getChildAt(0));
 			}
