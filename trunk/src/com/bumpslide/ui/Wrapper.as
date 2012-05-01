@@ -87,7 +87,7 @@ package com.bumpslide.ui
 			}
 			
 			// list for component redraw and invalidate size
-			addEventListener( Component.EVENT_SIZE_CHANGED, function( event:UIEvent ):void {
+			addEventListener( com.bumpslide.ui.UIComponent.EVENT_SIZE_CHANGED, function( event:UIEvent ):void {
 				invalidateSize();
 			});
 			

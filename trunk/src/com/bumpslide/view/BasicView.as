@@ -15,7 +15,7 @@ package com.bumpslide.view
 
 	import com.bumpslide.events.ViewChangeEvent;
 	import com.bumpslide.tween.FTween;
-	import com.bumpslide.ui.Component;
+	import com.bumpslide.ui.UIComponent;
 	
 	/**
 	 * Abstract Transitionable View
@@ -25,7 +25,7 @@ package com.bumpslide.view
 	 * 
 	 * @author David Knape
 	 */
-	public class BasicView extends Component implements IView {
+	public class BasicView extends UIComponent implements IView {
 
 				
 		protected var _viewState:String = ViewState.INACTIVE;

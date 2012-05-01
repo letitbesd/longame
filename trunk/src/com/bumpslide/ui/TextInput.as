@@ -27,7 +27,7 @@ package com.bumpslide.ui
 	 * 
 	 * @author David Knape
 	 */
-	public class TextInput extends Component
+	public class TextInput extends UIComponent
 	{
 
 		static public var DefaultSkinClass:Class = DefaultTextInputSkin;

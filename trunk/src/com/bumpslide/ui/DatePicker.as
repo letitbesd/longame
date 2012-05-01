@@ -30,7 +30,7 @@ package com.bumpslide.ui
 	 *
 	 * @author David Knape
 	 */
-	public class DatePicker extends Component 
+	public class DatePicker extends UIComponent 
 	{
 		static public var DefaultSkinClass:Class = DefaultDatePickerSkin;
 		
@@ -61,7 +61,7 @@ package com.bumpslide.ui
 			popup.autoSizeHeight = true;
 			addEventListener(Event.ADDED_TO_STAGE, handleAddedToStage);
 			
-			popup.addEventListener( Component.EVENT_DRAW, handlePopupRedraw);
+			popup.addEventListener( UIComponent.EVENT_DRAW, handlePopupRedraw);
 		}
 
 		

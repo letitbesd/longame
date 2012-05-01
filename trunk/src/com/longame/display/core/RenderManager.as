@@ -123,8 +123,9 @@ package com.longame.display.core
 		 * @param successCallback:如果是url地址动态加载，成功回调，参数是显示对象 function  onSuccess(display:DisplayObject):void;
 		 * @param failCallback:如果是url地址动态加载，失败回调 function onFail():void;
 		 * @param fromPool:如果source决定的素材之前调用过，是否从缓存池里拿，默认false,注意...
+		 * @param forceReload:true则即使素材加载过了，还是重新加载，对于url加载的情况有用
 		 * */
-		public static function getDisplayFromSource(source:*,successCall:Function,failCall:Function=null,fromPool:Boolean=false):void
+		public static function getDisplayFromSource(source:*,successCall:Function,failCall:Function=null,fromPool:Boolean=false,forceReload:Boolean=false):void
 		{
 			var key:String=getUniqueKey(source);
 			var oldDisplay:DisplayObject=displayPool[key] as DisplayObject;
@@ -181,7 +182,8 @@ package com.longame.display.core
 						},
 						function (r:Resource):void{
 							if(failCall!=null) ProcessManager.callLater(failCall);
-						}
+						},
+						null,false,forceReload
 					);	
 					return;
 				}

@@ -25,7 +25,7 @@ package com.bumpslide.ui
 	 * This is resizable box that is useful for quick drawing and also
 	 * serves as a simple component demonstration.
 	 */
-	public class Box extends Component implements IGridItem {
+	public class Box extends UIComponent implements IGridItem {
 		
 		protected var _backgroundColor:Number = 0;
 		protected var _backgroundAlpha:Number = 1;

@@ -12,7 +12,7 @@
 
 package com.bumpslide.ui.skin 
 {
-	import com.bumpslide.ui.Component;
+	import com.bumpslide.ui.UIComponent;
 
 	/**
 	 * This is the base class for programmatic stateful skins
@@ -25,7 +25,7 @@ package com.bumpslide.ui.skin
 	 * 
 	 * @author David Knape
 	 */
-	public class BasicSkin extends Component implements ISkin 
+	public class BasicSkin extends UIComponent implements ISkin 
 	{			
 		/**
 		 * reference to component that is hosting this skin
