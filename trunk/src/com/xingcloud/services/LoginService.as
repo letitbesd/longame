@@ -24,7 +24,7 @@ package com.xingcloud.services
 		{
 			super(onSuccess, onFail);
 			_commandName=Config.LOGIN_SERVICE;
-			_commandArgs={username: username, password: MD5.hash(password)};
+			_commandArgs={username: username, password: MD5.hash(password)}
 		}
 
 		private var _userprofile:AbstractUserProfile;

@@ -121,7 +121,7 @@ package madebypi.utils {
 				value 	= s.substring(splitIndex + 1);
 				value 	= stripWhitespace(value);
 				//
-				props[i] = { name:name, value:value };
+				props[i] = { name:name, value:value }
 			}
 			
 			substituteVars(props);
@@ -198,4 +198,4 @@ package madebypi.utils {
 		}
 	}
 }
-internal class Lock { };
+internal class Lock { }

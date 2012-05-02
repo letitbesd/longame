@@ -26,7 +26,7 @@ package com.xingcloud.action
 		{
 			this._name=name;
 			this._params=params;
-			if(this._params==null) this._params={};
+			if(this._params==null) this._params={}
 			this._params.action=this.name;
 			data={name: name, params: params}
 			_success=success;

@@ -31,14 +31,14 @@ package com.bumpslide.ui.skin.defaults
 			alpha: 0, 
 			backgroundColor: 0xeeeeee, 
 			cornerRadius: 0
-		};
+		}
 		public static var PANEL_PADDING:Number = 0;
 		
 		public static var SLIDER_BACKGROUND_PROPS:Object = {
 			backgroundColor: 0xeeeeee,
 			cornerRadius: 3,
 			filters:[ BEVEL_FILTER_INSET ]
-		};
+		}
 		
 		// Default Button Styles
 		public static var BUTTON_OFF:uint = 0xDDDDDD;
@@ -52,7 +52,7 @@ package com.bumpslide.ui.skin.defaults
 		public static var BUTTON_BACKGROUND_PROPS:Object = {
 			cornerRadius: 3,
 			filters:[ BEVEL_FILTER ]
-		};
+		}
 		
 		// Default Input Styles
 		public static var INPUT_BORDER:uint = 0xDDDDDD;
@@ -67,7 +67,7 @@ package com.bumpslide.ui.skin.defaults
 			borderWidth: 0,
 			borderColor: INPUT_BORDER,
 			filters:[ BEVEL_FILTER_INSET ]
-		};
+		}
 		
 		
 		// Default Label Text Format

@@ -68,7 +68,7 @@ package com.longame.display.effects.textanim
 		
 		internal function addFunction(callback:Function):void
 		{
-			var action:Object = {callback:callback, index:length, timer:NaN, next:null};
+			var action:Object = {callback:callback, index:length, timer:NaN, next:null}
 			if (firstAction == null) firstAction = action;
 			if (lastAction != null) lastAction.next = action;
 			lastAction = action;

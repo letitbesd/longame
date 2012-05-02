@@ -436,7 +436,7 @@ package com.longame.display.effects.textanim
 		*	myTextAnim.forEachBlocks = function(block:TextAnimBlock):void {
 		*		block.alpha = .5;
 		*		trace(block.index, block.text); //index number of block (ID)
-		*	};
+		*	}
 		*	</code></pre>
 		*
 		* 	@param callback The function that will be applied to each block.

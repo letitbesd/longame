@@ -191,7 +191,7 @@ package com.xingcloud.core
 		public static function get appInfo():Object
 		{
 			return {gameUserId: XingCloud.uid, abtest: getConfig("xa_target"), platformUserId: platformUserId,
-					 platformAppId: platformAppId, lang: languageType};
+					 platformAppId: platformAppId, lang: languageType}
 		}
 
 		/**

@@ -352,7 +352,7 @@ package{
 				bmd=new BitmapData(width,height,transparent,theColor);
 				bmd.draw(target,mat,target.transform.colorTransform,target.blendMode,null,true);
 			}	
-			return {bmd:bmd,mat:mat};			
+			return {bmd:bmd,mat:mat}			
 		}	
 		/**
 		 * 获取mc frame帧的位图数据,frame可以是index，也可以是label

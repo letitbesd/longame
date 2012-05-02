@@ -67,17 +67,17 @@
 		{
 			if (this._isShocking){
 				return;
-			};
+			}
 			var target:* = this.targets[0];
 			if (!target){
 				return;
-			};
+			}
 			var i:int;
 			while (i < this.count) {
 				target = this.targets[i];
 				this.positions[i] = Vector.<Number>([target.x, target.y]);
 				i++;
-			};
+			}
 			this.theShock = this.shockPool[((Math.random() * SHOCKS) | 0)];
 			this.position = 0;
 			this._isShocking = true;
@@ -91,12 +91,12 @@
                 target.x = (target.x + (this.theShock[this.position][0] * this.magnitudes[i]));
                 target.y = (target.y + (this.theShock[this.position][1] * this.magnitudes[i]));
                 i++;
-            };
+            }
             if (++this.position == this.length){
                 target = this.targets[0];
                 this._isShocking = false;
                 this.complete();
-            };
+            }
         }
         public function get isShocking():Boolean{
             return this._isShocking;
@@ -113,7 +113,7 @@
             while (i < SHOCKS) {
                 shocks[i] = this.createShock();
                 i++;
-            };
+            }
             return shocks;
         }
         private function createShock():Vector.<Vector.<Number>>{
@@ -138,17 +138,17 @@
                     speed = (1 / duration);
                     xx = (-(xx1) * speed);
                     yy = (-(yy1) * speed);
-                };
+                }
                 j = 0;
                 while (j < DURATIONS[i]) {
                     xx1 = (xx1 + xx);
                     yy1 = (yy1 + yy);
                     shock.push(Vector.<Number>([xx, yy]));
                     j++;
-                };
+                }
                 angle = (angle + ((PI - HALF_VARIATION) + (Math.random() * VARIATION)));
                 i++;
-            };
+            }
             return shock;
         }
     }

@@ -247,7 +247,7 @@ package com.longame.utils.debug
 final class ProfileInfo
 {
    public var name:String;
-   public var children:Object = {};
+   public var children:Object = {}
    public var parent:ProfileInfo;
    
    public var startTime:int, totalTime:int, activations:int;

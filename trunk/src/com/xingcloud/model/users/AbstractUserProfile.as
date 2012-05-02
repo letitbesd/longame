@@ -330,14 +330,14 @@ package com.xingcloud.model.users
 		 *    =>isCompleted=true  //是否完成
 		 *  =>id1
 		 * */
-		public var quests:Object={};
+		public var quests:Object={}
 		/**
 		 * 向导完成情况
 		 * =>id
 		 *    =>index=2            //完成了第几步
 		 * =>id1
 		 * */
-		public var tutorials:Object={};
+		public var tutorials:Object={}
 		/**
 		 * 更新向导完成到了第几步
 		 * @param tutorialId 向导id
@@ -345,7 +345,7 @@ package com.xingcloud.model.users
 		 * */
 		public function updateTutorial(tutorialId:String,step:int):void
 		{
-			this.tutorials[tutorialId]={index:step};
+			this.tutorials[tutorialId]={index:step}
 			this.whenChange("tutorials",null);
 		}
 		/**

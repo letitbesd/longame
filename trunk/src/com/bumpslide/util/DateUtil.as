@@ -174,7 +174,7 @@ package com.bumpslide.util
 				ret = false;
 			}
 			return ret;
-		};
+		}
 
 		
 		/**

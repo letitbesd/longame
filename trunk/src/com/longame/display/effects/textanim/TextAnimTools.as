@@ -75,7 +75,7 @@ package com.longame.display.effects.textanim
 			
 			textAnim.onBlocksCreated = function():void {
 				toBitmap(textAnim, smooth);
-			};
+			}
 		}
 		
 		
@@ -120,7 +120,7 @@ package com.longame.display.effects.textanim
 			});
 			textAnim.onBlocksCreated = function():void {
 				showAnchors(textAnim);
-			};
+			}
 		}
 		
 		
@@ -166,7 +166,7 @@ package com.longame.display.effects.textanim
 			
 			textAnim.onBlocksCreated = function():void {
 				setPattern(textAnim, img, stretch);
-			};
+			}
 		}
 		
 		
@@ -199,7 +199,7 @@ package com.longame.display.effects.textanim
 			
 			textAnim.onBlocksCreated = function():void {
 				setGradientLinear(textAnim, colors, angle, alphas, ratios);
-			};
+			}
 		}
 		
 		

@@ -94,7 +94,7 @@ package com.longame.display.effects.textanim
 		* The empty <code>Object</code> to putting custom variables each blocks.
 		* 
 		*/
-		public var vars:Object = {};
+		public var vars:Object = {}
 		
 		/**
 		* 	The container used for patterns, bitmaps, etc.

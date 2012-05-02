@@ -105,7 +105,7 @@ public class Util
 				}
 			}
             return fn.apply(null, args);
-        };
+        }
     }
 
     /**
@@ -117,7 +117,7 @@ public class Util
             for each (var fn :Function in functions) {
                 fn.apply(null, args);
             }
-        };
+        }
     }
 
     /**
@@ -127,7 +127,7 @@ public class Util
     {
         return function (... args) :* {
             return args[n];
-        };
+        }
     }
 
     /**

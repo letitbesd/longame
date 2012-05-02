@@ -96,7 +96,7 @@ package org.robotlegs.base
 			var callback:Function = function(event:Event):void
 			{
 				routeEventToCommand(event, commandClass, oneshot, eventClass);
-			};
+			}
 			eventDispatcher.addEventListener(eventType, callback, false, 0, true);
 			callbacksByCommandClass[commandClass] = callback;
 		}

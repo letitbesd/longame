@@ -66,7 +66,7 @@ package madebypi.utils {
 			if(i == -1){
 				_props.push( { name:name, value:value } );
 			} else {
-				_props[i] = { name:name, value:value };
+				_props[i] = { name:name, value:value }
 			}
 		}
 		

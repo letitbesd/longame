@@ -39,7 +39,7 @@ package be.dauntless.astar
 				this._compare = function(a:Number, b:Number):Number
 				{
 					return a-b;
-				};
+				}
 				
 			}
 			else

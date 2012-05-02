@@ -249,7 +249,7 @@ package  com.longame.utils
 			//"longame.components::AbstractComp"
 			var className:String=variable.@type.toString();	
 			className=className.replace("::",".");
-			var meta:Object={varName:variable.@name.toString(),varClass:className};					
+			var meta:Object={varName:variable.@name.toString(),varClass:className}					
 			for each(var arg:XML in metadataXML.arg){
 				var key:String=arg.@key.toString();
 				var value:String=arg.@value.toString();

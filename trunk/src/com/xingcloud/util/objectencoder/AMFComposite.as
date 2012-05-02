@@ -47,7 +47,7 @@ package com.xingcloud.util.objectencoder
 
 		public function CompositeObject(o:Array):*
 		{
-			var comObject:Object={};
+			var comObject:Object={}
 			for each (var item:Object in o)
 			{
 				comObject[item.key]=_encoder.convertTo(item.value);
