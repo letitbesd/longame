@@ -165,9 +165,6 @@
                 case 4:
                     this.B2 = new PRS_5();
                     break;
-                case 0:
-                    this.B2 = new PRS_1();
-                    break;
             }
             var _local1:ColorTransform = new ColorTransform();
             _local1.color = _g.playerData.customize[0];

@@ -25,12 +25,12 @@ package {
             this.B.x = (-(this.B.width) / 2);
             this.B.y = (-(this.B.height) / 2);
         }
-        public function animateMe(_arg1, _arg2:Boolean=false):void{
+        public function animateMe(bmds:Vector.<BitmapData>, _arg2:Boolean=false):void{
             Ticker.D.addEventListener(FEvent.TICK, this.runMe, false, 0, true);
-            this.runLoopArray = _arg1;
+            this.runLoopArray = bmds;
             this.frameOn = 1;
             this.repeat = _arg2;
-            this.drawMe(_arg1[0]);
+            this.drawMe(bmds[0]);
         }
         private function runMe(_arg1:FEvent):void{
             this.B.bitmapData = this.runLoopArray[this.frameOn];
