@@ -53,7 +53,7 @@
             this.holderFunction = _arg2;
             if (_arg1 > 0){
                 this.b.textureLay.addChild(_g.getTexture(this.textureVar));
-            };
+            }
         }
         public function doFunction(_arg1:MouseEvent=null):void{
             this.holderFunction.textureExOuter(this.textureVar, 1);

@@ -101,7 +101,7 @@ package screens
 				this[("u" + this.i)].initialize(this.i, this.displayMoney);
 				this[("u" + this.i)].outerScreen = this;
 				this.i++;
-			};
+			}
 			this.fixGraphic();
 			this.cus_endX = 453;
 			this.cus_startX = this.cm.x;
@@ -113,12 +113,12 @@ package screens
 			while (this.i < 14) {
 				this.cm[("cb_" + this.i)].initialize(this.colorCusArray[this.i], this.colorExtOuter);
 				this.i++;
-			};
+			}
 			this.i = 0;
 			while (this.i < 7) {
 				this.cm[("tb_" + this.i)].initialize(this.i, this);
 				this.i++;
-			};
+			}
 			this.profilePic.setColor(_g.playerData.customize[0]);
 			this.profilePic.setTexture(_g.playerData.customize[1]);
 			this.initAch();
@@ -159,7 +159,7 @@ package screens
 			while (_local1 < 15) {
 				this[("u" + _local1)].updateInner();
 				_local1++;
-			};
+			}
 		}
 		public function fixGraphic():void{
 			(this.profilePic.skin as MovieClip).gotoAndStop((_g.playerData.upgrades[0] + 1));
@@ -187,12 +187,12 @@ package screens
 			while (_local1 < 24) {
 				this[("ach_" + _local1)].initilize(_local1);
 				_local1++;
-			};
+			}
 		}
 		public function bExit(_arg1:MouseEvent=null):void{
 			if (this.cus_In){
 				this.doMove();
-			};
+			}
 		}
 		public function doMove(_arg1:MouseEvent=null):void{
 			if (this.cus_In){
@@ -201,7 +201,7 @@ package screens
 			} else {
 				this.cus_In = true;
 				this.cus_moveIn();
-			};
+			}
 		}
 	}
 }

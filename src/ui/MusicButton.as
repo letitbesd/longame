@@ -31,7 +31,7 @@
                 this.sv.visible = false;
             } else {
                 this.sv.visible = true;
-            };
+            }
         }
     }
 }

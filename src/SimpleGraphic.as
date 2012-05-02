@@ -42,16 +42,16 @@ package {
                     Ticker.D.removeEventListener(FEvent.TICK, this.runMe);
                     if (this.killWhenDone){
                         this.clearMe();
-                    };
-                };
-            };
+                    }
+                }
+            }
         }
         public function clearMe():void{
             Ticker.D.removeEventListener(FEvent.TICK, this.runMe);
             try {
                 removeChild(this.B);
             } catch(e:Error) {
-            };
+            }
             this.B = null;
         }
 

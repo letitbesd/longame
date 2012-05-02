@@ -9,7 +9,9 @@
 
         private static const camOffset:Number = 140;
         private static const camLockSpeed:Number = 0.12;
-
+        /**
+		 * 游戏场景总容器
+		 * */
         public static var GRID:Sprite;
         public static var FG:Sprite;
         public static var G:Sprite;
@@ -52,30 +54,30 @@
             if (TB.alpha < 0){
                 TB.alpha = 0;
                 TB.visible = false;
-            };
+            }
             if (hideButton){
                 TB.b.visible = false;
             } else {
                 TB.b.visible = true;
-            };
+            }
             TB.addEventListener(Event.ENTER_FRAME, fadeInTut, false, 0, true);
             TB.removeEventListener(Event.ENTER_FRAME, fadeOutTut);
         }
-        private static function fadeInTut(_arg1:Event):void{
+        private static function fadeInTut(evt:Event):void{
             TB.alpha = (TB.alpha + 0.07);
             if (TB.alpha > 1){
                 TB.removeEventListener(Event.ENTER_FRAME, fadeInTut);
                 TB.alpha = 1;
-            };
+            }
         }
-        private static function fadeOutTut(_arg1:Event):void{
+        private static function fadeOutTut(evt:Event):void{
             TB.alpha = (TB.alpha - 0.07);
             if (TB.alpha < 1){
                 TB.removeEventListener(Event.ENTER_FRAME, fadeOutTut);
                 TB.alpha = 0;
                 TB.visible = false;
                 TB.mouseEnabled = false;
-            };
+            }
         }
 		/**
 		 * 隐藏向导提示
@@ -84,19 +86,18 @@
             TB.addEventListener(Event.ENTER_FRAME, fadeOutTut, false, 0, true);
             TB.removeEventListener(Event.ENTER_FRAME, fadeInTut);
         }
-        public static function killPar(_arg1):void{
-            var a = _arg1;
+        public static function killPar(p:Particle):void{
             if (nowPar > 0){
                 nowPar--;
-            };
+            }
             try {
-                PE.removeChild(a);
+                PE.removeChild(p);
             } catch(e:Error) {
-            };
+            }
         }
         public static function killLastPar():void{
-            var _local1:* = PE.getChildAt(0);
-            _local1.killMe();
+            var par:Particle = PE.getChildAt(0) as Particle;
+            par.killMe();
         }
         public static function reset():void{
             nowPar = 0;
@@ -142,21 +143,21 @@
             BG.addChild(G2);
             BG.addChild(G1);
             G1.addChild(new Bitmap(RenderEngine.frontBGRender[bgNum]));
-            var _local1:Bitmap = new Bitmap(RenderEngine.frontBGRender[bgNum]);
-            G1.addChild(_local1);
-            _local1.x = 720;
+            var img1:Bitmap = new Bitmap(RenderEngine.frontBGRender[bgNum]);
+            G1.addChild(img1);
+            img1.x = 720;
             G2.addChild(new Bitmap(RenderEngine.midBGRender[bgNum]));
-            var _local2:Bitmap = new Bitmap(RenderEngine.midBGRender[bgNum]);
-            G2.addChild(_local2);
-            _local2.x = 999;
+            var img2:Bitmap = new Bitmap(RenderEngine.midBGRender[bgNum]);
+            G2.addChild(img2);
+            img2.x = 999;
             G3.addChild(new Bitmap(RenderEngine.backBGRender[bgNum]));
-            var _local3:Bitmap = new Bitmap(RenderEngine.backBGRender[bgNum]);
-            G3.addChild(_local3);
-            _local3.x = 999;
+            var img3:Bitmap = new Bitmap(RenderEngine.backBGRender[bgNum]);
+            G3.addChild(img3);
+            img3.x = 999;
             G4.addChild(new Bitmap(RenderEngine.cloudBG[bgNum]));
-            var _local4:Bitmap = new Bitmap(RenderEngine.cloudBG[bgNum]);
-            G4.addChild(_local4);
-            _local4.x = 999;
+            var img4:Bitmap = new Bitmap(RenderEngine.cloudBG[bgNum]);
+            G4.addChild(img4);
+            img4.x = 999;
             G5.addChild(new Bitmap(RenderEngine.skyBG[bgNum]));
             GSPACE.addChild(new Bitmap(RenderEngine.spaceBG[0]));
             G1.y = (G1Y = ((_g.sh2 * 2) - G1.height));
@@ -164,18 +165,18 @@
             G3.y = (G3Y = ((_g.sh2 * 2) - G3.height));
             G4.y = (G4Y = -265);
         }
-        public static function setSky(_arg1:Number):void{
-            G5.alpha = _arg1;
+        public static function setSky(alpha:Number):void{
+            G5.alpha = alpha;
         }
         public static function put(obj:DisplayObject, container:Sprite=null, removeOld:Boolean=false):void{
             if (container == null){
                 container = G;
-            };
+            }
             if (removeOld){
                 while (container.numChildren > 0) {
                     container.removeChildAt(0);
-                };
-            };
+                }
+            }
             container.addChild(obj);
         }
         public static function resetCam():void{
@@ -184,14 +185,11 @@
             camPoint.y = _g.sh2;
             camLockTo = null;
         }
-        public static function killSome(_arg1, _arg2:Sprite):void{
-            var a = _arg1;
-            var b = _arg2;
+        public static function killSome(target:DisplayObject, container:Sprite):void{
             try {
-                b.removeChild(a);
-                a = null;
+				container.removeChild(target);
             } catch(e:Error) {
-            };
+            }
         }
         public static function runCamera():void{
             var _local2:*;
@@ -205,7 +203,7 @@
                 } else {
                     _local4 = 0;
                     camPoint.y = _g.sh2;
-                };
+                }
                 camPoint.x = (camPoint.x + (_local3 * camLockSpeed));
                 camPoint.y = (camPoint.y + (_local4 * camLockSpeed));
                 _g.P.x = ((_g.sw2 - camOffset) + _local3);
@@ -213,12 +211,12 @@
                     _g.P.y = (_g.sh2 + (camLockTo.ay - camPoint.y));
                 } else {
                     _g.P.y = _g.P.ay;
-                };
+                }
                 if ((Math.abs(_local3) + Math.abs(_local4)) < 2){
                     camPointLock = true;
                     camLockTo = null;
-                };
-            };
+                }
+            }
             if (camPointLock){
                 _g.P.x = (_g.sw2 - camOffset);
                 camPoint.x = (_g.P.ax + camOffset);
@@ -228,44 +226,44 @@
                 } else {
                     camPoint.y = _g.sh2;
                     _g.P.y = _g.P.ay;
-                };
-            };
+                }
+            }
             var _local1:Number = 30;
             for (_local2 in shakeArray) {
                 _local5 = 0;
                 _local5 = (-(Math.sin(shakeArray[_local2].sinVal)) * shakeArray[_local2].amount);
                 if (_local5 > _local1){
                     _local5 = _local1;
-                };
+                }
                 if (_local5 < -(_local1)){
                     _local5 = -(_local1);
-                };
+                }
                 camPoint.y = (camPoint.y + _local5);
                 if (camPointLock){
                     _g.P.y = (_g.P.y + _local5);
-                };
+                }
                 shakeArray[_local2].sinVal = (shakeArray[_local2].sinVal + shakeArray[_local2].sinPlus);
                 if (shakeArray[_local2].decay > 0){
                     shakeArray[_local2].amount = (shakeArray[_local2].amount * shakeArray[_local2].decay);
                 } else {
                     shakeArray[_local2].decay++;
-                };
-            };
+                }
+            }
             for (_local2 in shakeArray) {
                 if ((((shakeArray[_local2].amount <= 0.1)) || ((shakeArray[_local2].decay == 0)))){
                     shakeArray.splice(_local2, 1);
-                };
-            };
+                }
+            }
             alignCamera();
         }
         public static function clearShake():void{
             shakeArray = [];
         }
-        public static function setCamOn(_arg1):void{
-            camLockTo = _arg1;
+        public static function setCamOn(data:*):void{
+            camLockTo = data;
         }
-        public static function doShake(_arg1:uint=0, _arg2:Number=15):void{
-            switch (_arg1){
+        public static function doShake(type:uint=0, amount:Number=15):void{
+            switch (type){
                 case 0:
                     shakeArray.push({sinVal:0, amount:30, decay:0.82, sinPlus:2});
                     break;
@@ -276,11 +274,11 @@
                     shakeArray.push({sinVal:0, amount:40, decay:0.85, sinPlus:1.8});
                     break;
                 case 3:
-                    shakeArray.push({sinVal:0, amount:_arg2, decay:0.96, sinPlus:0.2});
+                    shakeArray.push({sinVal:0, amount:amount, decay:0.96, sinPlus:0.2});
                     break;
-            };
+            }
         }
-        public static function alignCamera():void{
+        private static function alignCamera():void{
             G1.x = (-(getBGNum(1, 720)) + _g.sw2);
             G2.x = (-(getBGNum(0.6, 1000)) + _g.sw2);
             G3.x = (-(getBGNum(0.3, 1000)) + _g.sw2);
@@ -294,8 +292,8 @@
             PE.y = -((-(_g.sh2) + camPoint.y));
             PE.x = -((-(_g.sw2) + camPoint.x));
         }
-        private static function getBGNum(_arg1:Number, _arg2:Number):Number{
-            return (((camPoint.x * _arg1) - (Math.floor((((camPoint.x * _arg1) - _g.sw2) / _arg2)) * _arg2)));
+        private static function getBGNum(x:Number, y:Number):Number{
+            return (((camPoint.x * x) - (Math.floor((((camPoint.x * x) - _g.sw2) / y)) * y)));
         }
 
     }

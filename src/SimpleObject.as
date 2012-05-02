@@ -1,5 +1,4 @@
-﻿//Created by Action Script Viewer - http://www.buraks.com/asv
-package {
+﻿package {
 
     public class SimpleObject extends SimpleGraphic {
 
@@ -19,10 +18,10 @@ package {
         public var rota:Boolean= false
         public var bounceMode:Boolean= false
 
-        public function init(_arg1, _arg2):void{
-            this.mass = _arg1;
-            this.aero = _arg2;
+        public function init(mass:Number, aero:Number):void{
+            this.mass = mass;
+            this.aero = aero;
         }
 
     }
-}//package 
+}

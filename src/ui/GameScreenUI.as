@@ -95,7 +95,7 @@ package ui
 				removeEventListener(Event.ENTER_FRAME, this.run);
 			} else {
 				this.cm.y = (this.cm.y + ((this.moveTo - this.cm.y) * this.moveSpeed));
-			};
+			}
 		}
 		public function EEmoveIn():void{
 			this.EEmoveTo = this.EEendY;
@@ -110,7 +110,7 @@ package ui
 				removeEventListener(Event.ENTER_FRAME, this.EErun);
 			} else {
 				this.ee.y = (this.ee.y + ((this.EEmoveTo - this.ee.y) * this.EEmoveSpeed));
-			};
+			}
 		}
 		public function getAGURL(_arg1:MouseEvent):void{
 			var url:String= "http://ArmorGames.com";
@@ -133,7 +133,7 @@ package ui
 				removeEventListener(Event.ENTER_FRAME, this.RRrun);
 			} else {
 				this.rainbowStar.x = (this.rainbowStar.x + ((this.RRmoveTo - this.rainbowStar.x) * this.RRmoveSpRRd));
-			};
+			}
 		}
 	}
 }

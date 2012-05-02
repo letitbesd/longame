@@ -59,7 +59,7 @@ package screens
 				this.gameDataType.text = "NEW GAME";
 			} else {
 				this.gameDataType.text = "LOAD GAME";
-			};
+			}
 		}
 		override protected function addEvents():void
 		{
@@ -94,7 +94,7 @@ package screens
 				PlayerData.loadGame(slot);
 				_g.currentSlot = slot;
 				Engine.showScreen(UpgradeScreen);
-			};
+			}
 		}
 		private function backToMenuHandler(evt:MouseEvent):void
 		{

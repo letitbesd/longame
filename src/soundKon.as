@@ -56,8 +56,8 @@ package {
                 if (_arg1 != 0){
                     soundChan = soundArray[_arg1].s.play();
                     soundArray[_arg1].played = true;
-                };
-            };
+                }
+            }
         }
         private static function runFade(_arg1:TimerEvent=null):void{
             var _local4:uint;
@@ -67,7 +67,7 @@ package {
                 _local4 = 1;
             } else {
                 _local4 = 0;
-            };
+            }
             if (_local2.volume < 0.6){
                 _local2.volume = (_local2.volume + 0.02);
                 _local3.soundTransform = _local2;
@@ -75,7 +75,7 @@ package {
                 T2.removeEventListener(TimerEvent.TIMER, runFade);
                 MT[_local4].volume = 0;
                 MC[_local4].soundTransform = MT[_local4];
-            };
+            }
             _local2 = MT[_local4];
             _local3 = MC[_local4];
             if (_local2.volume > 0){
@@ -83,7 +83,7 @@ package {
                 _local3.soundTransform = _local2;
             } else {
                 _local3.stop();
-            };
+            }
         }
         public static function playMusic(_arg1:uint=0):void{
             var _local2:SoundChannel;
@@ -92,14 +92,14 @@ package {
                 cc++;
                 if (cc == 2){
                     cc = 0;
-                };
+                }
                 _local2 = MC[cc];
                 _local3 = MT[cc];
                 MC[cc] = musicArray[_arg1].play(0, int.MAX_VALUE);
                 _local3.volume = 0;
                 MC[cc].soundTransform = _local3;
                 T2.addEventListener(TimerEvent.TIMER, runFade, false, 0, true);
-            };
+            }
         }
         private static function clearPlayed(_arg1:TimerEvent):void{
             var _local2:*;
@@ -107,8 +107,8 @@ package {
             for (_local2 in soundChan) {
                 for (_local3 in soundChan[_local2]) {
                     soundChan[_local2].played = false;
-                };
-            };
+                }
+            }
         }
         public static function switchMute(_arg1:uint=0):void{
             if (soundOn){
@@ -118,7 +118,7 @@ package {
             } else {
                 soundOn = true;
                 playMusic(_arg1);
-            };
+            }
         }
 
     }

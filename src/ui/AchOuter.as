@@ -72,19 +72,19 @@
                 this.gotIt = true;
             } else {
                 this.filterGrey();
-            };
+            }
         }
         public function showAch(_arg1:MouseEvent):void{
             ToolTip.tip(this.to);
             if (this.gotIt){
                 this.filterBright();
-            };
+            }
         }
         public function hideAch(_arg1:MouseEvent):void{
             ToolTip.unTip();
             if (this.gotIt){
                 this.filterClear();
-            };
+            }
         }
         public function filterClear():void{
             this.g.filters = [];

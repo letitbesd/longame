@@ -92,7 +92,7 @@ package screens
 				this.pc1.gotoAndStop((1 + _g.playerData.stats[1]));
 				this.pc2.stop();
 				addEventListener(Event.ENTER_FRAME, this.runTweener, false, 0, true);
-			};
+			}
 			_g.justLeveled = false;
 			stage.focus = this;
 		}
@@ -108,15 +108,15 @@ package screens
 						this.levelUpStage();
 					} else {
 						Engine.showScreen(UpgradeScreen);
-					};
+					}
 				} else {
 					Engine.showScreen(UpgradeScreen);
-				};
+				}
 				removeEventListener(KeyboardEvent.KEY_DOWN, this.skipThis);
 				removeEventListener(Event.ENTER_FRAME, this.runTweener);
 				this.t_now.text = (new String(Math.round(this.distDisplay)) + "m");
 				this.nav.x = (this.navStart + ((this.navEnd - this.navStart) * (this.distDisplay / this.distMax)));
-			};
+			}
 		}
 		public function runTweener(_arg1:Event=null):void{
 			this.tweenNow++;
@@ -132,42 +132,42 @@ package screens
 					this.levelUpStage();
 					removeEventListener(Event.ENTER_FRAME, this.runTweener);
 					removeEventListener(KeyboardEvent.KEY_DOWN, this.skipThis);
-				};
-			};
+				}
+			}
 			if (!_g.justLeveled){
 				if (this.tweenNow == this.tweenMax){
 					removeEventListener(Event.ENTER_FRAME, this.runTweener);
 					removeEventListener(KeyboardEvent.KEY_DOWN, this.skipThis);
 					Engine.showScreen(UpgradeScreen);
-				};
-			};
+				}
+			}
 		}
 		public function levelUpStage():void{
 			if (_g.playerData.stats[1] == 0){
 				if ((_g.playerData.stats[4] - 1) <= 8){
 					AchieveMents.putA(12);
-				};
-			};
+				}
+			}
 			if (_g.playerData.stats[1] == 1){
 				if ((_g.playerData.stats[4] - 1) <= 16){
 					AchieveMents.putA(13);
-				};
-			};
+				}
+			}
 			if (_g.playerData.stats[1] == 2){
 				if ((_g.playerData.stats[4] - 1) <= 21){
 					AchieveMents.putA(14);
-				};
-			};
+				}
+			}
 			if (_g.playerData.stats[1] == 3){
 				if ((_g.playerData.stats[4] - 1) <= 26){
 					AchieveMents.putA(15);
-				};
-			};
+				}
+			}
 			if (_g.playerData.stats[1] == 4){
 				if ((_g.playerData.stats[4] - 1) <= 30){
 					AchieveMents.putA(16);
-				};
-			};
+				}
+			}
 			_g.playerData.stats[1] = _g.playerData.stats[1] + 1;
 			_g.playerData.stats[2] = 0;
 			levelUp = new levelUpSign();

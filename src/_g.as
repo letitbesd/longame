@@ -70,7 +70,7 @@
             _gD.bgNum = playerData.stats[1];
             if (_gD.bgNum > 4){
                 _gD.bgNum = Math.floor((Math.random() * 4.99));
-            };
+            }
             _gD.reset();
 			_gD.TB.b.addEventListener(MouseEvent.CLICK,resumeFromTutorial);
         }
@@ -93,9 +93,9 @@
                         pause();
                         _gD.showTut("pause", true);
                         gamePaused = true;
-                    };
-                };
-            };
+                    }
+                }
+            }
         }
         public static function tutorial(name:String, pauseGame:Boolean=true):void{
             var newTut:Boolean=true;
@@ -147,7 +147,7 @@
             Ticker.startTicker();
             if ((_g.playerData.upgrades[3] + _g.playerData.upgrades[5]) == 0){
                 _gD.uiBody.fuelBar.visible = false;
-            };
+            }
             P.addEventListener(MouseEvent.MOUSE_DOWN, pickUp);
             STAGE.addEventListener(MouseEvent.MOUSE_UP, letGo);
             STAGE.addEventListener(KeyboardEvent.KEY_DOWN, keyDown, false, 0, true);
@@ -157,7 +157,7 @@
             var _local2:uint = evt.keyCode;
             if (_local2 == pauseKey){
                 pauseResume();
-            };
+            }
             if (_local2 == engineKey){
                 if (P.thrown){
                     if (!engineActivate){
@@ -166,38 +166,38 @@
                                 if (!_g.P.groundedNow){
                                     engineActivate = true;
                                     P.engineSwitch("START");
-                                };
-                            };
-                        };
-                    };
-                };
-            };
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             if (_local2 == confirmKey){
                 if (realPause){
                     resume();
-                };
-            };
+                }
+            }
             if (_local2 == rainbowKey){
                 P.startRainbowStar();
-            };
+            }
             if ((((((_local2 == tiltUpKey)) || ((_local2 == tiltUpKey2)))) || ((_local2 == tiltUpKey3)))){
                 if (!tiltUp){
                     if (_g.playerData.upgrades[3] > 0){
                         tiltUp = true;
                         tiltDown = false;
                         P.tilt("UP");
-                    };
-                };
-            };
+                    }
+                }
+            }
             if ((((((_local2 == tiltDownKey)) || ((_local2 == tiltDownKey2)))) || ((_local2 == tiltDownKey3)))){
                 if (!tiltDown){
                     if (_g.playerData.upgrades[3] > 0){
                         tiltDown = true;
                         tiltUp = false;
                         P.tilt("DOWN");
-                    };
-                };
-            };
+                    }
+                }
+            }
         }
         private static function keyUp(evt:KeyboardEvent):void{
             var _local2:uint = evt.keyCode;
@@ -206,21 +206,21 @@
                     if (engineActivate){
                         engineActivate = false;
                         P.engineSwitch("END");
-                    };
-                };
-            };
+                    }
+                }
+            }
             if ((((((_local2 == tiltDownKey)) || ((_local2 == tiltDownKey2)))) || ((_local2 == tiltDownKey3)))){
                 if (tiltDown){
                     P.tilt("END");
-                };
+                }
                 tiltDown = false;
-            };
+            }
             if ((((((_local2 == tiltUpKey)) || ((_local2 == tiltUpKey2)))) || ((_local2 == tiltUpKey3)))){
                 if (tiltUp){
                     P.tilt("END");
-                };
+                }
                 tiltUp = false;
-            };
+            }
         }
         public static function finish():void{
             endGame();
@@ -246,9 +246,9 @@
                 soundKon.playMusic(0);
 				Engine.showScreen(UpgradeScreen);
 //                ROOT.sceneTrans(1, "Upgrade", true);
-            };
+            }
         }
-        public static function getTexture(id:uint){
+        public static function getTexture(id:uint):MovieClip{
             switch (id){
                 case 1:
                     return (new _Texture1());
@@ -262,7 +262,8 @@
                     return (new _Texture5());
                 case 6:
                     return (new _Texture6());
-            };
+            }
+			return null;
         }
         private static function pickUp(evt:MouseEvent=null):void{
             P.pickUp();

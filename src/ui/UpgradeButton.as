@@ -111,13 +111,13 @@
                     this.filterGrey();
                     this.getable = false;
                     this.maxed.visible = false;
-                };
+                }
             } else {
                 this.border.gotoAndStop(1);
                 this.filterClear();
                 this.getable = false;
                 this.maxed.visible = true;
-            };
+            }
         }
         public function upgradeHandler(_arg1:MouseEvent=null):void{
             if (_g.playerData.upgrades[this.uo.id] < this.uo.max){
@@ -129,7 +129,7 @@
                     this.displayMoney();
                     if (this.uo.id == 0){
                         this.outerScreen.fixGraphic();
-                    };
+                    }
                     this.outerScreen.updateInner();
                     ToolTip.giveError("Yay!", "Successfully upgraded!");
                     soundKon.playSound(13);
@@ -139,18 +139,18 @@
                 } else {
                     trace("UPGRADE FAILED: Not enough money.");
                     ToolTip.giveError("Upgrade Failed", "You do not have enough money.");
-                };
+                }
             } else {
                 trace("UPGRADE FAILED: Already at max level.");
                 ToolTip.giveError("Upgrade Failed", "This upgrade is already at its maximum level.");
-            };
+            }
         }
         public function showTip(_arg1:MouseEvent=null):void{
             ToolTip.tip(this.to);
             this.becomeBig();
             if (this.getable){
                 this.filterBright();
-            };
+            }
             soundKon.playSound(11);
         }
         public function hideTip(_arg1:MouseEvent=null):void{
@@ -158,7 +158,7 @@
             this.becomeSmall();
             if (this.brightState){
                 this.filterClear();
-            };
+            }
         }
         public function becomeBig():void{
             this.targetSize = 1.3;
@@ -176,7 +176,7 @@
             } else {
                 scaleX = (scaleX + _local2);
                 scaleY = scaleX;
-            };
+            }
             this.b.scaleX = (scaleX / this.targetSize);
             this.b.scaleY = this.b.scaleX;
         }
@@ -187,14 +187,14 @@
                 _local1 = String(this.uo.toolTip).replace(String("@"), this.uo.tipVar[_g.playerData.upgrades[this.uo.id]]);
             } else {
                 _local1 = this.uo.toolTip;
-            };
+            }
             if (_g.playerData.upgrades[this.uo.id] < this.uo.max){
                 this.to = new TipObject(((this.uo.name + " - $") + this.uo.cost[_g.playerData.upgrades[this.uo.id]]), _local1);
                 this.t.text = this.romanNum[_g.playerData.upgrades[this.uo.id]];
             } else {
                 this.to = new TipObject((this.uo.name + " (MAXED)"), _local1);
                 this.t.text = "";
-            };
+            }
         }
     }
 }
