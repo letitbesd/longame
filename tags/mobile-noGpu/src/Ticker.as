@@ -44,15 +44,15 @@
                 if (prevY.length > 90){
                     prevY.shift();
                     prevX.shift();
-                };
+                }
                 nowY = s.mouseY;
                 nowX = s.mouseX;
 				var movedDisY:Number = Number((nowY - prevY[(prevY.length - 1)]));
 				var movedDisX:Number = Number((nowX - prevX[(prevX.length - 1)]));
                 if ((((movedDisX > 600)) && ((movedDisY < 0)))){
                     _g.P.letGo();
-                };
-            };
+                }
+            }
         }
 		private static function doEvent(evt:FEvent):void{
 			_gP.runEngine(evt.f);

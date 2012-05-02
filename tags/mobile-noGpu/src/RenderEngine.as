@@ -1,5 +1,4 @@
-﻿//Created by Action Script Viewer - http://www.buraks.com/asv
-package {
+﻿package {
     import flash.display.*;
 
     public class RenderEngine {
@@ -44,31 +43,31 @@ package {
         public static function renderAll():void{
             simpleStaticRender(new ParticleHolder(), particles);
         }
-        public static function simpleStaticRender(_arg1, _arg2, _arg3:Number=0):void{
-            var _local4:* = 0;
-            while (_local4 < _arg1.numChildren) {
-                render(_arg1.getChildAt(_local4), _arg2, _arg3, _arg3);
-                _local4++;
-            };
+        public static function simpleStaticRender(container:DisplayObjectContainer, arr:Array, size:Number=0):void{
+            var i:int = 0;
+            while (i < container.numChildren) {
+                render(container.getChildAt(i), arr, size, size);
+                i++;
+            }
         }
         public static function renderPlane():void{
             planeRender = [];
             var _local1:MovieClip = new PRS_1();
         }
-        private static function render(_arg1:DisplayObject=null, _arg2:Array=null, _arg3:Number=0, _arg4:Number=0):void{
-            var _local6:Number;
-            var _local7:Number;
-            if (_arg3 == 0){
-                _local6 = _arg1.height;
-                _local7 = _arg1.width;
+        private static function render(target:DisplayObject=null, pool:Array=null, width:Number=0, height:Number=0):void{
+            var h:Number;
+            var w:Number;
+            if (width == 0){
+                h = target.height;
+                w = target.width;
             } else {
-                _local7 = _arg3;
-                _local6 = _arg4;
-            };
-            var _local5:BitmapData = new BitmapData(_local7, _local6, true, 0);
-            _local5.draw(_arg1);
-            _arg2.push(_local5);
+                w = width;
+                h = height;
+            }
+            var bmd:BitmapData = new BitmapData(w, h, true, 0);
+            bmd.draw(target);
+            pool.push(bmd);
         }
 
     }
-}//package 
+}

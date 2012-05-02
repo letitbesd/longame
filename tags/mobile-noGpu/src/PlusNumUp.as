@@ -42,23 +42,23 @@ package {
                 this.transform.colorTransform = this.ctr;
                 this.filters = [this.gf];
                 scaleX = (scaleY = (1 + this.scaler));
-            };
+            }
             this.xVel = (this.xVel + this.xAccel);
             x = (x + this.xVel);
             this.stayTime--;
             if (this.stayTime < 30){
                 this.alpha = (this.alpha - 0.03);
-            };
+            }
             if (this.stayTime == 0){
                 this.killThis();
-            };
+            }
         }
         private function killThis():void{
             Ticker.D.removeEventListener(FEvent.TICK, this.run);
             try {
                 _gD.FG.removeChild(this);
             } catch(e:Error) {
-            };
+            }
         }
 
     }

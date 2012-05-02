@@ -33,7 +33,7 @@
             make(23, "Hourglass", "Be flying for 1 minute.");
         }
         private static function make(id:uint, name:String, description:String):void{
-            LIST[id] = {t:name, desc:description};
+            LIST[id] = {t:name, desc:description}
         }
         public static function putA(id:uint):void{
             var _local2:Boolean;
@@ -48,11 +48,11 @@
                             places[_local3] = true;
                             _g.getAch(new aHolder(id, _local3));
                             _local2 = true;
-                        };
-                    };
+                        }
+                    }
                     _local3++;
-                };
-            };
+                }
+            }
         }
         public static function killA(id:uint):void{
             places[id] = false;

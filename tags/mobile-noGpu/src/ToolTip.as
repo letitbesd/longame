@@ -26,7 +26,7 @@
         public static var errorTip:Boolean;
         private static var theStage:Stage;
         private static var theRoot:Object;
-        private static var FONT:ActionMan = new ActionMan();
+//        private static var FONT:ActionMan = new ActionMan();
         private static var T:Sprite = new Sprite();
         private static var osNum:Number = new Number();
 
@@ -124,8 +124,8 @@
                     setOffset();
                     b_desc.y = (b_name.y + b_name.height);
                     t_desc.y = (b_desc.y + 2);
-                };
-            };
+                }
+            }
         }
         public static function unTip():void{
             errorTip = false;
@@ -181,7 +181,7 @@
                 t_desc.y = (b_desc.y + 2);
                 theStage.addEventListener(Event.ENTER_FRAME, cd_killTip);
                 killTime = 0;
-            };
+            }
         }
         private static function cd_killTip(_arg1:Event):void{
             killTime++;
@@ -190,8 +190,8 @@
                 theStage.removeEventListener(Event.ENTER_FRAME, cd_killTip);
                 if (t_desc.visible){
                     tip(tip_t, tip_g);
-                };
-            };
+                }
+            }
         }
         private static function correctTip(_arg1:Event):void{
             setOffset();
@@ -204,13 +204,13 @@
                     T.y = 15;
                 } else {
                     T.y = 0;
-                };
-            };
+                }
+            }
             if (theStage.mouseX > 520){
                 T.x = -((offSetX + offSetSize));
             } else {
                 T.x = offSetX;
-            };
+            }
         }
 
     }

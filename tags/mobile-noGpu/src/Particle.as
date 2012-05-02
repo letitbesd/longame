@@ -20,10 +20,10 @@
             this.decayTimeMax = (this.decayTime = _arg4);
             if (_arg8){
                 scaleX = (scaleY = (0.5 + (Math.random() * 2)));
-            };
+            }
             if (_arg7){
                 blendMode = "add";
-            };
+            }
         }
         private function moveMe(_arg1:FEvent):void{
             x = (x + this.xVel);
@@ -35,7 +35,7 @@
                 this.decayTime--;
             } else {
                 this.killMe();
-            };
+            }
         }
         public function killMe():void{
             Ticker.D.removeEventListener(FEvent.TICK, this.moveMe);

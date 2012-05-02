@@ -1,5 +1,4 @@
-﻿//Created by Action Script Viewer - http://www.buraks.com/asv
-package {
+﻿package {
 
     public class Doodad extends SimpleObject {
 
@@ -10,4 +9,4 @@ package {
             camFact = 0.8;
         }
     }
-}//package 
+}

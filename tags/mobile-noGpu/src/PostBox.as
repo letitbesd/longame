@@ -67,17 +67,17 @@
             var _local3:Number = (0.2 * (_g.P.useA / this.Ac));
             if (_local3 > 0.2){
                 _local3 = 0.2;
-            };
+            }
             _local2 = (_local2 + _local3);
             _local3 = (0.2 * ((_g.P.flightTime / 30) / this.Tc));
             if (_local3 > 0.2){
                 _local3 = 0.2;
-            };
+            }
             _local2 = (_local2 + _local3);
             _local3 = (0.2 * (_g.P.useV / this.Vc));
             if (_local3 > 0.2){
                 _local3 = 0.2;
-            };
+            }
             _local2 = (_local2 + _local3);
             _local1 = (_local1 * _local2);
             var _local4:Number = Math.round(_local1);
@@ -87,15 +87,15 @@
             _g.playerData.stats[3] = (_g.playerData.stats[3] + _local5);
             if (_g.playerData.stats[3] > 99999){
                 _g.playerData.stats[3] = 99999;
-            };
+            }
             _g.save();
             this.m.t_money.text = _local6;
             if (_local5 > 500){
                 AchieveMents.putA(3);
-            };
+            }
             if (_local5 > 3000){
                 AchieveMents.putA(17);
-            };
+            }
             this.m.t_mc1.text = new String(("$" + (_g.starsGathered * 5)));
             this.m.t_mc2.text = new String(("$" + (_g.P.useD / 2.5).toFixed(2)));
             this.m.t_mc3.text = new String((("+ " + Math.round((100 * (_local2 - 1)))) + "%"));
@@ -117,9 +117,9 @@
                         var _local4 = 4;
                         var _local5 = (_local3[_local4] + 1);
                         _local3[_local4] = _local5;
-                    };
-                };
-            };
+                    }
+                }
+            }
         }
 
     }

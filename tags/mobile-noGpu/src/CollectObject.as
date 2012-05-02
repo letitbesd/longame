@@ -1,5 +1,5 @@
-﻿//Created by Action Script Viewer - http://www.buraks.com/asv
-package {
+﻿package {
+	import flash.display.MovieClip;
 
     public class CollectObject extends SimpleObject {
 
@@ -7,13 +7,13 @@ package {
         public var active:Boolean= true
         public var prevX:Number= 0
         public var prevGap:Number= 0
-        private var mc;
+        private var mc:MovieClip;
         private var pe:ParticleEmitter;
 
-        public function CollectObject(_arg1:uint=0){
-            this.doodadType = _arg1;
+        public function CollectObject(type:uint=0){
+            this.doodadType = type;
             this.active = true;
-            switch (_arg1){
+            switch (type){
                 case 0:
                     addChild(new CollectGraphic());
                     break;
@@ -43,34 +43,34 @@ package {
                 case 5:
                     addChild(new PurpleStar());
                     break;
-            };
+            }
         }
-        private function animate(_arg1:FEvent):void{
+        private function animate(evt:FEvent):void{
             this.mc.crane.nextFrame();
             if (this.mc.crane.currentFrame == this.mc.crane.totalFrames){
                 this.mc.crane.gotoAndStop(0);
-            };
+            }
         }
         public function pickUp():void{
-            var _local1:*;
+            var numUp:PlusNumUp;
             if (this.active){
                 this.active = false;
                 if (((!(_g.P.groundedNow)) || (_g.P.bounceMode))){
                     switch (this.doodadType){
                         case 0:
                             _g.P.normalStar();
-                            _local1 = new PlusNumUp(this.getGraphic(_g.P.craneMult));
-                            _gD.put(_local1, _gD.FG);
-                            _local1.x = x;
-                            _local1.y = y;
+                            numUp = new PlusNumUp(this.getGraphic(_g.P.craneMult));
+                            _gD.put(numUp, _gD.FG);
+                            numUp.x = x;
+                            numUp.y = y;
                             _gP.removeDoodad(this);
                             break;
                         case 1:
                             _g.P.goldStar();
-                            _local1 = new PlusNumUp(new BonusNum());
-                            _gD.put(_local1, _gD.FG);
-                            _local1.x = x;
-                            _local1.y = y;
+                            numUp = new PlusNumUp(new BonusNum());
+                            _gD.put(numUp, _gD.FG);
+                            numUp.x = x;
+                            numUp.y = y;
                             _gP.removeDoodad(this);
                             break;
                         case 2:
@@ -78,41 +78,41 @@ package {
                             _gP.removeDoodad(this);
                             break;
                         case 3:
-                            _local1 = new PlusNumUp(new WindNum());
-                            _gD.put(_local1, _gD.FG);
-                            _local1.x = x;
-                            _local1.y = y;
+                            numUp = new PlusNumUp(new WindNum());
+                            _gD.put(numUp, _gD.FG);
+                            numUp.x = x;
+                            numUp.y = y;
                             _g.P.windMill();
                             break;
                         case 4:
                             _g.P.rainbowStar();
-                            _local1 = new PlusNumUp(this.getGraphic(_g.P.craneMult));
-                            _gD.put(_local1, _gD.FG);
-                            _local1.x = x;
-                            _local1.y = y;
+                            numUp = new PlusNumUp(this.getGraphic(_g.P.craneMult));
+                            _gD.put(numUp, _gD.FG);
+                            numUp.x = x;
+                            numUp.y = y;
                             _gP.removeDoodad(this);
                             break;
                         case 5:
                             _g.P.purpleStar();
-                            _local1 = new PlusNumUp(this.getGraphic(5));
-                            _gD.put(_local1, _gD.FG);
-                            _local1.x = x;
-                            _local1.y = y;
+                            numUp = new PlusNumUp(this.getGraphic(5));
+                            _gD.put(numUp, _gD.FG);
+                            numUp.x = x;
+                            numUp.y = y;
                             _gP.removeDoodad(this);
                             break;
-                    };
-                };
-            };
+                    }
+                }
+            }
         }
         public function endMe():void{
             if (this.doodadType == 1){
                 this.pe.killMe();
                 this.pe = null;
-            };
+            }
             Ticker.D.removeEventListener(FEvent.TICK, this.animate);
         }
-        private function getGraphic(_arg1:uint){
-            switch (_arg1){
+        private function getGraphic(type:uint):MovieClip{
+            switch (type){
                 case 1:
                     return (new PlusNum1());
                 case 2:
@@ -125,8 +125,9 @@ package {
                     return (new PlusNum5());
                 default:
                     return (new PlusNum1());
-            };
+            }
+			return null;
         }
 
     }
-}//package 
+}

@@ -36,7 +36,7 @@ package Playtomic {
         public static function Escape(str:String):String{
             if (str == null){
                 return ("");
-            };
+            }
             str = str.split("%").join("%25");
             str = str.split(";").join("%3B");
             str = str.split("?").join("%3F");
@@ -78,7 +78,7 @@ package Playtomic {
             pd.push(("timestamp=" + timestamp));
             for (key in postdata) {
                 pd.push(((key + "=") + Escape(postdata[key])));
-            };
+            }
             GenerateKey("section", section, pd);
             GenerateKey("action", action, pd);
             GenerateKey("signature", (((((nonce + timestamp) + section) + action) + url) + Log.GUID), pd);
@@ -123,22 +123,22 @@ package Playtomic {
             trace(request.data);
             if (request.handled){
                 return;
-            };
+            }
             request.handled = true;
             if (request.complete == null){
                 return;
-            };
+            }
             if (request.logging){
                 request.complete(false);
             } else {
                 request.complete(request.callback, request.postdata, null, new Response(0, 1));
-            };
+            }
         }
         private static function Dispose(request:Request):void{
             if (!request.handled){
                 request.handled = true;
                 request.close();
-            };
+            }
             Pool.push(request);
         }
         private static function TimeoutHandler(e:Event):void{
@@ -150,16 +150,16 @@ package Playtomic {
                     request.time++;
                     if (request.time < 40){
                         continue;
-                    };
+                    }
                     if (request.logging){
                         request.complete(false);
                     } else {
                         request.complete(request.callback, request.postdata, null, new Response(0, 3));
-                    };
-                };
+                    }
+                }
                 Queue.splice(n, 1);
                 Dispose(request);
-            };
+            }
         }
         public static function SendPEvent(p:Object):void{
             var request:Request = ((Pool.length > 0)) ? Pool.pop() : new (Request);
@@ -192,7 +192,7 @@ package Playtomic {
             while (i < 20) {
                 Pool.push(new (Request));
                 i++;
-            };
+            }
         }
         private static function Complete(e:Event):void{
             trace("Request is complete");
@@ -200,15 +200,15 @@ package Playtomic {
             trace(request.data);
             if (request.handled){
                 return;
-            };
+            }
             request.handled = true;
             if (request.complete == null){
                 return;
-            };
+            }
             if (request.logging){
                 request.complete(true);
                 return;
-            };
+            }
             var data:XML = XML(request.data);
             var status:int = parseInt(data["status"]);
             var errorcode:int = parseInt(data["errorcode"]);
