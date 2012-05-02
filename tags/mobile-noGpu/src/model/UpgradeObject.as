@@ -8,7 +8,7 @@
         public var req:uint;
         public var cost:Array;
         public var toolTip:String;
-        public var reqTT;
+//        public var reqTT;
         public var tipVar:Array;
         public var graphics:uint;
 
