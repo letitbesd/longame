@@ -1,8 +1,8 @@
 ﻿//Created by Action Script Viewer - http://www.buraks.com/asv
 package {
-    import flash.geom.*;
     import flash.display.*;
     import flash.filters.*;
+    import flash.geom.*;
 
     public class PlusNumUp extends Sprite {
 
@@ -15,12 +15,12 @@ package {
         private var ctr2:ColorTransform;
         private var ctrOS:Number= 0xFF
 
-        public function PlusNumUp(_arg1):void{
+        public function PlusNumUp(asset:DisplayObject):void{
             this.gf = new GlowFilter();
             this.ctr = new ColorTransform();
             this.ctr2 = new ColorTransform();
             super();
-            addChild(_arg1);
+            addChild(asset);
             Ticker.D.addEventListener(FEvent.TICK, this.run, false, 0, true);
             scaleX = (scaleY = (1 + this.scaler));
             this.ctr.redOffset = (this.ctr.blueOffset = (this.ctr.greenOffset = this.ctrOS));

@@ -1,6 +1,6 @@
 ﻿package {
-    import flash.events.*;
     import flash.display.*;
+    import flash.events.*;
     import flash.filters.*;
 
     public class PostBox extends Sprite {
@@ -113,10 +113,8 @@
                         this.alreadyProceed = true;
                         _gP.killDoodads();
                         _g.proceed();
-                        var _local3 = _g.playerData.stats;
-                        var _local4 = 4;
-                        var _local5 = (_local3[_local4] + 1);
-                        _local3[_local4] = _local5;
+                        var _local3:Array = _g.playerData.stats;
+                        _local3[4] = _local3[4] + 1;
                     }
                 }
             }
