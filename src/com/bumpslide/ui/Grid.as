@@ -98,7 +98,7 @@ package com.bumpslide.ui
 				h+=spacing;
 			}
 			
-			var round:Function = _roundedCellDimensions ? Math.floor : function(n:Number):Number {return n;};
+			var round:Function = _roundedCellDimensions ? Math.floor : function(n:Number):Number {return n;}
 			
 			if (fixedColumnCount > 0) {
 				layout.columnWidth = round(w / fixedColumnCount );
@@ -236,7 +236,7 @@ package com.bumpslide.ui
 		
 		
 		public function get gridItemProps():Object {
-			if(_itemProps==null) return { grid:this };
+			if(_itemProps==null) return { grid:this }
 			return _itemProps;
 		}
 		

@@ -63,7 +63,7 @@ package com.longame.utils
 				{
 					if ((bmd.getPixel(j, i)>>16)&0xff)
 					{
-						var point:* = { x:null, y:null};
+						var point:* = { x:null, y:null}
 						point.x = j* density + offsetX;
 						point.y = i * density + offsetY;
 						arr.push(point);

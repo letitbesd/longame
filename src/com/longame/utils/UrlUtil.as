@@ -26,7 +26,7 @@ package com.longame.utils
 		   var paramStr:String=url.slice(i+1,url.length);
 		   if(paramStr.length==0) return null;
 		   var keyValues:Array=paramStr.split("&");
-		   var param:Object={};
+		   var param:Object={}
 		   for each(var keyValue:String in keyValues){
 			   var arr:Array=keyValue.split("=");
 			   param[arr[0] as String]=arr[1];

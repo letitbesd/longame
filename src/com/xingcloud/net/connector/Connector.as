@@ -85,7 +85,7 @@ package com.xingcloud.net.connector
 		protected function generateParam(value:Object):void
 		{
 			_msgId=Util.messageId;
-			_commandArgs={id: _msgId.toString(), info: Config.appInfo, data: value};
+			_commandArgs={id: _msgId.toString(), info: Config.appInfo, data: value}
 		}
 
 		/**
@@ -100,7 +100,7 @@ package com.xingcloud.net.connector
 			var oauth:Object={oauth_version: Config.getConfig("authVersion"),
 					 oauth_signature_method: Config.getConfig("authMethod"),
 					 oauth_consumer_key: Config.getConfig("consumerKey"), realm: _gateway, oauth_timestamp: timeStamp,
-					 oauth_nonce: MD5.hash(timeStamp.toString() + Math.random())};
+					 oauth_nonce: MD5.hash(timeStamp.toString() + Math.random())}
 			if (!oauth.oauth_signature_method || !oauth.oauth_consumer_key)
 			{
 				throw new Error("Not enough parameters for authentication.");

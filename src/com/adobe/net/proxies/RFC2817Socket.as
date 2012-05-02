@@ -187,7 +187,7 @@ package com.adobe.net.proxies
 		{
 			if (type == Event.CONNECT || type == ProgressEvent.SOCKET_DATA)
 			{
-				this.deferredEventHandlers[type] = {listener:listener,useCapture:useCapture, priority:priority, useWeakReference:useWeakReference};
+				this.deferredEventHandlers[type] = {listener:listener,useCapture:useCapture, priority:priority, useWeakReference:useWeakReference}
 			}
 			else
 			{

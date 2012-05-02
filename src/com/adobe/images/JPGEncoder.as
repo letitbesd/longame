@@ -515,7 +515,7 @@ package com.adobe.images
 			//Encode ACs
 			var end0pos:int = 63;
 			for (; (end0pos>0)&&(DU[end0pos]==0); end0pos--) {
-			};
+			}
 			//end0pos = first element in reverse order !=0
 			if ( end0pos == 0) {
 				writeBits(EOB);

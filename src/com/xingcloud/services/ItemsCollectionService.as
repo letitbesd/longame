@@ -12,7 +12,7 @@ package com.xingcloud.services
 		{
 			super(onSuccess, onFail);
 			_commandName=Config.ITEMSLOAD_SERVICE;
-			_commandArgs={user_uid: XingCloud.uid, property: ic.OwnerProperty};
+			_commandArgs={user_uid: XingCloud.uid, property: ic.OwnerProperty}
 		}
 
 		private var _itemscollectionData:Object;

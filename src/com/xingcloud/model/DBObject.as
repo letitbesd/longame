@@ -39,7 +39,7 @@ package com.xingcloud.model
 		 * */
        final public function parseToObject():Object
 	   {
-		   var result:Object={};
+		   var result:Object={}
 		   ObjectUtil.cloneProperties(this,result,propertiesNoSave);
 		   return result;
 	   }

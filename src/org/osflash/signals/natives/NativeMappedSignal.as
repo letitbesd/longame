@@ -130,7 +130,7 @@ package org.osflash.signals.natives
 			}
 			else
 			{
-				_mappingFunction = function ():Object { return objectListOrFunction; };
+				_mappingFunction = function ():Object { return objectListOrFunction; }
 			}
 			
 			return this;

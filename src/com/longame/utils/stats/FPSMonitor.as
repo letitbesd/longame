@@ -69,7 +69,7 @@ package com.longame.utils.stats
 		protected var mem_graph : uint;
 		protected var mem_max_graph : uint;
 		
-		protected var theme : Object = { bg: 0x000033, fps: 0xffff00, ms: 0x00ff00, mem: 0x00ffff, memmax: 0xff0070 }; 
+		protected var theme : Object = { bg: 0x000033, fps: 0xffff00, ms: 0x00ff00, mem: 0x00ffff, memmax: 0xff0070 } 
 		
 		/**
 		 * <b>FPSMonitor</b> FPS, MS and MEM, all in one.

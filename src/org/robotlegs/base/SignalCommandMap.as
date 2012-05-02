@@ -34,7 +34,7 @@ package org.robotlegs.base
             var callback:Function = function(a:* = null, b:* = null, c:* = null, d:* = null, e:* = null, f:* = null, g:* = null):void
             {
                 routeSignalToCommand( signal, arguments, commandClass, oneShot );
-            };
+            }
 
             signalCommandMap[commandClass] = callback;
             signal.add( callback );

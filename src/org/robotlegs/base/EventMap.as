@@ -105,7 +105,7 @@ package org.robotlegs.base
 			var callback:Function = function(event:Event):void
 				{
 					routeEventToListener(event, listener, eventClass);
-				};
+				}
 			params = {
 					dispatcher: dispatcher,
 					type: type,
@@ -113,7 +113,7 @@ package org.robotlegs.base
 					eventClass: eventClass,
 					callback: callback,
 					useCapture: useCapture
-				};
+				}
 			listeners.push(params);
 			dispatcher.addEventListener(type, callback, useCapture, priority, useWeakReference);
 		}

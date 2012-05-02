@@ -77,7 +77,7 @@ package com.longame.commands.net
 		 * */
 		public function Remoting(command_name:String, command_args:Object=null,method:String="amf",gateWay:String=null,needAuth:Boolean=false)
 		{
-			oauth ={oauth_version:VER};
+			oauth ={oauth_version:VER}
 			if(gateWay==null)
 			{
 				gateWay=(method==AMF)?Config.amfGateway:Config.restGateway;

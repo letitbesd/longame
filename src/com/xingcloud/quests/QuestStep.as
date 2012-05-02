@@ -20,7 +20,7 @@ package com.xingcloud.quests
 		protected var _icon:String;
 		protected var _action:String;
 		protected var _count:uint=1;
-		protected var _param:Object={};
+		protected var _param:Object={}
 		/**
 		 *  指定action已经完成的次数，当completedCount>=count是，此行为视为完成
 		 * */

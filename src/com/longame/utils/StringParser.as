@@ -167,7 +167,7 @@ package com.longame.utils
                     dataContainer = new Dictionary();
                     break;
                 case OBJECT:
-                    dataContainer = {};
+                    dataContainer = {}
                     break;
                 default:
                     dataContainer = [];

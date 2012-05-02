@@ -137,7 +137,7 @@ package com.longame.display.effects{
 			s *= 0.01;
 			if (s == 0) {
 				var val:Number = l*255;
-				return {r:val, g:val, b:val};
+				return {r:val, g:val, b:val}
 			}
 			if (l < 0.5) {
 				max = l*(1 + s)*255;
@@ -192,7 +192,7 @@ package com.longame.display.effects{
 			r = Math.min(255, Math.max(0, Math.round(r)));
 			g = Math.min(255, Math.max(0, Math.round(g)));
 			b = Math.min(255, Math.max(0, Math.round(b)));
-			return {r:r, g:g, b:b};
+			return {r:r, g:g, b:b}
 		}
 		
 	}
