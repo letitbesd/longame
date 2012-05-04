@@ -79,7 +79,6 @@ package com.bumpslide.ui
 			} catch (e:Error) {
 				try {
 					(skin as MovieClip).gotoAndStop( skinState );
-					trace(name+" state: "+skinState+",label: "+(skin as MovieClip).currentLabel);
 				} catch (e:ArgumentError) {
 					log('missing button state ' + skinState );
 				}
