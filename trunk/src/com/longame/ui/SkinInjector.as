@@ -49,14 +49,12 @@ package com.longame.ui
 		
 		/**
 		 * @param target: The target to skin with the MovieClip
-		 * @param skin: MovieClip source
 		 * */
-		public function SkinInjector(target:DisplayObjectContainer,skin:MovieClip=null)
+		public function SkinInjector(target:DisplayObjectContainer)
 		{
 			this._target=target;
 			//解析Skin标签
 			_skinMetas=Reflection.getMetaInfos(this._target,PART_META_NAME);
-			if(skin) this.inject(skin);
 		}
 		public function inject(skin:MovieClip):Boolean
 		{
