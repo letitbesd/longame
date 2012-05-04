@@ -5,6 +5,7 @@ package com.longame.game.entity
 	import com.longame.display.core.AnimationFrames;
 	import com.longame.display.core.IFrameAnimator;
 	import com.longame.display.core.RenderManager;
+	import com.longame.managers.SoundManager;
 	import com.longame.model.Direction;
 	import com.longame.model.EntityItemSpec;
 	import com.longame.model.TextureData;
@@ -30,8 +31,9 @@ package com.longame.game.entity
 		 * 基于以下设定：所有方向的mc具有相同的动画序列,缓存呢，todo
 		 * */
 		protected var _frames:AnimationFrames=new AnimationFrames();
-		private var animationController:AnimationController=new AnimationController(this as IFrameAnimator);
+		private var _animationController:AnimationController=new AnimationController(this as IFrameAnimator);
 		private var _frameInvalidated:Boolean;
+		private var _frameSounds:Dictionary=new Dictionary();
 		
 		public function AnimatorEntity(id:String=null)
 		{
@@ -40,28 +42,29 @@ package com.longame.game.entity
 		override protected function addSignals():void
 		{
 			super.addSignals();
-			animationController.onAnimationPlayed.add(this.whenAnimationPlayed);
-			animationController.onLastFrame.add(this.whenLastFrame);
+			_animationController.onAnimationPlayed.add(this.whenAnimationPlayed);
+			_animationController.onLastFrame.add(this.whenLastFrame);
 		}
 		override protected function removeSignals():void
 		{
 			super.removeSignals();
-			animationController.onAnimationPlayed.remove(this.whenAnimationPlayed);
-			animationController.onLastFrame.remove(this.whenLastFrame);
+			_animationController.onAnimationPlayed.remove(this.whenAnimationPlayed);
+			_animationController.onLastFrame.remove(this.whenLastFrame);
 		}
 		override protected function whenDispose():void
 		{
 			super.whenDispose();
 			_frames.destroy();
 			_frames=null;
-			animationController.destroy();
-			animationController=null;
+			_animationController.destroy();
+			_animationController=null;
+			_frameSounds=null;
 		}
 		override protected function  whenSourceLoaded():void
 		{
 			if(_sourceDisplay){
 				_frames.parseFromMC(_sourceDisplay as MovieClip);
-				animationController.initialize();
+				_animationController.initialize();
 			}
 			super.whenSourceLoaded();
 		}
@@ -81,23 +84,30 @@ package com.longame.game.entity
 		 */
 		public function gotoAndPlay(frame:Object,loops:int=0):Boolean
 		{
-			return animationController.gotoAndPlay(frame,loops);
+			return _animationController.gotoAndPlay(frame,loops);
 		}
 		public function gotoAndStop(frame:Object):Boolean
 		{
-			return animationController.gotoAndStop(frame);
+			return _animationController.gotoAndStop(frame);
 		}
 		public function play():Boolean
 		{
-			return animationController.play();
+			return _animationController.play();
 		}
 		public function stop():Boolean
 		{
-			return animationController.stop();
+			return _animationController.stop();
+		}
+		public function addFrameSound(frame:*,sound:String):void
+		{
+			var frameIndex:int;
+			if(frame is String) frameIndex=_frames.getFrame(frame as String);
+			else frameIndex=frame as int;
+			this._frameSounds[frameIndex]=sound;
 		}
 		override protected function doRender():void
 		{
-			this.animationController.update();
+			this._animationController.update();
 			super.doRender();
 		}
 		/**
@@ -118,8 +128,12 @@ package com.longame.game.entity
 		/**
 		 * 当帧变化时
 		 * */
-		protected function onFrame():void
+		protected function whenFramed():void
 		{
+			var sound:String=this._frameSounds[_currentFrame];
+			if(sound){
+				SoundManager.playSound(sound);
+			}
 			//can be override
 		}
 		private var _currentFrame:int=0;
@@ -128,7 +142,7 @@ package com.longame.game.entity
 			if(_currentFrame==value) return;
 			_currentFrame=value;
 			_frameInvalidated=true;
-			this.onFrame();
+			this.whenFramed();
 		}
 		public function get totalFrames():int
 		{
@@ -141,7 +155,7 @@ package com.longame.game.entity
 		}
 		public function get currentLabel():String
 		{
-			return this.animationController.currentLabel;
+			return this._animationController.currentLabel;
 		}
 		public function get frames():AnimationFrames
 		{
@@ -153,13 +167,13 @@ package com.longame.game.entity
 		 * */
 		public function get onAnimationPlayed():Signal
 		{
-			if(this.animationController==null) return null;
-			return this.animationController.onAnimationPlayed;
+			if(this._animationController==null) return null;
+			return this._animationController.onAnimationPlayed;
 		}
 		public function get onLastFrame():Signal
 		{
-			if(this.animationController==null) return null;
-			return this.animationController.onLastFrame;
+			if(this._animationController==null) return null;
+			return this._animationController.onLastFrame;
 		}
 	}
 }
