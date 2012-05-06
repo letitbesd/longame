@@ -43,20 +43,12 @@
 							var displayMethod:Function = this['_' + skinState];
 							displayMethod.call( this );
 						} catch (e:Error) {
-							try {
-								(_skin as MovieClip).gotoAndStop( skinState );
-								//do here
-							} catch (e:ArgumentError) {
-								log('missing button state ' + skinState );
-							}
+							this.skinInjector.update(_skinState);
 						}
 					}
 					triggerRender();
 					validate( VALID_SKIN_STATE );
-				}//				if (hasChanged( VALID_SKIN_STATE ) && (skin is ISkin)) {//					// render the skin state
-////					(skin as ISkin).renderSkin( skinState );//					// now, invalidate stage and wait for render event
-////					// so we can update content inside the frames of movieclip skins
-////					triggerRender();//					validate( VALID_SKIN_STATE );//				}				if (hasChanged( VALID_SIZE )) {					if (_skin is IResizable) {						(_skin as IResizable).setSize( width, height );					} else {						_skin.width = width;						_skin.height = height;					}				}			}		}		/**
+				}				if (hasChanged( VALID_SIZE )) {					if (_skin is IResizable) {						(_skin as IResizable).setSize( width, height );					} else {						_skin.width = width;						_skin.height = height;					}				}			}		}		/**
 		 * Trigger a stage Event.RENDER and handle it with the render method.
 		 * 
 		 * If there is no stage, render is called on the next frame.		 */		protected function triggerRender( e:Event = null ):void		{			if (stage) {				stage.addEventListener( Event.RENDER, handleStageRender );				stage.invalidate();			} else {				Delegate.onEnterFrame( render );			}		}		protected function handleStageRender( e:Event ):void		{			if (stage) {				stage.removeEventListener( Event.RENDER, handleStageRender );			}			render();		}		protected function handleChildRedraw( event:UIEvent ):void		{			if (contains( DisplayObject( event.target ) ) && !_drawing) {				_drawing = true;				layoutChildren();				_drawing = false;			}		}		/**

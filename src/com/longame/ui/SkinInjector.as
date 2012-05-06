@@ -69,6 +69,16 @@ package com.longame.ui
 			this.parseSkin();
 			return _skinMetas.length>0;
 		}
+		public function update(state:String):void
+		{
+			if(_skin==null) return;
+			try{
+				_skin.gotoAndStop( state );
+				this.inject(_skin);
+			}catch(e:Error){
+				Logger.error(this,"update","No label with name: "+state);
+			}
+		}
 		public function getSkinPart(name:String):DisplayObject
 		{
 			return _skinParts[name];
