@@ -37,7 +37,7 @@ package com.longame.display
 			var width:Number  = frame ? frame.width  : texture.width;
 			var height:Number = frame ? frame.height : texture.height;
 			var pma:Boolean = texture.premultipliedAlpha;
-			this.updateVertexData(width, height, 0xffffff, pma);
+//			this.updateVertexData(width, height, 0xffffff, pma);
 			this.texture=texture;
 			this.readjustSize();
 		}
