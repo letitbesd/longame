@@ -10,3 +10,9 @@ ui的starling渲染
 有child标签指定其类型，则转换之进入下一个循环，否则按照对应类型转成starling的显示类型。注意层级排序就ok。
 
 对于多帧的情况，类似于上，只是每到新的一帧，旧帧的所有元素都会被删除，添加新帧的元素，做个缓存，如果是旧帧有的东西，直接别删，拿来用好了
+
+	SimpleGraphic
+     	     |            
+	SimpleObject ,Particle
+        |    |    |
+    CollectObject,Doodad,Plane  
