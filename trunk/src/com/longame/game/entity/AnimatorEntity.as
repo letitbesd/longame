@@ -32,7 +32,7 @@ package com.longame.game.entity
 		 * */
 		protected var _frames:AnimationFrames=new AnimationFrames();
 		private var _animationController:AnimationController=new AnimationController(this as IFrameAnimator);
-		private var _frameInvalidated:Boolean;
+		protected var _frameInvalidated:Boolean;
 		private var _frameSounds:Dictionary=new Dictionary();
 		
 		public function AnimatorEntity(id:String=null)
@@ -68,11 +68,11 @@ package com.longame.game.entity
 			}
 			super.whenSourceLoaded();
 		}
-		override protected function renderBitmap():void
+		override protected function renderTexture(extraId:String=null):void
 		{
-			if((_bitmapInvalidated||_frameInvalidated)&&_sourceDisplay){
-				RenderManager.loadTexture(this._currentSource,_currentFrame,_scaleX,_scaleY,onTextureLoaded);
-				_bitmapInvalidated=false;
+			if((_sourceInvalidated||_frameInvalidated)&&_sourceDisplay){
+				RenderManager.loadTexture(this._currentSource,_currentFrame,_scaleX,_scaleY,onTextureLoaded,null,extraId);
+				_sourceInvalidated=false;
 				_frameInvalidated=false;
 			}
 		}

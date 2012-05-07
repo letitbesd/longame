@@ -48,25 +48,25 @@ package com.longame.game.entity
 					this._directionInvalidated=false;
 				}
 			}
-			this.renderBitmap();
+			this.renderTexture();
 			super.doRender();
 		}
-		protected var _bitmapInvalidated:Boolean;
+		protected var _sourceInvalidated:Boolean;
 		/**
-		 * 位图渲染
+		 * 渲染一帧，如果需要在不同情况下来让同一帧同一scale的对象重新渲染(像换装），可以添加extraId来进行区别，在缓存池里也会体现出来
 		 * */
-		protected function renderBitmap():void
+		protected function renderTexture(extraId:String=null):void
 		{
-			if(_bitmapInvalidated&&_sourceDisplay)
+			if(_sourceInvalidated&&_sourceDisplay)
 			{
-				RenderManager.loadTexture(this._currentSource,null,_scaleX,_scaleY,onTextureLoaded);
-				_bitmapInvalidated=false;
+				RenderManager.loadTexture(this._currentSource,null,_scaleX,_scaleY,onTextureLoaded,null,extraId);
+				_sourceInvalidated=false;
 			}
 		}
 		override protected function validateScale():void
 		{
 			if(!_scaleInvalidated) return;
-			if(this._rawSource) _bitmapInvalidated=true;
+			if(this._rawSource) _sourceInvalidated=true;
 			_scaleInvalidated=false;
 			if(_onScale) _onScale.dispatch(this);
 		}
@@ -113,7 +113,7 @@ package com.longame.game.entity
 				display.x=0;
 				display.y=0;
 				this._sourceDisplay=display;
-				this. _bitmapInvalidated=true;
+				this. _sourceInvalidated=true;
 				this._sourceIsNew=true;
 				this.whenSourceLoaded();
 			}
@@ -210,7 +210,7 @@ package com.longame.game.entity
 		}
 		override public function get invalidated():Boolean
 		{
-			return _positionInvalidated||_scaleInvalidated||_rotationInvalidated||_directionInvalidated||_bitmapInvalidated||_inBuilding;
+			return _positionInvalidated||_scaleInvalidated||_rotationInvalidated||_directionInvalidated||_sourceInvalidated||_inBuilding;
 		}
 		public function get direction():int
 		{

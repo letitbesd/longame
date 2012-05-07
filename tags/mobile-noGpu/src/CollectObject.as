@@ -10,10 +10,10 @@
         private var mc:MovieClip;
         private var pe:ParticleEmitter;
 
-        public function CollectObject(type:uint=0){
-            this.doodadType = type;
+        public function CollectObject(doodadType:uint=0){
+            this.doodadType = doodadType;
             this.active = true;
-            switch (type){
+            switch (doodadType){
                 case 0:
                     addChild(new CollectGraphic());
                     break;
@@ -55,22 +55,16 @@
             var numUp:PlusNumUp;
             if (this.active){
                 this.active = false;
-                if (((!(_g.P.groundedNow)) || (_g.P.bounceMode))){
+                if ((!_g.P.groundedNow) || _g.P.bounceMode){
                     switch (this.doodadType){
                         case 0:
                             _g.P.normalStar();
-                            numUp = new PlusNumUp(this.getGraphic(_g.P.craneMult));
-                            _gD.put(numUp, _gD.FG);
-                            numUp.x = x;
-                            numUp.y = y;
+                            numUp = new PlusNumUp("PlusNum"+_g.P.craneMult);
                             _gP.removeDoodad(this);
                             break;
                         case 1:
                             _g.P.goldStar();
-                            numUp = new PlusNumUp(new BonusNum());
-                            _gD.put(numUp, _gD.FG);
-                            numUp.x = x;
-                            numUp.y = y;
+                            numUp = new PlusNumUp("BonusNum");
                             _gP.removeDoodad(this);
                             break;
                         case 2:
@@ -78,29 +72,26 @@
                             _gP.removeDoodad(this);
                             break;
                         case 3:
-                            numUp = new PlusNumUp(new WindNum());
-                            _gD.put(numUp, _gD.FG);
-                            numUp.x = x;
-                            numUp.y = y;
+                            numUp = new PlusNumUp("WindNum");
                             _g.P.windMill();
                             break;
                         case 4:
                             _g.P.rainbowStar();
-                            numUp = new PlusNumUp(this.getGraphic(_g.P.craneMult));
-                            _gD.put(numUp, _gD.FG);
-                            numUp.x = x;
-                            numUp.y = y;
+							numUp = new PlusNumUp("PlusNum"+_g.P.craneMult);
                             _gP.removeDoodad(this);
                             break;
                         case 5:
                             _g.P.purpleStar();
-                            numUp = new PlusNumUp(this.getGraphic(5));
-                            _gD.put(numUp, _gD.FG);
-                            numUp.x = x;
-                            numUp.y = y;
+                            numUp = new PlusNumUp("PlusNum5");
                             _gP.removeDoodad(this);
                             break;
                     }
+					if(numUp){
+						//TODO
+//						_gD.put(numUp, _gD.FG);
+						numUp.x = x;
+						numUp.y = y;
+					}
                 }
             }
         }
@@ -111,23 +102,5 @@
             }
             Ticker.D.removeEventListener(FEvent.TICK, this.animate);
         }
-        private function getGraphic(type:uint):MovieClip{
-            switch (type){
-                case 1:
-                    return (new PlusNum1());
-                case 2:
-                    return (new PlusNum2());
-                case 3:
-                    return (new PlusNum3());
-                case 4:
-                    return (new PlusNum4());
-                case 5:
-                    return (new PlusNum5());
-                default:
-                    return (new PlusNum1());
-            }
-			return null;
-        }
-
     }
 }
