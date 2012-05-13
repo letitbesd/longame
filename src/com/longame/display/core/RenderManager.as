@@ -40,35 +40,11 @@ package com.longame.display.core
 		/**
 		 * TextureData缓存池
 		 * */
-		protected static var texturePool:Dictionary=new Dictionary();
+		private static var texturePool:Dictionary=new Dictionary();
 		/**
 		 * 显示对象缓存池
 		 * */
-		protected static var displayPool:Dictionary=new Dictionary();
-
-		/**
-		 * 用source所指定的源来直接渲染canvas
-		 * @param canvas: 目标容器,实现IBitmapRenerer即可,canvas的bitmap不要在销毁的时候尝试bitmap.bitmapData.dispose(),因为所有的bitmapData放在缓存池里的
-		 * @param source: 渲染源，可以是class或者url或者DisplayObject实例，支持特殊的描述： assets.swf#symbol1@content，表示assets.swf里面的名为symbol1的元件中的content子元素
-		 * @param frame: 如果source代表的是一个MovieClip，frame代表渲染某一帧，可以是label，也可以是index
-		 * @param scaleX:指定x缩放，如果要位图渲染放大的矢量图，在矢量图放大后进行draw就会得到清晰的图像
-		 * @param scaleY:指定y缩放，如果要位图渲染放大的矢量图，在矢量图放大后进行draw就会得到清晰的图像
-		 * */
-//		public static function render(canvas:IBitmapRenderer,source:*,frame:*=null,scaleX:Number=1.0,scaleY:Number=1.0):void
-//		{
-//			loadTexture(source,frame,scaleX,scaleY,
-//				function(TextureData:TextureData):void
-//				{
-//					canvas.bitmap.bitmapData=renderData.texture;
-//					canvas.bitmap.x=renderData.x;
-//					canvas.bitmap.y=renderData.y;
-//				},
-//				function ():void
-//				{
-//					Logger.error("RenderManager","render","The renderData defined with"+source+" and frame: "+frame+" does not exist!");
-//				}
-//			);
-//		}
+		private static var displayPool:Dictionary=new Dictionary();
 		/**
 		 * 给位图添加特效
 		 * @param bmd: 目标位图
@@ -210,6 +186,11 @@ package com.longame.display.core
 				return;
 			}
 		}
+		public static function getTextureFromPool(source:*,frame:*=null,scaleX:Number=1.0,scaleY:Number=1.0,extraId:String=null):TextureData
+		{
+			var key:String=getUniqueKey(source,frame,scaleX,scaleY,extraId);
+			return texturePool[key];
+		}
 		/**
 		 * 获取source对应显示对象的texture数据，如果source对应的texture已经存在，直接用返回，
 		 * 对于场景中大量重复静止对象采用此方法，可以降低游戏消耗,返回Sprite或MovieClip
@@ -223,23 +204,17 @@ package com.longame.display.core
 		 * */
 		public static function loadTexture(source:*,frame:*=null,scaleX:Number=1.0,scaleY:Number=1.0,successCallback:Function=null,failCallback:Function=null,extraId:String=null):TextureData
 		{
-			var key:String=getUniqueKey(source,frame,scaleX,scaleY);
-			if(extraId) key+="%"+extraId;
+			var key:String=getUniqueKey(source,frame,scaleX,scaleY,extraId);
 			var render:TextureData=texturePool[key];
 			if(render==null){
 				RenderManager.getDisplayFromSource(source,
 					function (display:DisplayObject):void{
-						render=getTexturedata(display,frame,scaleX,scaleY);
+						render=createTexture(display,frame,scaleX,scaleY);
 						render.id=key;
 						//是否浪费内存
-						render.source=display;
+//						render.source=display;
 						texturePool[key]=render;
 						textureCount++;
-						//如果源是一个带@标志的对象，那将其调整至本来的注册点
-//						if((source is String)&&((source as String).indexOf("@")!=-1)){
-//							render.x+=display.x;
-//							render.y+=display.y;
-//						}
 						if(successCallback!=null)　successCallback(render);
 					},
 					function ():void
@@ -260,7 +235,7 @@ package com.longame.display.core
 		 * @param scaleX:指定x缩放，如果要位图渲染放大的矢量图，在矢量图放大后进行draw就会得到清晰的图像
 		 * @param scaleY:指定y缩放，如果要位图渲染放大的矢量图，在矢量图放大后进行draw就会得到清晰的图像
 		 * **/
-		public static function getTexturedata(display:DisplayObject,frame:*,scaleX:Number=1.0,scaleY:Number=1.0):TextureData
+		public static function createTexture(display:DisplayObject,frame:*,scaleX:Number=1.0,scaleY:Number=1.0):TextureData
 		{
 			var textureData:TextureData=new TextureData();
 			if(display is MovieClip){
@@ -275,7 +250,7 @@ package com.longame.display.core
 			textureData.y=reg.y*scaleY;		
 			return textureData;
 		}
-		private static function getUniqueKey(source:*,frame:*=null,scaleX:Number=1.0,scaleY:Number=1.0):String
+		private static function getUniqueKey(source:*,frame:*=null,scaleX:Number=1.0,scaleY:Number=1.0,extraId:String=null):String
 		{
 			var mainKey:String=String(source);
 			//如果source不是string，可能是Class或者显示对象实例，这个时候用它的class名做key，以免重复
@@ -283,9 +258,9 @@ package com.longame.display.core
 				//如果是显示对象，用它的class名作为key，以免重复
 				mainKey=getQualifiedClassName(source);
 			}
-			if(frame!=null) mainKey+="@"+String(frame);
-			mainKey+="#"+scaleX+"#"+scaleY;
-//			if((effects!=null)&&(effects.length)) mainKey+="@"+String(effects);
+			if(frame!=null) mainKey+="_"+String(frame);
+			mainKey+="_"+scaleX+"_"+scaleY;
+			if(extraId) mainKey+="_"+extraId;
 			return mainKey;
 		}
 	}
