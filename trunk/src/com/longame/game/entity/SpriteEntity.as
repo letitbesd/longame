@@ -1,9 +1,9 @@
 package com.longame.game.entity
 {
 	import com.longame.core.long_internal;
-	import com.longame.display.effects.bitmapEffect.BitmapEffect;
 	import com.longame.display.core.IBitmapRenderer;
 	import com.longame.display.core.RenderManager;
+	import com.longame.display.effects.bitmapEffect.BitmapEffect;
 	import com.longame.game.scene.BaseScene;
 	import com.longame.game.scene.SceneManager;
 	import com.longame.managers.ProcessManager;
@@ -27,12 +27,10 @@ package com.longame.game.entity
 	import starling.display.Image;
 
 	use namespace long_internal;
-   /**
-   * 暂不支持动画的位图渲染，用AnimatorEntity吧
-   * */
 	public class SpriteEntity extends DisplayEntity
 	{
 		protected var _onBuild:Signal;
+		protected var _currentFrame:int=0;
 		
 		public function SpriteEntity(id:String=null)
 		{
@@ -51,22 +49,28 @@ package com.longame.game.entity
 			this.renderTexture();
 			super.doRender();
 		}
-		protected var _sourceInvalidated:Boolean;
+		protected var _textureInvalidated:Boolean;
 		/**
 		 * 渲染一帧，如果需要在不同情况下来让同一帧同一scale的对象重新渲染(像换装），可以添加extraId来进行区别，在缓存池里也会体现出来
 		 * */
 		protected function renderTexture(extraId:String=null):void
 		{
-			if(_sourceInvalidated&&_sourceDisplay)
+			if(_textureInvalidated&&_sourceDisplay)
 			{
-				RenderManager.loadTexture(this._currentSource,null,_scaleX,_scaleY,onTextureLoaded,null,extraId);
-				_sourceInvalidated=false;
+				var texture:TextureData=RenderManager.getTextureFromPool(this._currentSource,_currentFrame,_scaleX,_scaleY,extraId);
+				if(texture){
+					onTextureLoaded(texture);
+				}else{
+					this.preHandlerTexture();
+					RenderManager.loadTexture(this._currentSource,_currentFrame,_scaleX,_scaleY,onTextureLoaded,null,extraId);
+				}
+				_textureInvalidated=false;
 			}
 		}
 		override protected function validateScale():void
 		{
 			if(!_scaleInvalidated) return;
-			if(this._rawSource) _sourceInvalidated=true;
+			if(this._rawSource) _textureInvalidated=true;
 			_scaleInvalidated=false;
 			if(_onScale) _onScale.dispatch(this);
 		}
@@ -113,7 +117,8 @@ package com.longame.game.entity
 				display.x=0;
 				display.y=0;
 				this._sourceDisplay=display;
-				this. _sourceInvalidated=true;
+				if(this._sourceDisplay is MovieClip) (this._sourceDisplay as MovieClip).stop();
+				this. _textureInvalidated=true;
 				this._sourceIsNew=true;
 				this.whenSourceLoaded();
 			}
@@ -131,6 +136,13 @@ package com.longame.game.entity
 		{
 			this.whenBuild();
 			//tobe inherited
+		}
+		/**
+		 * 当source源变化或帧变化或scale变化或其它任何需要刷新当前帧图像前，在这里处理一些逻辑，如换装。。。
+		 * */
+		protected function preHandlerTexture():void
+		{
+			//tobe overrided
 		}
 		/**
 		 * 当素材被加载完时，如果是多方向动画，此函数可能会被调多次
@@ -210,7 +222,7 @@ package com.longame.game.entity
 		}
 		override public function get invalidated():Boolean
 		{
-			return _positionInvalidated||_scaleInvalidated||_rotationInvalidated||_directionInvalidated||_sourceInvalidated||_inBuilding;
+			return _positionInvalidated||_scaleInvalidated||_rotationInvalidated||_directionInvalidated||_textureInvalidated||_inBuilding;
 		}
 		public function get direction():int
 		{
