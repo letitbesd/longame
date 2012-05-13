@@ -8,6 +8,7 @@
     import screens.MainMenuScreen;
     import screens.PostScreen;
     import screens.UpgradeScreen;
+    import ui.aHolder;
 
     public class _g {
 
@@ -148,8 +149,6 @@
             if ((_g.playerData.upgrades[3] + _g.playerData.upgrades[5]) == 0){
                 _gD.uiBody.fuelBar.visible = false;
             }
-            P.addEventListener(MouseEvent.MOUSE_DOWN, pickUp);
-            STAGE.addEventListener(MouseEvent.MOUSE_UP, letGo);
             STAGE.addEventListener(KeyboardEvent.KEY_DOWN, keyDown, false, 0, true);
             STAGE.addEventListener(KeyboardEvent.KEY_UP, keyUp, false, 0, true);
         }
@@ -225,8 +224,6 @@
         public static function finish():void{
             endGame();
             adder = (P.totalDist / 200);
-            P.removeEventListener(MouseEvent.MOUSE_DOWN, pickUp);
-            STAGE.removeEventListener(MouseEvent.MOUSE_UP, letGo);
             _gD.postBox.calculate();
             _gD.postBox.moveIn();
         }
@@ -265,12 +262,5 @@
             }
 			return null;
         }
-        private static function pickUp(evt:MouseEvent=null):void{
-            P.pickUp();
-        }
-        private static function letGo(evt:MouseEvent=null):void{
-            P.letGo();
-        }
-
     }
 }

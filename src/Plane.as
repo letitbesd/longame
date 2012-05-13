@@ -1,8 +1,13 @@
 ﻿package {
-    import flash.display.*;
+    import flash.display.MovieClip;
     import flash.events.*;
     import flash.filters.*;
     import flash.geom.*;
+    
+    import starling.display.Sprite;
+    import starling.events.Touch;
+    import starling.events.TouchEvent;
+    import starling.events.TouchPhase;
 
     public class Plane extends SimpleObject {
 
@@ -59,8 +64,8 @@
 		/**
 		 * Plane movieClip assets
 		 * */
-        private var B2:MovieClip;
-        private var subHolder:Sprite;
+//        private var B2:MovieClip;
+//        private var subHolder:Sprite;
         private var rainbowAble:Boolean= false
         private var starTypeCollected:Array;
         private var starCollectedReal:uint= 0
@@ -71,8 +76,7 @@
         private var windMillGetCount:uint= 0
         private var bounceDistance:Number= 0
         private var effectTime:uint= 0
-        private var miniEffectPhase:uint= 2
-        private var effectPhase:Boolean= true
+        private var miniEffectPhase:int= -1;
         private var theFilter:GlowFilter;
         private var theColor:ColorTransform;
 
@@ -105,7 +109,7 @@
             this.purpleStarsGet = 0;
             this.windMillGetCount = 0;
             this.escapeCount = 0;
-            this.subHolder = new Sprite();
+//            this.subHolder = new Sprite();
             bounceMode = false;
             this.rainbowAble = false;
             this.thrown = false;
@@ -151,36 +155,60 @@
             }
             switch (_g.playerData.upgrades[0]){
                 case 0:
-                    this.B2 = new PRS_1();
+					this.source=PRS_1;
                     break;
                 case 1:
-                    this.B2 = new PRS_2();
+					this.source=PRS_2;
                     break;
                 case 2:
-                    this.B2 = new PRS_3();
+					this.source=PRS_3;
                     break;
                 case 3:
-                    this.B2 = new PRS_4();
+					this.source=PRS_4;
                     break;
                 case 4:
-                    this.B2 = new PRS_5();
+					this.source=PRS_5;
                     break;
             }
-            var _local1:ColorTransform = new ColorTransform();
-            _local1.color = _g.playerData.customize[0];
-            this.B2.colorSet.transform.colorTransform = _local1;
             var _local2:Number = ((34 - (0.45 * _g.playerData.upgrades[1])) - (0.07 * _g.playerData.upgrades[0]));
             init(_local2, 10);
-            addChild(this.B2);
-            this.B2.x = -65;
-            this.B2.y = -30;
-            this.B2.gotoAndStop(3);
-            this.B2.colorSet.gotoAndStop(3);
-            this.B2.textureLay.gotoAndStop((_g.playerData.customize[1] + 1));
+            this.x = -65;
+            this.y = -30;
             this.airRes = ((1 - (0.08 * _g.playerData.upgrades[2])) - (0.01 * _g.playerData.upgrades[0]));
             this.wing = (3.1 + (0.1 * _g.playerData.upgrades[0]));
             this.maxPower = ((115 + (2 * _g.playerData.upgrades[0])) + (8 * _g.playerData.upgrades[4]));
         }
+		override protected function whenSourceLoaded():void
+		{
+			super.whenSourceLoaded();
+			var color:ColorTransform = new ColorTransform();
+			color.color = _g.playerData.customize[0];
+			var mc:MovieClip=this._sourceDisplay as MovieClip;
+			mc.colorSet.transform.colorTransform = color;
+			this.gotoPhase();
+		}
+		override protected function whenActive():void
+		{
+			super.whenActive();
+			this.container.addEventListener(starling.events.TouchEvent.TOUCH,onTouch);
+		}
+		override protected function whenDeactive():void
+		{
+			super.whenDeactive();
+			this.container.removeEventListener(starling.events.TouchEvent.TOUCH,onTouch);
+		}
+		private function onTouch(evt:starling.events.TouchEvent):void
+		{
+			var touch:Touch=evt.touches[0];
+			if(touch.phase==TouchPhase.BEGAN){
+				this.pickUp();
+			}else if(touch.phase==TouchPhase.MOVED){
+				//TODO
+				//move....
+			}else if(touch.phase==TouchPhase.ENDED){
+				this.letGo();
+			}
+		}
         public function startRainbowStar(evt:MouseEvent=null):void{
             if (this.rainbowAble){
                 this.rainbowAble = false;
@@ -192,9 +220,9 @@
             this.targetPhase = _arg1;
             this.switchPhase = _arg2;
         }
-        public function pickUp():void{
+        private function pickUp():void{
             if (!this.thrown){
-                startDrag(true);
+//                this.container.startDrag(true);
                 held = true;
                 _gD.camPointLock = false;
                 Ticker.reset();
@@ -203,7 +231,7 @@
         public function rotationFeedback(_arg1:Number):void{
             this.turnMomentum = (this.turnMomentum + _arg1);
         }
-        public function letGo():void{
+        private function letGo():void{
             var _local1:ParticleEmitter;
             var _local2:uint;
             var _local3:Number;
@@ -240,7 +268,7 @@
                     _local1.setVar("speedBind", true);
                     _local1.setVar("yVelA", 30);
                 }
-                stopDrag();
+//                this.container.stopDrag();
                 this.thrown = true;
                 ax = x;
                 ay = y;
@@ -329,7 +357,6 @@
                 if (this.spacePressNow > 0){
                     this.spacePressNow--;
                 }
-//                _gD.uiBody.ee.bar.width = (_gD.uiBody.ee.barMax * (this.spacePressNow / this.spacePressMax));
 				_gD.uiBody.ee.bar.width = (_gD.uiBody.eeBarMax * (this.spacePressNow / this.spacePressMax));
             }
             _g.planeShadow.x = x;
@@ -404,9 +431,7 @@
                         this.currentPhase--;
                     }
                     this.switchPhase = this.switchPhaseMax;
-                    this.B2.gotoAndStop(this.currentPhase);
-                    this.B2.colorSet.gotoAndStop(this.currentPhase);
-                    this.B2.textureLay.gotoAndStop((_g.playerData.customize[1] + 1));
+					this.gotoPhase();
                 }
             }
             if (this.thrown){
@@ -505,14 +530,23 @@
                     rotation = _local7;
                 } else {
                     if (bounceMode){
-                        this.subHolder.rotation = (this.subHolder.rotation + this.rotVel);
+						this.rotation = (this.rotation + this.rotVel);
+//                        this.subHolder.rotation = (this.subHolder.rotation + this.rotVel);
                         this.rotVel = (this.rotVel * 0.9);
                     }
                 }
                 this.CL = (1 - (Math.abs(_local7) / 90));
             }
         }
-        private function updateUI():void{
+		
+		private function gotoPhase():void
+		{
+			this.gotoAndStop(this.currentPhase);
+			var mc:MovieClip=this._sourceDisplay as MovieClip;
+			mc.colorSet.gotoAndStop(this.currentPhase);
+			mc.textureLay.gotoAndStop((_g.playerData.customize[1] + 1));
+		}
+		private function updateUI():void{
             _gD.uiBody._d.text = (this.treat((this.totalDist / 200)) + "m");
             _gD.uiBody._a.text = (this.treat((-((ay - _gP.ground)) / 200)) + "m");
             _gD.uiBody._v.text = (this.treat(((xVel * 30) / 200)) + "m/s");
@@ -791,21 +825,24 @@
                 yVel = (yVel * -0.7);
                 yVel = (yVel - 10);
                 xVel = (xVel + 10);
-                this.B2.visible = false;
+				this._canvas.visible=false;
                 _local1 = Math.floor((Math.random() * 2.99));
-                addChild(this.subHolder);
                 switch (_local1){
                     case 0:
-                        this.subHolder.addChild(new _magicTurtle());
+						this.source=_magicTurtle;
+//                        this.subHolder.addChild(new _magicTurtle());
                         break;
                     case 1:
-                        this.subHolder.addChild(new _magicPenguin());
+						this.source=_magicPenguin;
+//                        this.subHolder.addChild(new _magicPenguin());
                         break;
                     case 2:
-                        this.subHolder.addChild(new _magicHedgehog());
+						this.source=_magicHedgehog;
+//                        this.subHolder.addChild(new _magicHedgehog());
                         break;
                 }
-                addChild(new _poofTransform());
+				//TODO
+//				container.addChild(new _poofTransform());
                 soundKon.playSound(9);
             } else {
                 soundKon.playSound(10);
@@ -815,8 +852,8 @@
             _gD.clearShake();
             rotation = 0;
         }
-        public function applyEffect(_arg1:String, _arg2:uint=9):void{
-            switch (_arg1){
+        public function applyEffect(type:String, duration:uint=9):void{
+            switch (type){
                 case "Hit":
                     this.theFilter = Plane.hitFilter;
                     this.theColor = Plane.hitColor;
@@ -828,30 +865,46 @@
                 default:
                     break;
             }
-            this.effectTime = _arg2;
-            this.effectPhase = true;
-            this.miniEffectPhase = 2;
-            Ticker.D.addEventListener(FEvent.TICK, this.runEffect, false, 0, true);
+            this.effectTime = duration;
+            this.miniEffectPhase =1;
         }
-        private function runEffect(_arg1:FEvent):void{
-            this.miniEffectPhase--;
-            if (this.miniEffectPhase == 0){
-                this.miniEffectPhase = 1;
-                if (this.effectPhase){
-                    this.filters = [this.theFilter];
-                    this.transform.colorTransform = this.theColor;
-                    this.effectPhase = false;
-                } else {
-                    this.filters = [];
-                    this.transform.colorTransform = normalColor;
-                    this.effectPhase = true;
-                }
-                this.effectTime--;
-                if (this.effectTime == 0){
-                    Ticker.D.removeEventListener(FEvent.TICK, this.runEffect);
-                    this.filters = [];
-                    this.transform.colorTransform = normalColor;
-                }
+		override protected function doRender():void
+		{
+			this.runEffect();
+			super.doRender();
+		}
+		override protected function preHandlerTexture():void
+		{
+			switch(miniEffectPhase){
+				case -1:
+					this._sourceDisplay.filters = [];
+					this._sourceDisplay.transform.colorTransform = normalColor;
+					break;
+				case 0:
+					this._sourceDisplay.filters = [this.theFilter];
+					this._sourceDisplay.transform.colorTransform = this.theColor;
+					break;
+				case 1:
+					this._sourceDisplay.filters = [];
+					this._sourceDisplay.transform.colorTransform = normalColor;
+					break;
+			}
+		}
+		override protected function renderTexture(extraId:String=null):void
+		{
+			super.renderTexture(""+miniEffectPhase);
+		}
+        private function runEffect():void{
+			if(miniEffectPhase==-1) return;
+			this._textureInvalidated=true;
+            if (miniEffectPhase==0){
+				miniEffectPhase=1;
+            } else {
+				miniEffectPhase=0;
+            }
+            this.effectTime--;
+            if (this.effectTime == 0){
+				miniEffectPhase=-1;
             }
         }
     }
