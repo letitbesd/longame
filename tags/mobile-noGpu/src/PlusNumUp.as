@@ -35,14 +35,10 @@
 			this.gf.strength = 1;
 			this.gf.color = 0xFFFFFF;
 		}
-		override protected function renderTexture(extraId:String=null):void
+		override protected function preHandlerTexture():void
 		{
-			super.renderTexture(""+stayTime);
-		}
-		override protected function doRender():void
-		{
-			super.doRender();
-			if (this.scaler > 0.01){
+			if (this.scaler > 0.01)
+			{
 				this.scaler = this.scaler - 0.2;
 				this.gf.blurX = this.gf.blurX - 1;
 				this.gf.blurY = this.gf.blurY - 1;
@@ -51,18 +47,26 @@
 				this.ctr.redOffset = this.ctr.blueOffset = this.ctr.greenOffset = this.ctrOS;
 				this._sourceDisplay.transform.colorTransform = this.ctr;
 				this._sourceDisplay.filters = [this.gf];
-				scaleX = scaleY = 1 + this.scaler;
+				this.scaleX = this.scaleY = 1 + this.scaler;
 			}
-			this.xVel = (this.xVel + this.xAccel);
-			x +=this.xVel;
-			this.stayTime--;
 			if (this.stayTime < 30){
 				this._sourceDisplay.alpha -= 0.03;
 			}
+		}
+		override protected function renderTexture(extraId:String=null):void
+		{
+			super.renderTexture(""+stayTime);
+		}
+		override protected function doRender():void
+		{
+			super.doRender();
+			this.xVel = (this.xVel + this.xAccel);
+			this.x +=this.xVel;
+			this.stayTime--;
 			if (this.stayTime == 0){
 				this.dispose();
 			}else{
-				this._frameInvalidated=true;
+				this._textureInvalidated=true;
 			}
 		}
     }

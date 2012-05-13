@@ -91,13 +91,14 @@
                 nowPar--;
             }
             try {
-                PE.removeChild(p);
+				//TODO
+//                PE.removeChild(p);
             } catch(e:Error) {
             }
         }
         public static function killLastPar():void{
             var par:Particle = PE.getChildAt(0) as Particle;
-            par.killMe();
+			par.dispose();
         }
         public static function reset():void{
             nowPar = 0;

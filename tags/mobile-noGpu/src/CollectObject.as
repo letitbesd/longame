@@ -4,7 +4,6 @@
     public class CollectObject extends SimpleObject {
 
         public var doodadType:uint= 0
-        public var active:Boolean= true
         public var prevX:Number= 0
         public var prevGap:Number= 0
         private var mc:MovieClip;
@@ -12,49 +11,63 @@
 
         public function CollectObject(doodadType:uint=0){
             this.doodadType = doodadType;
-            this.active = true;
-            switch (doodadType){
-                case 0:
-                    addChild(new CollectGraphic());
-                    break;
-                case 1:
-                    addChild(new GoldStar());
-                    this.pe = new ParticleEmitter(this);
-                    this.pe.setVar("xRand", 40);
-                    this.pe.setVar("yRand", 15);
-                    this.pe.setVar("spawnPer", 1);
-                    this.pe.setVar("addMode", true);
-                    this.pe.setVar("lastFor", 0);
-                    break;
-                case 2:
-                    this.mc = new CraneDoodad();
-                    this.mc.crane.stop();
-                    Ticker.D.addEventListener(FEvent.TICK, this.animate, false, 0, true);
-                    addChild(this.mc);
-                    break;
-                case 3:
-                    this.mc = new WindmillDoodad();
-                    this.mc.crane.stop();
-                    Ticker.D.addEventListener(FEvent.TICK, this.animate, false, 0, true);
-                    addChild(this.mc);
-                    break;
-                case 4:
-                    addChild(new RainbowStar());
-                case 5:
-                    addChild(new PurpleStar());
-                    break;
-            }
+            
         }
-        private function animate(evt:FEvent):void{
-            this.mc.crane.nextFrame();
-            if (this.mc.crane.currentFrame == this.mc.crane.totalFrames){
-                this.mc.crane.gotoAndStop(0);
-            }
-        }
+		override protected function whenActive():void
+		{
+			super.whenActive();
+			switch (doodadType){
+				case 0:
+					this.source=CollectGraphic;
+					break;
+				case 1:
+					this.source=GoldStar;
+					this.pe = new ParticleEmitter(this);
+					this.pe.setVar("xRand", 40);
+					this.pe.setVar("yRand", 15);
+					this.pe.setVar("spawnPer", 1);
+					this.pe.setVar("addMode", true);
+					this.pe.setVar("lastFor", 0);
+					break;
+				case 2:
+					this.source=CraneDoodad
+					this.stop();
+					break;
+				case 3:
+					this.source=WindmillDoodad;
+					this.stop();
+					break;
+				case 4:
+					this.source=RainbowStar;
+				case 5:
+					this.source=PurpleStar;
+					break;
+			}
+		}
+		override protected function whenDeactive():void
+		{
+			super.whenDeactive();
+			//this.gotoAndPlay(1);
+		}
+		override protected function whenDispose():void
+		{
+			super.whenDispose();
+			if (this.doodadType == 1){
+				this.pe.killMe();
+				this.pe = null;
+			}
+		}
+		override protected function whenFramed():void
+		{
+			if((doodadType==1)||(doodadType==3)){
+				if(this.currentFrame==this.totalFrames){
+					this.mc.crane.gotoAndStop(0);
+				}
+			}
+		}
         public function pickUp():void{
             var numUp:PlusNumUp;
-            if (this.active){
-                this.active = false;
+            if (this.actived){
                 if ((!_g.P.groundedNow) || _g.P.bounceMode){
                     switch (this.doodadType){
                         case 0:
@@ -87,20 +100,15 @@
                             break;
                     }
 					if(numUp){
+						this.scene.add(numUp);
 						//TODO
 //						_gD.put(numUp, _gD.FG);
 						numUp.x = x;
 						numUp.y = y;
 					}
                 }
+				this.dispose();
             }
-        }
-        public function endMe():void{
-            if (this.doodadType == 1){
-                this.pe.killMe();
-                this.pe = null;
-            }
-            Ticker.D.removeEventListener(FEvent.TICK, this.animate);
         }
     }
 }

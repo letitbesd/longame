@@ -50,7 +50,8 @@
 				var movedDisY:Number = Number((nowY - prevY[(prevY.length - 1)]));
 				var movedDisX:Number = Number((nowX - prevX[(prevX.length - 1)]));
                 if ((((movedDisX > 600)) && ((movedDisY < 0)))){
-                    _g.P.letGo();
+					//TODO
+//                    _g.P.letGo();
                 }
             }
         }

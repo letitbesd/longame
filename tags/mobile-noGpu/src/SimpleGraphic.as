@@ -22,13 +22,6 @@
             this.B.x = -(this.B.width) / 2;
             this.B.y = -(this.B.height) / 2;
         }
-//        public function animateMe(bmds:Vector.<BitmapData>, repeat:Boolean=false):void{
-//            Ticker.D.addEventListener(FEvent.TICK, this.runMe, false, 0, true);
-//            this.bmds = bmds;
-//            this.frameOn = 1;
-//            this.repeat = repeat;
-//            this.drawMe(bmds[0]);
-//        }
         private function runMe(evt:FEvent):void{
             this.B.bitmapData = this.bmds[this.frameOn];
             this.frameOn++;

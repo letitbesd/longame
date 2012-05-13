@@ -1,6 +1,7 @@
 ﻿package {
+	import com.longame.game.entity.AnimatorEntity;
 
-    public class SimpleObject extends SimpleGraphic {
+    public class SimpleObject extends AnimatorEntity {
 
         public var mass:Number= 1
         public var aero:Number= 1
