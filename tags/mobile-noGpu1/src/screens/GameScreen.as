@@ -1,11 +1,11 @@
 package screens
 {
 	import com.bumpslide.ui.UIComponent;
-	import com.longame.display.screen.AbstractScreen;
+	import com.longame.display.screen.Screen;
 	
 	import ui.GameScreenUI;
 	
-	public class GameScreen extends AbstractScreen
+	public class GameScreen extends Screen
 	{
 		public function GameScreen()
 		{

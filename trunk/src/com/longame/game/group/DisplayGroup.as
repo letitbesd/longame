@@ -13,8 +13,8 @@ package com.longame.game.group
 	import com.longame.game.entity.DisplayEntity;
 	import com.longame.game.entity.IDisplayEntity;
 	import com.longame.game.entity.SpriteEntity;
-	import com.longame.game.entity.display.primitive.LGGrid;
-	import com.longame.game.entity.display.primitive.LGRectangle;
+	import com.longame.game.entity.display.primitive.LGrid;
+	import com.longame.game.entity.display.primitive.LRectangle;
 	import com.longame.game.entity.display.primitive.TileHilighter;
 	import com.longame.game.group.component.GroupLayouter;
 	import com.longame.game.group.component.TileMap;
@@ -66,7 +66,7 @@ package com.longame.game.group
 			if(_gridShowing) return;
 			_gridShowing=true;
 			if(_grid==null) {
-				_grid=new LGGrid();
+				_grid=new LGrid();
 				_grid.tileSize=SceneManager.tileSize;
 			}
 			this.add(_grid);
@@ -489,7 +489,7 @@ package com.longame.game.group
 		
 		protected var _childBoundsInvalidated:Boolean;
 		
-		protected var _grid:LGGrid;
+		protected var _grid:LGrid;
 		
 		private var _inBuilding:Boolean;
 		

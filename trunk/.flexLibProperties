@@ -142,7 +142,7 @@
     <classEntry path="com.longame.display.graphics.IStroke"/>
     <classEntry path="com.longame.display.graphics.SolidColorFill"/>
     <classEntry path="com.longame.display.graphics.Stroke"/>
-    <classEntry path="com.longame.display.screen.AbstractScreen"/>
+    <classEntry path="com.longame.display.screen.Screen"/>
     <classEntry path="com.longame.display.screen.FullScreenControl"/>
     <classEntry path="com.longame.display.screen.IScreen"/>
     <classEntry path="com.longame.display.screen.ScreenManager"/>
@@ -425,14 +425,13 @@
     <classEntry path="org.swiftsuspenders.injectionresults.InjectSingletonResult"/>
     <classEntry path="org.swiftsuspenders.injectionresults.InjectValueResult"/>
     <classEntry path="org.swiftsuspenders.injectionresults.InjectionResult"/>
-    <classEntry path="com.longame.game.entity.display.primitive.LGBox"/>
-    <classEntry path="com.longame.game.entity.display.primitive.LGPolygon"/>
+    <classEntry path="com.longame.game.entity.display.primitive.LBox"/>
     <classEntry path="com.longame.game.entity.display.primitive.IPrimitive"/>
-    <classEntry path="com.longame.game.entity.display.primitive.LGRectangle"/>
+    <classEntry path="com.longame.game.entity.display.primitive.LRectangle"/>
     <classEntry path="com.longame.game.entity.display.primitive.TileHilighter"/>
-    <classEntry path="com.longame.game.entity.display.primitive.LGGrid"/>
+    <classEntry path="com.longame.game.entity.display.primitive.LGrid"/>
     <classEntry path="com.longame.game.entity.display.primitive.AbstractPrimitive"/>
-    <classEntry path="com.longame.game.entity.display.primitive.LGHexGrid"/>
+    <classEntry path="com.longame.game.entity.display.primitive.LHexGrid"/>
     <classEntry path="com.longame.game.component.SceneDragComp"/>
     <classEntry path="com.longame.display.StarlingShape"/>
     <classEntry path="com.longame.ui.SkinInjector"/>

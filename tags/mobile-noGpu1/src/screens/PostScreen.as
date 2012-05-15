@@ -2,6 +2,7 @@ package screens
 {
 	import com.longame.core.IAnimatedObject;
 	import com.longame.display.screen.McScreen;
+	import com.longame.display.screen.ScreenManager;
 	import com.longame.managers.ProcessManager;
 	
 	import flash.display.MovieClip;
@@ -45,14 +46,14 @@ package screens
 //			trace((skin as MovieClip).currentFrame);
 			if((skin as MovieClip).currentFrame==(skin as MovieClip).totalFrames)
 			{
-				Engine.showScreen(UpgradeScreen);
+				ScreenManager.openScreen(UpgradeScreen);
 				ProcessManager.removeAnimatedObject(this);
 			}
 			if(levelUp){
 				if(levelUp.currentFrame==levelUp.totalFrames){
 					levelUp.parent.removeChild(levelUp);
 					levelUp=null;
-					Engine.showScreen(StoryScreen);
+					ScreenManager.openScreen(StoryScreen);
 //					this.ref.sceneTrans(1, "CutScene");
 				}
 			}
@@ -107,10 +108,10 @@ package screens
 						_g.justLeveled = true;
 						this.levelUpStage();
 					} else {
-						Engine.showScreen(UpgradeScreen);
+						ScreenManager.openScreen(UpgradeScreen);
 					}
 				} else {
-					Engine.showScreen(UpgradeScreen);
+					ScreenManager.openScreen(UpgradeScreen);
 				}
 				removeEventListener(KeyboardEvent.KEY_DOWN, this.skipThis);
 				removeEventListener(Event.ENTER_FRAME, this.runTweener);
@@ -138,7 +139,7 @@ package screens
 				if (this.tweenNow == this.tweenMax){
 					removeEventListener(Event.ENTER_FRAME, this.runTweener);
 					removeEventListener(KeyboardEvent.KEY_DOWN, this.skipThis);
-					Engine.showScreen(UpgradeScreen);
+					ScreenManager.openScreen(UpgradeScreen);
 				}
 			}
 		}

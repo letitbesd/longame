@@ -1,4 +1,6 @@
 ﻿package {
+    import com.longame.display.screen.ScreenManager;
+    
     import flash.display.*;
     import flash.events.*;
     
@@ -240,11 +242,11 @@
 			endGame();
 			_gD.hideInterface();
             if (playerData.stats[1] < 5){
-				Engine.showScreen(PostScreen);
+				ScreenManager.openScreen(PostScreen);
 //                ROOT.sceneTrans(1, "Level", true);
             } else {
                 soundKon.playMusic(0);
-				Engine.showScreen(UpgradeScreen);
+				ScreenManager.openScreen(UpgradeScreen);
 //                ROOT.sceneTrans(1, "Upgrade", true);
             }
         }
