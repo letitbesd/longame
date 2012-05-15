@@ -10,7 +10,7 @@ package  com.longame.game.entity.display.primitive
 	/**
 	 * polygon primitive in scene space.
 	 */
-	public class LGPolygon extends AbstractPrimitive
+	public class LPolygon extends AbstractPrimitive
 	{
 		/**
 		 * @inheritDoc
@@ -84,7 +84,7 @@ package  com.longame.game.entity.display.primitive
 		/**
 		 * Constructor
 		 */
-		public function LGPolygon (id:String=null)
+		public function LPolygon (id:String=null)
 		{
 			super(id);
 			this._walkable=true;

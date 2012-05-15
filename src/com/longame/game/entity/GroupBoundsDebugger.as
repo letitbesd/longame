@@ -1,10 +1,10 @@
 package com.longame.game.entity
 {
 	import com.longame.display.graphics.SolidColorFill;
-	import com.longame.game.entity.display.primitive.LGBox;
+	import com.longame.game.entity.display.primitive.LBox;
 	import com.longame.game.scene.SceneManager;
 	
-	public class GroupBoundsDebugger extends LGBox
+	public class GroupBoundsDebugger extends LBox
 	{
 		public function GroupBoundsDebugger(id:String=null)
 		{

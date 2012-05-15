@@ -7,7 +7,7 @@ package com.longame.game.entity.display.primitive
 	/**
 	 * 3D square primitive in isometric space.
 	 */
-	public class LGRectangle extends LGPolygon
+	public class LRectangle extends LPolygon
 	{
 		/**
 		 * @inheritDoc
@@ -65,7 +65,7 @@ package com.longame.game.entity.display.primitive
 		/**
 		 * Constructor
 		 */
-		public function LGRectangle (id:String=null)
+		public function LRectangle (id:String=null)
 		{
 			super(id);
 			this._walkable=true;

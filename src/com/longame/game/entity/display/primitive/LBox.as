@@ -13,12 +13,12 @@ package com.longame.game.entity.display.primitive
 	/**
 	 * 3D box primitive in isometric space.
 	 */
-	public class LGBox extends AbstractPrimitive
+	public class LBox extends AbstractPrimitive
 	{
 		/**
 		 * Constructor
 		 */
-		public function LGBox (id:String=null)
+		public function LBox (id:String=null)
 		{
 			super(id);
 		}

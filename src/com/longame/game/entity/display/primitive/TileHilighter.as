@@ -6,7 +6,7 @@ package com.longame.game.entity.display.primitive
 	/**
 	 * 方格高亮显示
 	 * */
-	public class TileHilighter extends LGRectangle
+	public class TileHilighter extends LRectangle
 	{
 		public static const ALPHA:Number=0.8;
 		/**

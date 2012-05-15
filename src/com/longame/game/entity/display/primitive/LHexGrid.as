@@ -10,9 +10,9 @@ package com.longame.game.entity.display.primitive
 	/**
 	 * @private
 	 */
-	public class LGHexGrid extends LGGrid
+	public class LHexGrid extends LGrid
 	{
-		public function LGHexGrid (id:String)
+		public function LHexGrid (id:String)
 		{
 			super(id);
 			this._walkable=true;

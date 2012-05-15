@@ -11,7 +11,7 @@ package com.longame.game.entity.display.primitive
 	/**
 	 * IsoGrid provides a display grid in the X-Y plane.
 	 */
-	public class LGGrid extends AbstractPrimitive
+	public class LGrid extends AbstractPrimitive
 	{
 		////////////////////////////////////////////////////
 		//	GRID SIZE
@@ -108,7 +108,7 @@ package com.longame.game.entity.display.primitive
 		/**
 		 * Constructor
 		 */
-		public function LGGrid (id:String=null)
+		public function LGrid (id:String=null)
 		{
 			super(id);
 			this.gridlines = new Stroke(0, 0xCCCCCC, 0.5);

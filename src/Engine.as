@@ -48,7 +48,7 @@ package
 		 * */
 		public static var inTutorial:Boolean;
 		
-		protected var _screenManager:ScreenManager;
+//		protected var _screenManager:ScreenManager;
 		
 		private static var _instance:Engine;
 		private static var _nativeStage:flash.display.Stage;
@@ -106,14 +106,14 @@ package
 //			CursorManager.init(this.stage);
 			gpuStage.addChild(gpuScreenContainer);
 			nativeStage.addChild(nativeScreenContainer);
-			this._screenManager=new ScreenManager(null,0.1,0,0);	
+			ScreenManager.init(null,0.1,0,0);	
 			Engine.start();
 			Logger.info(this,"init","Engine is ready!");
 		}
-		public static function showScreen(screenClass:Class,para:*=null):void
-		{
-			_instance._screenManager.openScreen(screenClass,para);
-		}
+//		public static function showScreen(screenClass:Class,para:*=null):void
+//		{
+//			_instance._screenManager.openScreen(screenClass,para);
+//		}
 		private static var _started:Boolean;
 		public static function start():void
 		{
@@ -129,10 +129,10 @@ package
 			ProcessManager.stop();
 			Starling.current.stop();
 		}
-		public static function get screenManager():ScreenManager
-		{
-			return _instance._screenManager;
-		}
+//		public static function get screenManager():ScreenManager
+//		{
+//			return _instance._screenManager;
+//		}
 		private static var gpuScreenContainer:starling.display.Sprite=new starling.display.Sprite();
 		private static var nativeScreenContainer:flash.display.Sprite=new flash.display.Sprite();
 		long_internal static function addScreen(screen:IScreen):void

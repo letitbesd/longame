@@ -5,8 +5,8 @@ package com.longame.game.core.bounds
 	import com.longame.display.screen.IScreen;
 	import com.longame.game.core.IComponent;
 	import com.longame.game.entity.IDisplayEntity;
-	import com.longame.game.entity.display.primitive.LGGrid;
-	import com.longame.game.entity.display.primitive.LGRectangle;
+	import com.longame.game.entity.display.primitive.LGrid;
+	import com.longame.game.entity.display.primitive.LRectangle;
 	import com.longame.game.group.DisplayGroup;
 	import com.longame.game.group.IDisplayGroup;
 	import com.longame.game.scene.IScene;
