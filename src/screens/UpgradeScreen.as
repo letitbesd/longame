@@ -3,6 +3,7 @@ package screens
 	import com.addthis.share.ShareAPI;
 	import com.gskinner.motion.GTweener;
 	import com.longame.display.screen.McScreen;
+	import com.longame.display.screen.ScreenManager;
 	
 	import flash.display.MovieClip;
 	import flash.display.SimpleButton;
@@ -142,7 +143,7 @@ package screens
 		}
 		protected function playGame(event:MouseEvent):void
 		{
-			Engine.showScreen(GameScreen);			
+			ScreenManager.openScreen(GameScreen);			
 		}
 		public function addThisToFacebook(_arg1:MouseEvent):void{
 			this.api.share(this.share_url, "facebook");

@@ -1,6 +1,7 @@
 package screens
 {
 	import com.longame.display.screen.McScreen;
+	import com.longame.display.screen.ScreenManager;
 	
 	import flash.display.MovieClip;
 	import flash.display.SimpleButton;
@@ -88,17 +89,17 @@ package screens
 			if (Flight0.newGame){
 				PlayerData.saveGame(slot);
 				_g.currentSlot = slot;
-				Engine.showScreen(StoryScreen);
-//				Engine.showScreen(UpgradeScreen);
+				ScreenManager.openScreen(StoryScreen);
+//				ScreenManager.openScreen(UpgradeScreen);
 			} else {
 				PlayerData.loadGame(slot);
 				_g.currentSlot = slot;
-				Engine.showScreen(UpgradeScreen);
+				ScreenManager.openScreen(UpgradeScreen);
 			}
 		}
 		private function backToMenuHandler(evt:MouseEvent):void
 		{
-			Engine.showScreen(MainMenuScreen);
+			ScreenManager.openScreen(MainMenuScreen);
 		}
 		override protected function doDispose():void
 		{

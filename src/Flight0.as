@@ -2,6 +2,8 @@ package
 {
 	import Playtomic.Log;
 	
+	import com.longame.display.screen.ScreenManager;
+	
 	import flash.display.Sprite;
 	import flash.display.StageScaleMode;
 	
@@ -43,7 +45,7 @@ package
 			RenderEngine.renderBGs();
 			RenderEngine.renderAll();
 			
-			Engine.showScreen(START_SCREEN);
+			ScreenManager.openScreen(START_SCREEN);
 		}
 	}
 }

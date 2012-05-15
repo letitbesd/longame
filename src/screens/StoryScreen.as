@@ -2,6 +2,7 @@ package screens
 {
 	import com.longame.core.IAnimatedObject;
 	import com.longame.display.screen.McScreen;
+	import com.longame.display.screen.ScreenManager;
 	import com.longame.managers.ProcessManager;
 	
 	import flash.display.MovieClip;
@@ -44,7 +45,7 @@ package screens
 			_g.changeLevel=true;
 			(skin as MovieClip).stop();
 			RenderEngine.renderPlane();
-			Engine.showScreen(GameScreen);
+			ScreenManager.openScreen(GameScreen);
 		}
 	}
 }

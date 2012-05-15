@@ -28,7 +28,7 @@ package screens
 		}
 		private function playOn(evt:MouseEvent):void
 		{
-			Engine.showScreen(UpgradeScreen);
+			ScreenManager.openScreen(UpgradeScreen);
 		}
 	}
 }

@@ -2,6 +2,7 @@ package screens
 {
 	import com.bumpslide.view.BasicView;
 	import com.longame.display.screen.McScreen;
+	import com.longame.display.screen.ScreenManager;
 	
 	import flash.display.SimpleButton;
 	import flash.events.MouseEvent;
@@ -68,11 +69,11 @@ package screens
 		public function newGameHandler(_arg1:MouseEvent=null):void{
 			Flight0.newGame = true;
 			_g.playerData = new PlayerData()
-			Engine.showScreen(SlotSelectScreen);
+			ScreenManager.openScreen(SlotSelectScreen);
 		}
 		public function loadGameHandler(_arg1:MouseEvent=null):void{
 			Flight0.newGame = false;
-			Engine.showScreen(SlotSelectScreen);
+			ScreenManager.openScreen(SlotSelectScreen);
 		}
 		override protected function doDispose():void
 		{
