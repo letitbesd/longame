@@ -1,0 +1,1 @@
+longame is a flash game engine for 2D or 2.5D.
